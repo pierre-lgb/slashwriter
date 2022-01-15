@@ -1,0 +1,53 @@
+.logo {
+    margin: 60px 0 60px 80px;
+    height: 40px;
+}
+
+.formContainer {
+    width: 350px;
+    margin: 0 auto 200px auto;
+}
+
+.form {
+    margin: 60px 0 60px 0;
+}
+
+.formHeader {
+    font-size: 42px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.forgotPassword {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+}
+
+.forgotPassword a {
+    font-size: 16px;
+    color: var(--color-blue);
+}
+
+.switchForm {
+    text-align: center;
+}
+
+.switchForm p {
+    font-size: 16px;
+    color: var(--color-n700);
+    margin: 0
+}
+
+.switchForm a {
+    font-size: 16px;
+    color: var(--color-blue);
+}
+
+@media screen and (max-width: 900px) {
+    .logo {
+        display: flex;
+        justify-content: center;
+        margin: 60px 0;
+    }
+}
