@@ -1,0 +1,16 @@
+.logo {
+    margin: 60px 0 60px 80px;
+    height: 40px
+}
+
+@media screen and (max-width: 900px) {
+    .container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .logo {
+        margin: 60px 0;
+    }
+}

@@ -12,7 +12,7 @@ export default function Home() {
     if (session === undefined) {
         return null
     } else if (session) {
-        Router.push("/workspace")
+        Router.push("/workspaces")
         return null
     }
 

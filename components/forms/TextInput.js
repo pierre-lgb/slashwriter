@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { ErrorMessage, useField } from "formik"
 
+import formStyles from "../../styles/Forms.module.css"
+
 const TextInput = ({
     label, type,
     validIndicator = true,
@@ -12,14 +14,14 @@ const TextInput = ({
     const [passwordShown, setPasswordShown] = useState(false)
 
     return (
-        <div className="formItem">
+        <div className={formStyles.formItem}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <label className="formLabel" htmlFor={field.name}>
+                <label className={formStyles.formLabel} htmlFor={field.name}>
                     {label}
                 </label>
                 {type === "password" && (
                     <button
-                        type="button" className={passwordShown ? "hidePasswordBtn" : "showPasswordBtn"}
+                        type="button" className={passwordShown ? formStyles.showPasswordBtn : formStyles.hidePasswordBtn}
                         onClick={() => setPasswordShown(!passwordShown)}
                         tabIndex={-1}
                     ></button>
@@ -27,12 +29,12 @@ const TextInput = ({
             </div>
 
             <input
-                className={`formInput ${meta.touched && (meta.error ? "isInvalid" : (validIndicator && "isValid"))}`}
+                className={`${formStyles.formInput} ${meta.touched && (meta.error ? formStyles.isInvalid : (validIndicator && formStyles.isValid))}`}
                 type={type === "password" ? (passwordShown ? "text" : "password") : type} id={field.name}
                 {...field} {...props} autoComplete="off"
             />
 
-            <ErrorMessage component="div" name={field.name} className="textError" />
+            <ErrorMessage component="div" name={field.name} className={formStyles.textError} />
         </div>
 
     )

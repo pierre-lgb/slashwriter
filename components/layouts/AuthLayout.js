@@ -4,14 +4,14 @@ import Router from 'next/router'
 import Link from 'next/link'
 import Head from 'next/head'
 
-import styles from "../styles/Auth.module.css"
+import styles from '../../styles/layouts/AuthLayout.module.css'
 
 export default function AuthLayout({ children }) {
     const { data: session } = useSession()
     if (session === undefined) {
         return null
     } else if (session) {
-        Router.push("/")
+        Router.push("/workspaces")
         return null
     }
 
@@ -23,7 +23,7 @@ export default function AuthLayout({ children }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <div className="content">
+            <div className={styles.container}>
                 <div className={styles.logo}>
                     <Link href="/">
                         <a>

@@ -6,9 +6,10 @@ import Router from "next/router"
 import Link from "next/link"
 import { Formik } from "formik"
 import TextInput from "../../components/forms/TextInput"
-import AuthLayout from "../../components/AuthLayout"
+import AuthLayout from "../../components/layouts/AuthLayout"
 
-import styles from "../../styles/Auth.module.css"
+import styles from "../../styles/pages/Auth.module.css"
+import formStyles from "../../styles/Forms.module.css"
 
 export default function SignIn({ csrfToken }) {
     const [submitError, setSubmitError] = useState("")
@@ -59,7 +60,7 @@ export default function SignIn({ csrfToken }) {
                     }) => (
                         <form className={styles.form} onSubmit={handleSubmit}>
                             {submitError && (
-                                <div className="alertError">
+                                <div className={formStyles.alertError}>
                                     {submitError}
                                 </div>
                             )}
@@ -77,7 +78,7 @@ export default function SignIn({ csrfToken }) {
                             </div>
 
                             <button
-                                className="submitButton"
+                                className={formStyles.submitButton}
                                 type="submit"
                                 disabled={isSubmitting ? true : false}
                             >Se connecter</button>

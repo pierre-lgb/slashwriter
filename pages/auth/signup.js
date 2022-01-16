@@ -5,10 +5,11 @@ import { getCsrfToken, signIn } from "next-auth/react"
 import checkUserExists from "../../utils/checkUserExists"
 
 import Link from "next/link"
-import AuthLayout from "../../components/AuthLayout"
+import AuthLayout from "../../components/layouts/AuthLayout"
 import TextInput from "../../components/forms/TextInput"
 
-import styles from "../../styles/Auth.module.css"
+import styles from "../../styles/pages/Auth.module.css"
+import formStyles from "../../styles/Forms.module.css"
 
 export default function SignUp({ csrfToken }) {
     const [submitError, setSubmitError] = useState("")
@@ -42,22 +43,27 @@ export default function SignUp({ csrfToken }) {
 
     const validationSchema = Yup.object().shape({
         username: Yup.string()
+            .trim()
             .min(4, "Nom d'utilisateur trop court.")
             .max(25, "Nom d'utilisateur trop long.")
             .required("Veuillez entrer un nom d'utilisateur.")
             .test("checkUniqueUsername", "Le nom d'utilisateur est déjà pris", async (username) => {
                 return !(await checkUserExists({ username }))
             })
-            .test("checkValidUsername", "Caractères autorisés : lettres, chiffres, -, ., _.", (username) => {
-                return /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/.test(username)
+            .test("checkValidUsername", "Caractères autorisés : lettres, chiffres, tirets - et _.", (username) => {
+                return /^[A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*$/.test(username)
             }),
         email: Yup.string()
+            .trim()
             .email("Adresse email invalide.")
             .required("Veuillez entrer une adresse email.")
             .test("checkUniqueEmail", "L'adresse email est déjà prise.", async (email) => {
                 return !(await checkUserExists({ email }))
             }),
         password: Yup.string()
+            .test("checkStartOrEndSpaces", "Le mot de passe ne peut pas commencer ou se terminer par des espaces.", (password) => {
+                return !/([\s]+[^\s]*[\s]*)|([\s]*[^\s]*[\s]+)/.test(password)
+            })
             .min(6, "Mot de passe est trop court.")
             .max(100, "Mot de passe trop long.")
             .required("Veuillez choisir un mot de passe."),
@@ -83,7 +89,7 @@ export default function SignUp({ csrfToken }) {
                     }) => (
                         <form className={styles.form} onSubmit={handleSubmit}>
                             {submitError && (
-                                <div className="alertError">
+                                <div className={formStyles.alertError}>
                                     {submitError}
                                 </div>
                             )}
@@ -106,7 +112,7 @@ export default function SignUp({ csrfToken }) {
                             />
 
                             <button
-                                className="submitButton"
+                                className={formStyles.submitButton}
                                 type="submit"
                                 disabled={isSubmitting ? true : false}
                             >S'inscrire</button>

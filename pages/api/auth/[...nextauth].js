@@ -17,6 +17,7 @@ export default NextAuth({
                 const passwordValid = await compare(password, user.password)
                 if (passwordValid) {
                     return {
+                        id: user.id,
                         username: user.username,
                         email: user.email
                     }
@@ -27,17 +28,17 @@ export default NextAuth({
         })
     ],
     callbacks: {
-        jwt: async ({ token, user }) => {
-            if (user) {
-                token.id = user.id
+        jwt: async ({ token, account, user }) => {
+            if (account) {
+                token.accessToken = account.access_token
+                token.user = user
             }
 
             return token
         },
         session: ({ session, token }) => {
-            if (token) {
-                session.id = token.id
-            }
+            session.accessToken = token.accessToken
+            session.user = token.user
 
             return session
         }
