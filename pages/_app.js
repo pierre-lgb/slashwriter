@@ -1,13 +1,11 @@
-import { SessionProvider } from "next-auth/react"
-import '../styles/global/globals.css'
-import '../styles/global/colors.css'
+import "../styles/global/globals.css";
+import "../styles/global/colors.css";
+import { initAuth } from "../src/firebase/auth";
+
+initAuth();
 
 function MyApp({ Component, pageProps }) {
-  return (
-    <SessionProvider>
-      <Component {...pageProps} />
-    </SessionProvider>
-  )
+    return <Component {...pageProps} />;
 }
 
-export default MyApp
+export default MyApp;

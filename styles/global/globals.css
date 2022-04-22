@@ -1,10 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 html,
-body {
+body,
+div#__next {
   padding: 0;
   margin: 0;
   font-family: 'Inter', sans-serif;
+  width: 100%;
+  height: 100%;
+  min-width: 450px;
   /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; */
 }
@@ -19,5 +23,4 @@ a {
   box-sizing: border-box;
   font-family: "Inter", sans-serif;
 }
-
 

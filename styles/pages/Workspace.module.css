@@ -16,6 +16,7 @@
     margin-top: 20px;
     border-bottom: 1px solid var(--color-n400);
     padding: 16px 0;
+    flex-wrap: wrap;
 }
 
 .sortingSelects {
@@ -35,29 +36,71 @@
 .addSpaceBtn {
     border: none;
     border-radius: 4px;
-    background-color: var(--color-blue);
-    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8.24504 5.24691H6.74593V3.7478C6.74593 3.33554 6.40863 2.99824 5.99638 2.99824C5.58412 2.99824 5.24683 3.33554 5.24683 3.7478V5.24691H3.74772C3.33547 5.24691 2.99817 5.58422 2.99817 5.99647C2.99817 6.40873 3.33547 6.74603 3.74772 6.74603H5.24683V8.24515C5.24683 8.65741 5.58412 8.99471 5.99638 8.99471C6.40863 8.99471 6.74593 8.65741 6.74593 8.24515V6.74603H8.24504C8.65729 6.74603 8.99459 6.40873 8.99459 5.99647C8.99459 5.58422 8.65729 5.24691 8.24504 5.24691ZM5.99642 0C2.6834 0 0 2.68342 0 5.99647C0 9.30952 2.6834 11.9929 5.99642 11.9929C9.30945 11.9929 11.9928 9.30952 11.9928 5.99647C11.9928 2.68342 9.30945 0 5.99642 0ZM5.99679 10.4938C3.51577 10.4938 1.49947 8.47751 1.49947 5.99647C1.49947 3.51543 3.51577 1.49912 5.99679 1.49912C8.47781 1.49912 10.4941 3.51543 10.4941 5.99647C10.4941 8.47751 8.48531 10.4938 5.99679 10.4938Z' fill='white'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: left calc(1em + .1875rem) center;
-    background-size: calc(.6em + .375rem) calc(.6em + .375rem);
-    padding: 10px 20px 10px 40px;
-    outline: solid 0px var(--color-b200);
+    fill: var(--color-blue);
+    background-color: var(--color-b100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px 10px 20px;
+    margin-left: 20px;
+    outline: solid 0px var(--color-b100);
     transition: outline .05s ease-in-out, 
-                background-color .1s ease-in;
+                background-color .1s ease-in,
+                color .1s ease-in,
+                fill .1s ease-in;
 
     font-size: 14px;
     font-weight: 500;
-    color: var(--color-white);
+    color: var(--color-blue);
+    cursor: pointer;
+}
+
+.addSpaceBtn > svg {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 10px;
 }
 
 .addSpaceBtn:focus {
     outline-width: 2px;
-    background-color: var(--color-b500);
 }
 
-.addSpaceBtn:hover {
-    cursor: pointer;
-    background-color: var(--color-b500);
+.addSpaceBtn:hover,
+.addSpaceBtn:focus {
+    background-color: var(--color-b200);
+    /* color: var(--color-white);
+    fill: var(--color-white); */
 }
 
+@media screen and (max-width: 1100px) {
+    .spacesList .header {
+        align-items: flex-start;
+    }
 
+    .sortingSelects {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .sortingSelects > .orderSelect,
+    .sortingSelects > .sortingModeSelect {
+        margin: 0 0 5px 0;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 660px) {
+    .spacesList .header {
+        justify-content: center;
+    }
+
+    .sortingSelects > div {
+        max-width: 300px;
+    }
+    .addSpaceBtn {
+        width: 100%;
+        max-width: 300px;
+        margin-left: 0;
+    }
+}

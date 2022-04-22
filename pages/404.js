@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "../styles/pages/404.module.css"
+import styles from "../styles/pages/404.module.css";
 
 export default function NotFound() {
     return (
@@ -10,5 +10,5 @@ export default function NotFound() {
                 <a>Retourner à l'accueil</a>
             </Link>
         </div>
-    )
+    );
 }

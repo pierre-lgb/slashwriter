@@ -1,47 +1,55 @@
-import { useState } from "react"
-import { getCsrfToken, signIn } from "next-auth/react"
-import * as Yup from "yup"
-import Router from "next/router"
+import { useState } from "react";
+import { logIn } from "../../src/firebase/auth";
+import {
+    AuthAction,
+    withAuthUser,
+    withAuthUserTokenSSR
+} from "next-firebase-auth";
+import * as Yup from "yup";
 
-import Link from "next/link"
-import { Formik } from "formik"
-import TextInput from "../../components/forms/TextInput"
-import AuthLayout from "../../components/layouts/AuthLayout"
+import Link from "next/link";
+import { Formik } from "formik";
+import TextInput from "../../src/components/forms/TextInput";
+import AuthLayout from "../../src/layouts/AuthLayout";
 
-import styles from "../../styles/pages/Auth.module.css"
-import formStyles from "../../styles/Forms.module.css"
+import styles from "../../styles/pages/Auth.module.css";
+import formStyles from "../../styles/Forms.module.css";
 
-export default function SignIn({ csrfToken }) {
-    const [submitError, setSubmitError] = useState("")
+function SignIn({ csrfToken }) {
+    const [submitError, setSubmitError] = useState("");
     const handleFormSubmit = async (values, { setSubmitting, resetForm }) => {
-        const { email, password } = values
-        await signIn("credentials", {
-            redirect: false,
-            email,
-            password
-        })
-            .then((status) => {
-                if (status.error) {
-                    setSubmitError(status.error)
-                } else {
-                    resetForm()
-                    Router.push("/")
-                }
-            })
-            .catch(err => {
-                setSubmitError("Un problème est survenu lors de l'authentification.")
-            })
+        const { email, password } = values;
 
-        setSubmitting(false)
-    }
+        await logIn({ email, password })
+            .then(() => resetForm())
+            .catch((error) => {
+                switch (error.code) {
+                    case "auth/user-disabled":
+                        setSubmitError("Ce compte a été désactivé.");
+                        break;
+                    case "auth/user-not-found":
+                        setSubmitError("Aucun utilisateur trouvé.");
+                        break;
+                    case "auth/wrong-password":
+                        setSubmitError("Mot de passe incorrect.");
+                        break;
+                    default:
+                        console.error(error);
+                        setSubmitError(
+                            `Une erreur est survenue : "${error.code}"`
+                        );
+                }
+
+                setSubmitting(false);
+            });
+    };
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
             .email("Adresse email invalide")
             .required("Veuillez entrer votre adresse email."),
-        password: Yup.string()
-            .required("Veuillez entrer votre mot de passe.")
-    })
+        password: Yup.string().required("Veuillez entrer votre mot de passe.")
+    });
 
     return (
         <AuthLayout>
@@ -54,24 +62,28 @@ export default function SignIn({ csrfToken }) {
                     validateOnChange={false}
                     onSubmit={handleFormSubmit}
                 >
-                    {({
-                        handleSubmit,
-                        isSubmitting
-                    }) => (
+                    {({ handleSubmit, isSubmitting }) => (
                         <form className={styles.form} onSubmit={handleSubmit}>
                             {submitError && (
                                 <div className={formStyles.alertError}>
                                     {submitError}
                                 </div>
                             )}
-                            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                             <TextInput
-                                label="Adresse email" type="email" name="email" validIndicator={false}
+                                label="Adresse email"
+                                type="email"
+                                name="email"
+                                validIndicator={false}
                                 placeholder="Entrez votre adresse email"
                             />
                             <TextInput
-                                label="Mot de passe" type="password" name="password" validIndicator={false}
-                                placeholder="Entrez votre mot de passe" spellCheck={false} autoCapitalize="off"
+                                label="Mot de passe"
+                                type="password"
+                                name="password"
+                                validIndicator={false}
+                                placeholder="Entrez votre mot de passe"
+                                spellCheck={false}
+                                autoCapitalize="off"
                             />
                             <div className={styles.forgotPassword}>
                                 <Link href="#">Mot de passe oublié ?</Link>
@@ -81,7 +93,9 @@ export default function SignIn({ csrfToken }) {
                                 className={formStyles.submitButton}
                                 type="submit"
                                 disabled={isSubmitting ? true : false}
-                            >Se connecter</button>
+                            >
+                                Se connecter
+                            </button>
                         </form>
                     )}
                 </Formik>
@@ -91,14 +105,13 @@ export default function SignIn({ csrfToken }) {
                 </div>
             </div>
         </AuthLayout>
-    )
+    );
 }
 
-export async function getServerSideProps(context) {
-    const csrfToken = await getCsrfToken(context)
-    return {
-        props: {
-            csrfToken
-        },
-    }
-}
+export const getServerSideProps = withAuthUserTokenSSR({
+    whenAuthed: AuthAction.REDIRECT_TO_APP
+})();
+
+export default withAuthUser({
+    whenAuthed: AuthAction.REDIRECT_TO_APP
+})(SignIn);
