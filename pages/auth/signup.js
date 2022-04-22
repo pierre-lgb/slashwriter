@@ -16,6 +16,8 @@ import { Formik } from "formik";
 import styles from "../../styles/pages/Auth.module.css";
 import formStyles from "../../styles/Forms.module.css";
 import { useRef } from "react";
+import ContainerShiftUp from "../../src/components/animated/ContainerShiftUp";
+import ContainerOpacity from "../../src/components/animated/ContainerOpacity";
 
 const cacheTest = (asyncValidate) => {
     let _valid = false;
@@ -112,7 +114,9 @@ function SignUp({ csrfToken }) {
     return (
         <AuthLayout>
             <div className={styles.formContainer}>
-                <h2 className={styles.formHeader}>Inscription</h2>
+                <ContainerShiftUp delay={0.1}>
+                    <h2 className={styles.formHeader}>Inscription</h2>
+                </ContainerShiftUp>
                 <Formik
                     initialValues={{
                         username: "",
@@ -132,45 +136,56 @@ function SignUp({ csrfToken }) {
                                     {submitError}
                                 </div>
                             )}
-                            <TextInput
-                                label="Nom d'utilisateur"
-                                type="text"
-                                name="username"
-                                placeholder="Entrez un nom d'utilisateur"
-                            />
-                            <TextInput
-                                label="Adresse email"
-                                type="email"
-                                name="email"
-                                placeholder="Entrez votre adresse email"
-                            />
-                            <TextInput
-                                label="Mot de passe"
-                                type="password"
-                                name="password"
-                                placeholder="Entrez votre mot de passe"
-                            />
-                            <TextInput
-                                label="Confirmation du mot de passe"
-                                type="password"
-                                name="passwordConfirm"
-                                placeholder="Entrez votre mot de passe à nouveau"
-                            />
-
-                            <button
-                                className={formStyles.submitButton}
-                                type="submit"
-                                disabled={isSubmitting ? true : false}
-                            >
-                                S'inscrire
-                            </button>
+                            <ContainerOpacity delay={0.2}>
+                                <TextInput
+                                    label="Nom d'utilisateur"
+                                    type="text"
+                                    name="username"
+                                    placeholder="Entrez un nom d'utilisateur"
+                                />
+                            </ContainerOpacity>
+                            <ContainerOpacity delay={0.3}>
+                                <TextInput
+                                    label="Adresse email"
+                                    type="email"
+                                    name="email"
+                                    placeholder="Entrez votre adresse email"
+                                />
+                            </ContainerOpacity>
+                            <ContainerOpacity delay={0.4}>
+                                <TextInput
+                                    label="Mot de passe"
+                                    type="password"
+                                    name="password"
+                                    placeholder="Entrez votre mot de passe"
+                                />
+                            </ContainerOpacity>
+                            <ContainerOpacity delay={0.5}>
+                                <TextInput
+                                    label="Confirmation du mot de passe"
+                                    type="password"
+                                    name="passwordConfirm"
+                                    placeholder="Entrez votre mot de passe à nouveau"
+                                />
+                            </ContainerOpacity>
+                            <ContainerShiftUp delay={0.7}>
+                                <button
+                                    className={formStyles.submitButton}
+                                    type="submit"
+                                    disabled={isSubmitting ? true : false}
+                                >
+                                    S'inscrire
+                                </button>
+                            </ContainerShiftUp>
                         </form>
                     )}
                 </Formik>
-                <div className={styles.switchForm}>
-                    <p>Déjà inscrit ?</p>
-                    <Link href="/auth/signin">Connexion</Link>
-                </div>
+                <ContainerOpacity delay={0.7}>
+                    <div className={styles.switchForm}>
+                        <p>Déjà inscrit ?</p>
+                        <Link href="/auth/signin">Connexion</Link>
+                    </div>
+                </ContainerOpacity>
             </div>
         </AuthLayout>
     );

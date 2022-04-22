@@ -16,7 +16,7 @@ export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const database = getDatabase(app);
 
-if (location.hostname === "localhost") {
-    connectDatabaseEmulator(database, "localhost", 9000);
-    connectFunctionsEmulator(getFunctions(app), "localhost", 5001);
-}
+// if (location.hostname === "localhost") {
+connectDatabaseEmulator(database, "localhost", 9000);
+connectFunctionsEmulator(getFunctions(app), "localhost", 5001);
+// }

@@ -2,8 +2,9 @@ import Link from "next/link";
 import Head from "next/head";
 
 import styles from "../../styles/layouts/AuthLayout.module.css";
+import { motion } from "framer-motion";
 
-function AuthLayout({ children }) {
+function AuthLayout({ children, pageTitle }) {
     return (
         <>
             <Head>
@@ -32,7 +33,17 @@ function AuthLayout({ children }) {
                         </a>
                     </Link>
                 </div>
-                <main>{children}</main>
+                <motion.main
+                    initial="hidden"
+                    animate="show"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        show: { opacity: 1 }
+                    }}
+                    className={styles.main}
+                >
+                    {children}
+                </motion.main>
             </div>
         </>
     );

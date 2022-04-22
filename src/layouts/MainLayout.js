@@ -6,16 +6,34 @@ import Head from "next/head";
 import Link from "next/link";
 import NotificationsIcon from "../components/svgs/NotificationsIcon";
 import WorkspacesIcon from "../components/svgs/WorkspacesIcon";
+import { motion } from "framer-motion";
 
 import styles from "../../styles/layouts/MainLayout.module.css";
 import SearchIcon from "../components/svgs/SearchIcon";
+import { useEffect, useState } from "react";
+
+const VARIANTS_CONTAINER = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const VARIANTS_ITEM = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1 }
+};
 
 const Sidebar = () => {
     const router = useRouter();
     const user = useAuthUser();
 
     return (
-        <nav id="sidebar" className={styles.sidebar}>
+        // <motion.nav id="sidebar" className={styles.sidebar} layoutId="navbar">
+        <nav className={styles.sidebar}>
             <div className={styles.sidebarProfileSection}>
                 {user && (
                     <>
@@ -31,11 +49,16 @@ const Sidebar = () => {
                     </>
                 )}
             </div>
-            <div className={styles.linksSection}>
+            <div
+                initial="hidden"
+                animate="show"
+                className={styles.linksSection}
+            >
                 <Link href="/search">
                     <a
                         data-active={router?.pathname === "/search"}
                         className={styles.sidebarLink}
+                        variants={VARIANTS_ITEM}
                     >
                         <div className={styles.iconWrapper}>
                             <SearchIcon />
@@ -47,6 +70,7 @@ const Sidebar = () => {
                     <a
                         data-active={router?.pathname === "/notifications"}
                         className={styles.sidebarLink}
+                        variants={VARIANTS_ITEM}
                     >
                         <div className={styles.iconWrapper}>
                             <NotificationsIcon />
@@ -58,6 +82,7 @@ const Sidebar = () => {
                     <a
                         data-active={router?.pathname === "/shared"}
                         className={styles.sidebarLink}
+                        variants={VARIANTS_ITEM}
                     >
                         <div className={styles.iconWrapper}>
                             <NotificationsIcon />
@@ -69,6 +94,7 @@ const Sidebar = () => {
                     <a
                         data-active={router?.pathname === "/spaces"}
                         className={styles.sidebarLink}
+                        variants={VARIANTS_ITEM}
                     >
                         <div className={styles.iconWrapper}>
                             <WorkspacesIcon />
@@ -77,29 +103,6 @@ const Sidebar = () => {
                     </a>
                 </Link>
             </div>
-            {/* <Logo width="42px" height="42px" />
-            <div className={styles.sidebarMiddle}>
-                <Link href="/explore">
-                    <a className={styles.sidebarLink}>
-                        <ExploreIcon />
-                    </a>
-                </Link>
-                <Link href="/workspaces">
-                    <a className={styles.sidebarLink}>
-                        <WorkspacesIcon />
-                    </a>
-                </Link>
-                <Link href="/account/notifications">
-                    <a className={styles.sidebarLink}>
-                        <NotificationsIcon />
-                    </a>
-                </Link>
-            </div>
-            <Link href="/account/settings">
-                <a className={styles.sidebarLink}>
-                    <SettingsIcon />
-                </a>
-            </Link> */}
         </nav>
     );
 };
@@ -135,7 +138,17 @@ function MainLayout({ children, pageTitle }) {
                         <div className={styles.avatar}></div>
                     </div>
                 </div> */}
-                <main className={styles.main}>{children}</main>
+                <motion.main
+                    initial="hidden"
+                    animate="show"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        show: { opacity: 1 }
+                    }}
+                    className={styles.main}
+                >
+                    {children}
+                </motion.main>
             </div>
         </>
     );

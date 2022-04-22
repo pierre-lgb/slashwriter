@@ -14,6 +14,9 @@ import AuthLayout from "../../src/layouts/AuthLayout";
 
 import styles from "../../styles/pages/Auth.module.css";
 import formStyles from "../../styles/Forms.module.css";
+import ContainerShiftUp from "../../src/components/animated/ContainerShiftUp";
+import { motion } from "framer-motion";
+import ContainerOpacity from "../../src/components/animated/ContainerOpacity";
 
 function SignIn({ csrfToken }) {
     const [submitError, setSubmitError] = useState("");
@@ -54,7 +57,9 @@ function SignIn({ csrfToken }) {
     return (
         <AuthLayout>
             <div className={styles.formContainer}>
-                <h2 className={styles.formHeader}>Connexion</h2>
+                <ContainerShiftUp>
+                    <h2 className={styles.formHeader}>Connexion</h2>
+                </ContainerShiftUp>
                 <Formik
                     initialValues={{ email: "", password: "", csrfToken }}
                     validationSchema={validationSchema}
@@ -69,40 +74,50 @@ function SignIn({ csrfToken }) {
                                     {submitError}
                                 </div>
                             )}
-                            <TextInput
-                                label="Adresse email"
-                                type="email"
-                                name="email"
-                                validIndicator={false}
-                                placeholder="Entrez votre adresse email"
-                            />
-                            <TextInput
-                                label="Mot de passe"
-                                type="password"
-                                name="password"
-                                validIndicator={false}
-                                placeholder="Entrez votre mot de passe"
-                                spellCheck={false}
-                                autoCapitalize="off"
-                            />
-                            <div className={styles.forgotPassword}>
-                                <Link href="#">Mot de passe oublié ?</Link>
-                            </div>
+                            <ContainerOpacity delay={0.2}>
+                                <TextInput
+                                    label="Adresse email"
+                                    type="email"
+                                    name="email"
+                                    validIndicator={false}
+                                    placeholder="Entrez votre adresse email"
+                                />
+                            </ContainerOpacity>
+                            <ContainerOpacity delay={0.3}>
+                                <TextInput
+                                    label="Mot de passe"
+                                    type="password"
+                                    name="password"
+                                    validIndicator={false}
+                                    placeholder="Entrez votre mot de passe"
+                                    spellCheck={false}
+                                    autoCapitalize="off"
+                                />
+                            </ContainerOpacity>
 
-                            <button
-                                className={formStyles.submitButton}
-                                type="submit"
-                                disabled={isSubmitting ? true : false}
+                            <ContainerOpacity
+                                delay={0.4}
+                                className={styles.forgotPassword}
                             >
-                                Se connecter
-                            </button>
+                                <Link href="#">Mot de passe oublié ?</Link>
+                            </ContainerOpacity>
+
+                            <ContainerShiftUp delay={0.5}>
+                                <button
+                                    className={formStyles.submitButton}
+                                    type="submit"
+                                    disabled={isSubmitting ? true : false}
+                                >
+                                    Se connecter
+                                </button>
+                            </ContainerShiftUp>
                         </form>
                     )}
                 </Formik>
-                <div className={styles.switchForm}>
+                <ContainerOpacity className={styles.switchForm}>
                     <p>Pas encore de compte ?</p>
                     <Link href="/auth/signup">En créer un</Link>
-                </div>
+                </ContainerOpacity>
             </div>
         </AuthLayout>
     );
