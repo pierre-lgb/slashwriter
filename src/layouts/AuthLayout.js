@@ -1,8 +1,10 @@
-import Link from "next/link";
-import Head from "next/head";
+import Link from "next/link"
+import Head from "next/head"
 
-import styles from "../../styles/layouts/AuthLayout.module.css";
-import { motion } from "framer-motion";
+import styles from "../styles/layouts/AuthLayout.module.css"
+import { useAuthUser } from "next-firebase-auth"
+import { useRouter } from "next/router"
+import { useEffect } from "react"
 
 function AuthLayout({ children, pageTitle }) {
     return (
@@ -11,7 +13,7 @@ function AuthLayout({ children, pageTitle }) {
                 <title>{pageTitle || "SlashWriter - Authentification"}</title>
                 <meta
                     name="SlashWriter - Authentification"
-                    content="Identifiez-vous pour utiliser SlashWriter."
+                    content="Veuillez vous identifier pour utiliser SlashWriter."
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -33,20 +35,10 @@ function AuthLayout({ children, pageTitle }) {
                         </a>
                     </Link>
                 </div>
-                <motion.main
-                    initial="hidden"
-                    animate="show"
-                    variants={{
-                        hidden: { opacity: 0 },
-                        show: { opacity: 1 }
-                    }}
-                    className={styles.main}
-                >
-                    {children}
-                </motion.main>
+                <main>{children}</main>
             </div>
         </>
-    );
+    )
 }
 
-export default AuthLayout;
+export default AuthLayout

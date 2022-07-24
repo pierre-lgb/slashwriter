@@ -3,36 +3,34 @@ import {
     signInWithEmailAndPassword,
     updateProfile,
     getAuth,
-    signOut,
-    fetchSignInMethodsForEmail
-} from "firebase/auth";
-import { child, get, ref } from "firebase/database";
-import { init } from "next-firebase-auth";
-import { database as db, firebaseConfig } from ".";
+    signOut
+} from "firebase/auth"
+import { child, get, ref } from "firebase/database"
+import { init } from "next-firebase-auth"
+import { firebaseConfig } from "."
+import { database as db } from "./database"
 
 export const initAuth = () => {
     init({
         authPageURL: "/auth/signin",
-        appPageURL: "/spaces",
+        appPageURL: "/search",
 
-        loginAPIEndpoint: "/api/login",
-        logoutAPIEndpoint: "/api/logout",
+        loginAPIEndpoint: "/api/signin",
+        logoutAPIEndpoint: "/api/signout",
 
         onLoginRequestError: (err) => {
-            console.error(err);
+            console.error(err)
         },
         onLogoutRequestError: (err) => {
-            console.error(err);
+            console.error(err)
         },
 
-        firebaseAuthEmulatorHost: "localhost:9099",
+        firebaseAuthEmulatorHost: `localhost:${process.env.NEXT_PUBLIC_FIREBASE_AUTH_EMULATOR_PORT}`,
         firebaseAdminInitConfig: {
             credential: {
                 projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
                 clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
                 privateKey: process.env.FIREBASE_PRIVATE_KEY
-                    ? JSON.parse(process.env.FIREBASE_PRIVATE_KEY)
-                    : undefined
             },
             databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
         },
@@ -49,37 +47,37 @@ export const initAuth = () => {
             overwrite: true,
             path: "/",
             sameSite: "strict",
-            secure: true,
+            secure: process.env.NEXT_PUBLIC_COOKIE_SECURE,
             signed: true
         },
 
         onVerifyTokenError: (err) => {
-            console.error(err);
+            console.error(err)
         },
         onTokenRefreshError: (err) => {
-            console.error(err);
+            console.error(err)
         }
-    });
-};
+    })
+}
 
-export const auth = getAuth();
+export const auth = getAuth()
 
 export const isUsernameAlreadyInUse = async (username) => {
     return username
         ? get(child(ref(db), `usernames/${username}`)).then((s) => s.exists())
-        : false;
-};
+        : false
+}
 
 export const logIn = async ({ email, password }) => {
-    return signInWithEmailAndPassword(auth, email, password);
-};
+    return signInWithEmailAndPassword(auth, email, password)
+}
 
 export const signUp = async ({ email, password, username }) => {
     return createUserWithEmailAndPassword(auth, email, password).then((res) => {
-        updateProfile(res.user, { displayName: username });
-    });
-};
+        updateProfile(res.user, { displayName: username })
+    })
+}
 
 export const logOut = async () => {
-    return signOut(auth);
-};
+    return signOut(auth)
+}

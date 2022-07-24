@@ -1,0 +1,7 @@
+.link {
+    color: red
+}
+
+.link.active {
+    color: blue
+}

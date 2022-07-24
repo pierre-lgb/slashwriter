@@ -15,12 +15,10 @@
     "formik": "^2.2.9",
     "framer-motion": "^6.3.1",
     "next": "12.0.8",
-    "next-auth": "^4.3.2",
-    "next-firebase-auth": "^1.0.0-canary.8",
+    "next-firebase-auth": "^1.0.0-canary.11",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-loader-spinner": "^5.0.6",
-    "react-select": "^5.3.0",
+    "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {

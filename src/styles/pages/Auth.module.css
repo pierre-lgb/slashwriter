@@ -1,0 +1,54 @@
+.formContainer {
+    width: 350px;
+    margin: 0 auto 200px auto;
+}
+
+.form {
+    margin: 60px 0 60px 0;
+}
+
+.formHeader {
+    font-size: 42px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.forgotPassword {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+}
+
+.forgotPassword a {
+    font-size: 16px;
+    color: var(--color-blue);
+}
+
+.switchSigninSignup {
+    text-align: center;
+}
+
+.switchSigninSignup p {
+    font-size: 16px;
+    color: var(--color-n700);
+    margin: 0
+}
+
+.switchSigninSignup a {
+    font-size: 16px;
+    color: var(--color-blue);
+}
+
+.submitErrorContainer {
+    background-color: var(--color-r50);
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7.99989 0.00500488C3.58265 0.00500488 0.00488281 3.58277 0.00488281 8.00001C0.00488281 12.4172 3.58265 15.995 7.99989 15.995C12.4171 15.995 15.9949 12.4172 15.9949 8.00001C15.9949 3.58277 12.4171 0.00500488 7.99989 0.00500488ZM7.00051 12.9969V10.9981H8.99926V12.9969H7.00051ZM7.00051 3.00313V9.99876H8.99926V3.00313H7.00051Z' fill='%23D14343'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left calc(1em + .1875rem) center;
+    background-size: calc(.8em + .375rem) calc(.8em + .375rem);
+    color: var(--color-r500);
+    font-weight: 500;
+    font-size: 14px;
+    padding: 10px 50px;
+    border: 1px solid var(--color-r500);
+    border-radius: 4px;
+}
