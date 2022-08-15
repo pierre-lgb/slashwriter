@@ -14,7 +14,7 @@ function AppLayout(props) {
         if (!isLoading && !user) {
             router.push("/auth")
         }
-    }, [user])
+    }, [user, isLoading])
 
     return (
         <>

@@ -10,8 +10,7 @@ const handle = app.getRequestHandler()
 process.on("uncaughtException", (exception) => console.log(exception))
 
 app.prepare().then(async () => {
-    const hostname = process.env.HOSTNAME
-    const port = parseInt(process.env.PORT, 10)
+    const port = parseInt(process.env.PORT, 10) || 3000
 
     const server = createServer((req, res) =>
         handle(req, res, parse(req.url, true))
@@ -22,7 +21,7 @@ app.prepare().then(async () => {
     initCollaboration(server)
 
     try {
-        server.listen(port, hostname)
+        server.listen(port)
     } catch (error) {
         console.log(error)
     }
