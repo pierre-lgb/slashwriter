@@ -1,0 +1,33 @@
+.sidebarLink {
+    color: var(--color-n800);
+    display: flex;
+    align-items: center;
+    padding: 5px 4px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+.sidebarLink:hover {
+    background-color: var(--color-n200);
+}
+
+.sidebarLink[data-active="true"] {
+    color: var(--color-blue);
+    background-color: var(--color-b100);
+}
+
+.sidebarLinkIconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-n600);
+}
+
+.sidebarLinkIconContainer > svg {
+    font-size: 20px;
+}
+
+.sidebarLinkText {
+    margin-left: 12px;
+    font-size: 0.95em;
+}

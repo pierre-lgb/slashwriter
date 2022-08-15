@@ -1,0 +1,142 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+:root {
+    --color-black: #000000;
+    --color-gray: #474d66;
+    --color-white: #ffffff;
+
+    --color-blue: #3366ff;
+    --color-green: #52bd94;
+    --color-yellow: #ffb020;
+    --color-red: #d14343;
+
+    /* Neutral */
+    --color-n0: #ffffff;
+    --color-n50: #fafbff;
+    --color-n75: #f9f9f9;
+    --color-n100: #f4f6fa;
+    --color-n200: #edeff5;
+    --color-n300: #e6e8f0;
+    --color-n400: #d8dae5;
+    --color-n500: #c1c4d6;
+    --color-n600: #8f95b2;
+    --color-n700: #696f8c;
+    --color-n800: #474d66;
+    --color-n900: #101820;
+
+    /* Blue */
+    --color-b50: #f3f6ff;
+    --color-b100: #ebf0ff;
+    --color-b200: #d6e0ff;
+    --color-b300: #9db5ff;
+    --color-b400: #3366ff;
+    --color-b500: #2952cc;
+    --color-b600: #1f3d99;
+
+    /* Red */
+    --color-r50: #fdf4f4;
+    --color-r100: #f9dada;
+    --color-r200: #f4b6b6;
+    --color-r300: #ee9191;
+    --color-r400: #d14343;
+    --color-r500: #a73636;
+    --color-r600: #7d2828;
+}
+
+html,
+body,
+div#__next {
+    padding: 0;
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    width: 100%;
+    height: 100%;
+    min-width: 450px;
+    /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; */
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    outline-color: var(--color-b200);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+    font-weight: 100%;
+}
+
+/*
+* TEMPORARY
+*/
+
+.ProseMirror > * {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.ProseMirror {
+    padding: 50px calc((100% - (700px + 50px * 2)) / 2);
+    margin: 25px;
+    outline: none;
+    font-size: 1em;
+    line-height: 1.6em;
+}
+
+.ProseMirror p {
+    font-weight: 400;
+    color: #111319;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--color-n900);
+}
+
+/* Give a remote user a caret */
+.collaboration-cursor__caret {
+    border-left: 1px solid #0d0d0d;
+    border-right: 1px solid #0d0d0d;
+    margin-left: -1px;
+    margin-right: -1px;
+    position: relative;
+    word-break: normal;
+}
+
+.collaboration-cursor__caret:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: 0;
+    bottom: 0;
+}
+
+/* Render the username above the caret */
+.collaboration-cursor__label {
+    opacity: 0;
+    border-radius: 3px 3px 3px 0;
+    color: #ffffff;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    left: -1px;
+    line-height: normal;
+    padding: 0.1rem 0.3rem;
+    position: absolute;
+    top: -1.4em;
+    user-select: none;
+    white-space: nowrap;
+    transition: opacity 100ms ease-in-out;
+}
+
+.collaboration-cursor__caret:hover > .collaboration-cursor__label {
+    opacity: 1;
+}

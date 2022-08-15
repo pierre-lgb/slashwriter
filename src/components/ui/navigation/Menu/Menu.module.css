@@ -1,0 +1,44 @@
+.tippyBox > div {
+    padding: 6px;
+}
+
+.menuItem,
+.menuItemToggle {
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    margin: 2px 0;
+    border-radius: 4px;
+}
+
+.menuItem:hover {
+    background-color: var(--color-n100);
+    cursor: pointer;
+}
+
+.menuDivider {
+    border-width: 0px 0px thin;
+    border-color: var(--color-n300);
+}
+
+.menuItemIconContainer {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.menuItemIconContainer > svg {
+    font-size: 19px;
+    color: var(--color-n700);
+}
+
+.menuItemLabel {
+    font-size: 0.9rem;
+    color: var(--color-n700);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+}

@@ -1,0 +1,40 @@
+.container {
+    padding: 24px 24px 16px 24px;
+    display: flex;
+    align-items: center;
+}
+
+.container:hover {
+    background-color: var(--color-n200);
+    cursor: pointer;
+}
+
+.defaultAvatar {
+    background-color: #ffffff;
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--color-n300);
+    border-radius: 25px;
+}
+
+.username {
+    font-weight: 600;
+    color: var(--color-n900);
+    font-size: 15px;
+}
+
+.email {
+    color: var(--color-n600);
+    font-size: 12px;
+}
+
+.expandIcon {
+    margin-left: auto;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-n600);
+    cursor: pointer;
+    border-radius: 4px;
+}

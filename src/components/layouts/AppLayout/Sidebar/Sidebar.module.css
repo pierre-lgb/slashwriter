@@ -1,0 +1,18 @@
+.sidebar {
+    background-color: var(--color-n75);
+    width: 300px;
+    border-right: 1px solid var(--color-n300);
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+}
+
+.linksSection,
+.folderList {
+    padding: 16px 24px;
+    border-top: 1px solid var(--color-n300);
+}
+
+.sidebarEnd {
+    margin-top: auto;
+}
