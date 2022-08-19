@@ -72,20 +72,23 @@ a {
 * TEMPORARY
 */
 
-.ProseMirror > * {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-
 .ProseMirror {
-    padding: 50px calc((100% - (700px + 50px * 2)) / 2);
-    margin: 25px;
     outline: none;
     font-size: 1em;
     line-height: 1.6em;
 }
 
-.ProseMirror p {
+.editor .ProseMirror > * {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.editor .ProseMirror {
+    padding: 25px calc((100% - (700px + 50px * 2)) / 2);
+    margin: 25px;
+}
+
+.editor .ProseMirror p {
     font-weight: 400;
     color: #111319;
 }
@@ -100,7 +103,7 @@ h6 {
 }
 
 /* Give a remote user a caret */
-.collaboration-cursor__caret {
+.editor .collaboration-cursor__caret {
     border-left: 1px solid #0d0d0d;
     border-right: 1px solid #0d0d0d;
     margin-left: -1px;
@@ -109,7 +112,7 @@ h6 {
     word-break: normal;
 }
 
-.collaboration-cursor__caret:after {
+.editor .collaboration-cursor__caret:after {
     content: "";
     display: block;
     position: absolute;
@@ -120,7 +123,7 @@ h6 {
 }
 
 /* Render the username above the caret */
-.collaboration-cursor__label {
+.editor .collaboration-cursor__label {
     opacity: 0;
     border-radius: 3px 3px 3px 0;
     color: #ffffff;
@@ -137,11 +140,11 @@ h6 {
     transition: opacity 100ms ease-in-out;
 }
 
-.collaboration-cursor__caret:hover > .collaboration-cursor__label {
+.editor .collaboration-cursor__caret:hover > .collaboration-cursor__label {
     opacity: 1;
 }
 
-.ProseMirror p.is-editor-empty:first-child::before {
+.editor .ProseMirror p.is-editor-empty:first-child::before {
     color: #adb5bd;
     content: attr(data-placeholder);
     float: left;
@@ -149,7 +152,24 @@ h6 {
     pointer-events: none;
 }
 
-.ProseMirror p.is-empty::before {
+h1#document-title {
+    outline: none;
+}
+
+h1#document-title[data-placeholder]:empty::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+.document-title .ProseMirror {
+    padding: 100px calc((100% - (700px + 50px * 2)) / 2) 0;
+    margin: 25px;
+}
+
+.document-title .ProseMirror h1.is-editor-empty::before {
     color: #adb5bd;
     content: attr(data-placeholder);
     float: left;

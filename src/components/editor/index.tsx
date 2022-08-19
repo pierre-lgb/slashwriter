@@ -1,14 +1,24 @@
+import { TextSelection } from 'prosemirror-state'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import {
+    documentsApi,
+    useGetDocumentsQuery,
+    useRenameDocumentMutation
+} from 'src/services/documents'
+import { useAppDispatch } from 'src/store'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import * as Y from 'yjs'
 
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import Collaboration from '@tiptap/extension-collaboration'
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
+import Document from '@tiptap/extension-document'
+import Heading from '@tiptap/extension-heading'
 import Highlight from '@tiptap/extension-highlight'
 import Placeholder from '@tiptap/extension-placeholder'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
+import Text from '@tiptap/extension-text'
 import { Editor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 
@@ -16,6 +26,100 @@ import CommandsMenu from './extensions/CommandsMenu'
 import suggestion from './extensions/CommandsMenu/suggestion'
 import Subdocument from './extensions/Subdocument'
 import TrailingNode from './extensions/TrailingNode'
+
+function EditorTitle(props: { editor: Editor; documentId: string }) {
+    const { editor, documentId } = props
+    const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
+    const [renameDocument] = useRenameDocumentMutation()
+    const { documentTitle } = useGetDocumentsQuery(null, {
+        selectFromResult: ({ data }) => ({
+            documentTitle: (data?.find((d) => d.id === documentId)).title
+        })
+    })
+
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        const titleEditor = new Editor({
+            extensions: [
+                Document.extend({
+                    content: "heading"
+                }),
+                Text,
+                Heading.configure({
+                    levels: [1]
+                }),
+                Placeholder.configure({
+                    placeholder: "Entrez un titre"
+                })
+            ],
+            content: `<h1>${documentTitle || ""}</h1>`,
+            onCreate({ editor }) {
+                // Autofocus
+                if (!documentTitle) {
+                    editor.commands.focus()
+                }
+            },
+            onBlur({ editor, event }) {
+                renameDocument({
+                    id: documentId,
+                    title: editor.getText()
+                })
+            },
+            onUpdate({ editor, transaction }) {
+                // Live updating the cache to see the changes wherever
+                // there is this title on the UI (header, sidebar,...)
+                dispatch(
+                    documentsApi.util.updateQueryData(
+                        "getDocuments",
+                        null,
+                        (draft) => {
+                            const doc = draft.find((d) => d.id === documentId)
+                            Object.assign(doc, {
+                                ...doc,
+                                title: editor.getText()
+                            })
+                        }
+                    )
+                )
+            }
+        })
+
+        setTitleEditor(titleEditor)
+
+        return () => {
+            titleEditor?.destroy()
+            setTitleEditor(null)
+        }
+    }, [documentId])
+
+    function handleKeyDown(event) {
+        const selection = titleEditor.state.selection
+        if (event.shiftKey) {
+            return
+        }
+
+        if (event.key === "Enter" || event.key === "ArrowDown") {
+            editor.commands.focus("start")
+        }
+
+        if (event.key === "ArrowRight") {
+            if (selection?.$head.nodeAfter === null) {
+                editor.commands.focus("start")
+            }
+        }
+    }
+
+    return (
+        <div className="document-title">
+            <EditorContent
+                editor={titleEditor}
+                onKeyDown={handleKeyDown}
+                spellCheck="false"
+            />
+        </div>
+    )
+}
 
 const CURSOR_COLORS = ["#ffb020", "#3366ff", "#474d66"]
 
@@ -101,8 +205,12 @@ export default function SlashwriterEditor({ documentId, user }) {
     }, [documentId, extensions])
 
     return (
-        <div className="editor">
-            <EditorContent editor={editor} />
-        </div>
+        <>
+            <EditorTitle editor={editor} documentId={documentId} />
+
+            <div className="editor">
+                <EditorContent editor={editor} spellCheck="false" />
+            </div>
+        </>
     )
 }

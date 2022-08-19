@@ -84,6 +84,17 @@ export const documentsApi = baseApi.injectEndpoints({
                 return data ? { data } : { error }
             }
         }),
+        renameDocument: build.mutation<any, { id: string; title: string }>({
+            queryFn: async ({ id, title }) => {
+                console.log("renaming document", id)
+                const { data, error } = await supabaseClient
+                    .from("documents")
+                    .update({ title })
+                    .match({ id })
+
+                return data ? { data } : { error }
+            }
+        }),
         deleteDocument: build.mutation<any, { id: string }>({
             queryFn: async ({ id }) => {
                 console.log("delete document", id)
@@ -115,6 +126,7 @@ export const documentsApi = baseApi.injectEndpoints({
 
 export const {
     useGetDocumentsQuery,
+    useRenameDocumentMutation,
     useDeleteDocumentMutation,
     useRestoreDocumentMutation,
     useAddDocumentMutation

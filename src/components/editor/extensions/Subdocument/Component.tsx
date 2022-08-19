@@ -39,7 +39,6 @@ export default function Subdocument(props) {
                         className={styles.deleteBtn}
                         onClick={(e) => {
                             e.preventDefault()
-                            // deleteDocument({ id: docId })
                             props.deleteNode()
                         }}
                     >
