@@ -1,0 +1,14 @@
+.item {
+    display: block;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border-radius: 0.4rem;
+    border: 1px solid transparent;
+    padding: 0.2rem 0.4rem;
+}
+
+.selectedItem {
+    background-color: var(--color-n100);
+}

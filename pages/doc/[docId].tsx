@@ -3,6 +3,10 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import AppLayout from 'src/components/layouts/AppLayout'
 import TransitionOpacity from 'src/components/TransitionOpacity'
+import { useGetDocumentsQuery } from 'src/services/documents'
+import { useGetFoldersQuery } from 'src/services/folders'
+import { useAppDispatch, useAppSelector } from 'src/store'
+import { setCurrentDocument, setCurrentFolder } from 'src/store/navigation'
 import styles from 'src/styles/Document.module.css'
 import { supabaseClient, useUser, withPageAuth } from 'src/utils/supabase'
 
@@ -11,40 +15,57 @@ const DocumentEditor = dynamic(() => import("src/components/editor"), {
 })
 
 function Document() {
-    const { user } = useUser()
     const router = useRouter()
     const { docId } = router.query
+    const { user } = useUser()
 
-    const [document, setDocument] = useState(null)
-    const getDocument = async () => {
-        console.log("Fetch document details", docId)
-        const { data: document, error } = await supabaseClient
-            .from("documents")
-            .select("title, folder(name)")
-            .eq("id", docId)
-            .single()
+    const { document, isDocumentLoading } = useGetDocumentsQuery(null, {
+        selectFromResult: ({ data, isLoading, isUninitialized }) => ({
+            document: data?.find((d) => d.id === docId),
+            isDocumentLoading: isUninitialized || isLoading
+        }),
+        skip: !user
+    })
 
-        if (document) {
-            setDocument(document)
-        } else {
-            console.error(error)
-            alert(error.message)
-        }
-    }
+    const { folder } = useGetFoldersQuery(null, {
+        selectFromResult: ({ data }) => ({
+            folder: data?.find((f) => f.id === document?.folder)
+        }),
+        skip: !user
+    })
+
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
-        // TODO : Fetch from getStaticProps or getServerSideProps instead
-        // Must be authenticated in order to perform theses requests
-        if (user) {
-            getDocument()
+        dispatch(setCurrentDocument(document))
+        dispatch(setCurrentFolder(folder))
+
+        return () => {
+            dispatch(setCurrentDocument(null))
+            dispatch(setCurrentFolder(null))
         }
-    }, [user, docId])
+    }, [document, folder])
 
     return (
         <TransitionOpacity>
             <div className={styles.container}>
                 <div>
-                    <DocumentEditor documentId={docId} />
+                    {!!document && !!user && (
+                        <>
+                            <span>Titre : {document?.title}</span>
+                            <DocumentEditor
+                                documentId={docId}
+                                user={{ email: user.email }}
+                            />
+                        </>
+                    )}
+                    {!document && !isDocumentLoading && (
+                        <span>
+                            Désolé, ce document n&apos;existe pas. S&apos;il
+                            existait avant, cela signifie qu&apos;il a été
+                            supprimé.
+                        </span>
+                    )}
                 </div>
             </div>
         </TransitionOpacity>

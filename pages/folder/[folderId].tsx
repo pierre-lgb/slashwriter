@@ -3,6 +3,10 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import AppLayout from 'src/components/layouts/AppLayout'
 import TransitionOpacity from 'src/components/TransitionOpacity'
+import { useAddDocumentMutation, useGetDocumentsQuery } from 'src/services/documents'
+import { useGetFoldersQuery } from 'src/services/folders'
+import { useAppDispatch } from 'src/store'
+import { setCurrentFolder } from 'src/store/navigation'
 import styles from 'src/styles/Folder.module.css'
 import { supabaseClient, useUser, withPageAuth } from 'src/utils/supabase'
 
@@ -11,64 +15,31 @@ import FolderOutlined from '@mui/icons-material/FolderOutlined'
 function Folder() {
     const { user } = useUser()
     const router = useRouter()
-    const { folderId } = router.query
-    const [folder, setFolder] = useState(null)
-    const [documents, setDocuments] = useState([])
+    const { folderId } = router.query as { folderId: string }
+    const dispatch = useAppDispatch()
 
-    const getFolder = async () => {
-        console.log("Fetch folder details", folderId)
-        const { data: folder, error } = await supabaseClient
-            .from("folders")
-            .select("name")
-            .eq("id", folderId)
-            .single()
+    const [addDocument] = useAddDocumentMutation()
+    const { folder } = useGetFoldersQuery(null, {
+        selectFromResult: ({ data }) => ({
+            folder: data?.find((f) => f.id === folderId)
+        }),
+        skip: !user
+    })
 
-        if (folder) {
-            setFolder(folder)
-        } else {
-            console.error(error)
-            alert(error.message)
-        }
-    }
-
-    const getDocuments = async () => {
-        console.log("Fetching documents for folder", folderId)
-        const { data: documents, error } = await supabaseClient
-            .from("documents")
-            .select("id, title, text")
-            .eq("folder", folderId)
-
-        if (documents) {
-            setDocuments(documents)
-        } else {
-            console.error(error)
-            alert(error.message)
-        }
-    }
-
-    const addDocument = async (title) => {
-        console.log("Adding document", title)
-        const { data, error } = await supabaseClient.from("documents").insert({
-            title,
-            folder: folderId
-        })
-
-        if (data) {
-            setDocuments((prev) => [...prev, ...data])
-        } else {
-            console.error(error)
-            alert(error.message)
-        }
-    }
+    const { documents } = useGetDocumentsQuery(null, {
+        selectFromResult: ({ data }) => ({
+            documents: data?.filter((d) => d.folder === folderId && !d.parent)
+        }),
+        skip: !user
+    })
 
     useEffect(() => {
-        // TODO : Fetch from getStaticProps or getServerSideProps instead
-        // Must be authenticated in order to perform theses requests
-        if (user) {
-            getFolder()
-            getDocuments()
+        dispatch(setCurrentFolder(folder))
+
+        return () => {
+            dispatch(setCurrentFolder(null))
         }
-    }, [user, folderId])
+    }, [folder])
 
     return (
         <TransitionOpacity>
@@ -87,18 +58,16 @@ function Folder() {
                 <button
                     onClick={() => {
                         const title = prompt("Titre du document:")
-                        addDocument(title)
+                        addDocument({ title, folderId })
                     }}
                 >
                     Ajouter un document
                 </button>
                 <ul>
-                    {documents.map((doc) => (
+                    {documents?.map((doc) => (
                         <li key={doc.id}>
                             <Link href={`/doc/${doc.id}`}>
-                                <a>
-                                    {doc.title} | {doc.text || "Document vide"}
-                                </a>
+                                <a>{doc.title}</a>
                             </Link>
                         </li>
                     ))}

@@ -60,21 +60,20 @@ create trigger on_auth_user_updated
 -- |                  FOLDERS                 |
 -- +------------------------------------------+
 -- Trigger on folder inserted
-create or replace function public.handle_insert_folder()
-returns trigger
-language plpgsql
-security definer set search_path = public
-as $$
-begin
-  new.user_id = auth.uid();
-  return new;
-end;
-$$;
+-- create or replace function public.handle_insert_folder()
+-- returns trigger
+-- language plpgsql
+-- security definer set search_path = public
+-- as $$
+-- begin
+--   return new;
+-- end;
+-- $$;
 
-drop trigger if exists on_insert_folder on folders;
-create trigger on_insert_folder
-  before insert on folders
-  for each row execute procedure public.handle_insert_folder();
+-- drop trigger if exists on_insert_folder on folders;
+-- create trigger on_insert_folder
+--   before insert on folders
+--   for each row execute procedure public.handle_insert_folder();
 
 
 -- +------------------------------------------+
@@ -92,7 +91,9 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  new.user_id = auth.uid();
+  if new.parent is not null then
+    new.path := (SELECT at.path FROM documents at where at.id = new.parent)::citext || new.parent::citext || '/';
+  end if;
   return new;
 end;
 $$;
@@ -101,3 +102,46 @@ drop trigger if exists on_insert_document on documents;
 create trigger on_insert_document
   before insert on documents
   for each row execute procedure public.handle_insert_document();
+
+
+-- Trigger on document updated
+create or replace function public.handle_update_document()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  new.updated_at := timezone('utc'::text, now());
+  if new.deleted_at is distinct from old.deleted_at then
+    update documents
+    set deleted_at = new.deleted_at
+    where path like ('%' || new.id::text || '%');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_update_document on documents;
+create trigger on_update_document
+  before update on documents
+  for each row execute procedure public.handle_update_document();
+
+
+
+-- Trigger on document deleted
+create or replace function public.handle_delete_document()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  delete from documents
+  where path like ('%' || old.id::text || '%');
+  return old;
+end;
+$$;
+
+drop trigger if exists on_delete_document on documents;
+create trigger on_delete_document
+  before delete on documents
+  for each row execute procedure public.handle_delete_document();

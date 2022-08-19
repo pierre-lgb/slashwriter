@@ -1,4 +1,5 @@
 import 'src/styles/globals.css'
+import 'tippy.js/themes/light-border.css'
 
 import Head from 'next/head'
 import { Provider as StoreProvider } from 'react-redux'

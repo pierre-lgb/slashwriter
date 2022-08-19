@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^1.8.3",
     "@supabase/auth-helpers-nextjs": "^0.2.6",
     "@supabase/auth-helpers-react": "^0.2.3",
+    "@supabase/realtime-js": "^1.7.4",
     "@supabase/supabase-js": "^1.35.6",
     "@supabase/ui": "^0.36.5",
     "@tippyjs/react": "^4.2.6",
@@ -23,19 +24,26 @@
     "@tiptap/extension-collaboration": "^2.0.0-beta.38",
     "@tiptap/extension-collaboration-cursor": "^2.0.0-beta.37",
     "@tiptap/extension-highlight": "^2.0.0-beta.35",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.53",
+    "@tiptap/extension-task-item": "^2.0.0-beta.37",
+    "@tiptap/extension-task-list": "^2.0.0-beta.29",
     "@tiptap/extension-typography": "^2.0.0-beta.22",
     "@tiptap/react": "^2.0.0-beta.114",
     "@tiptap/starter-kit": "^2.0.0-beta.191",
+    "@tiptap/suggestion": "^2.0.0-beta.97",
     "bcrypt": "^5.0.1",
     "cookie": "^0.5.0",
     "cross-env": "^7.0.3",
     "formik": "^2.2.9",
     "framer-motion": "^6.3.1",
-    "next": "^12.1.5-canary.7",
+    "next": "^12.2.5",
     "prosemirror-markdown": "^1.9.3",
+    "prosemirror-state": "^1.4.1",
+    "prosemirror-transform": "^1.7.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-redux": "^8.0.2",
+    "tippy.js": "^6.3.7",
     "uuid": "^8.3.2",
     "ws": "^8.8.1",
     "y-indexeddb": "^9.0.9",
@@ -54,5 +62,7 @@
   "optionalDependencies": {
     "win-node-env": "^0.6.1"
   },
-  "browserslist": ["since 2017"]
+  "browserslist": [
+    "since 2017"
+  ]
 }
