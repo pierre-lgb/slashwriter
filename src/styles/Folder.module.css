@@ -1,0 +1,8 @@
+.container {
+    padding: 200px 150px;
+}
+
+.folderTitle {
+    border-bottom: 1px solid var(--color-n300);
+    padding-bottom: 20px;
+}

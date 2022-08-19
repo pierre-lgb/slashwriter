@@ -52,7 +52,6 @@ function Document() {
                 <div>
                     {!!document && !!user && (
                         <>
-                            <span>Titre : {document?.title}</span>
                             <DocumentEditor
                                 documentId={docId}
                                 user={{ email: user.email }}

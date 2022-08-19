@@ -2,6 +2,45 @@ import { supabaseClient } from 'src/utils/supabase'
 
 import baseApi from './'
 
+function updateFoldersCacheOnEvent(event, payload, draft) {
+    switch (event) {
+        case "INSERT":
+            draft.push({
+                id: payload.new.id,
+                name: payload.new.name,
+                color: payload.new.color,
+                created_at: payload.new.created_at
+            })
+            break
+        case "UPDATE":
+            const oldFolder = draft.find((f) => f.id === payload.new.id)
+
+            if (payload.new.deleted) {
+                updateFoldersCacheOnEvent("DELETE", payload, draft)
+                return
+            }
+
+            if (!oldFolder) {
+                updateFoldersCacheOnEvent("INSERT", payload, draft)
+                return
+            }
+
+            Object.assign(oldFolder, {
+                id: payload.new.id,
+                name: payload.new.name,
+                color: payload.new.color,
+                created_at: payload.new.created_at
+            })
+            break
+        case "DELETE":
+            const index = draft.findIndex((f) => f.id === payload.old.id)
+            if (index !== -1) draft.splice(index, 1)
+            break
+        default:
+            return
+    }
+}
+
 export const foldersApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getFolders: build.query<any, void>({
@@ -10,6 +49,7 @@ export const foldersApi = baseApi.injectEndpoints({
                 const { data, error } = await supabaseClient
                     .from("folders")
                     .select("color, created_at, id, name")
+                    .is("deleted", false)
 
                 return data ? { data } : { error }
             },
@@ -23,27 +63,11 @@ export const foldersApi = baseApi.injectEndpoints({
                     .from("folders")
                     .on("*", (payload) => {
                         updateCachedData((draft) => {
-                            switch (payload.eventType) {
-                                case "INSERT":
-                                    delete payload.new.user_id
-                                    draft.push(payload.new)
-                                    break
-                                case "UPDATE":
-                                    const oldFolder = draft.find(
-                                        (f) => f.id === payload.new.id
-                                    )
-                                    delete payload.new.user_id
-                                    Object.assign(oldFolder, payload.new)
-                                    break
-                                case "DELETE":
-                                    const index = draft.findIndex(
-                                        (f) => f.id === payload.old.id
-                                    )
-                                    if (index !== -1) draft.splice(index, 1)
-                                    break
-                                default:
-                                    return
-                            }
+                            updateFoldersCacheOnEvent(
+                                payload.eventType,
+                                payload,
+                                draft
+                            )
                         })
                     })
                     .subscribe()
@@ -82,7 +106,18 @@ export const foldersApi = baseApi.injectEndpoints({
             queryFn: async ({ id }) => {
                 const { data, error } = await supabaseClient
                     .from("folders")
-                    .delete()
+                    .update({ deleted: true })
+                    .match({ id })
+
+                return data ? { data } : { error }
+            }
+        }),
+
+        restoreFolder: build.mutation<any, { id: string }>({
+            queryFn: async ({ id }) => {
+                const { data, error } = await supabaseClient
+                    .from("folders")
+                    .update({ deleted: false })
                     .match({ id })
 
                 return data ? { data } : { error }
@@ -95,5 +130,6 @@ export const {
     useGetFoldersQuery,
     useAddFolderMutation,
     useUpdateFolderMutation,
-    useDeleteFolderMutation
+    useDeleteFolderMutation,
+    useRestoreFolderMutation
 } = foldersApi

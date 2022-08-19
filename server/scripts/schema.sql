@@ -21,7 +21,9 @@ create table if not exists folders (
   user_id uuid references auth.users default uid() not null,
   name citext not null,
   color citext default '#8F95B2' not null,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  created_at timestamp with timezone default timezone('utc'::text, now()) not null,
+  deleted_at timestamp with timezone,
+  deleted boolean default false not null,
 
   primary key (id),
   constraint name_length check (char_length(name) >= 3),
@@ -63,6 +65,7 @@ create table if not exists documents (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
   deleted_at timestamp with time zone,
+  deleted boolean default false not null,
 
   primary key (id),
   constraint path_of_uuid check (path ~ '^\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/)*$')

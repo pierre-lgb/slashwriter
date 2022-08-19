@@ -59,21 +59,34 @@ create trigger on_auth_user_updated
 -- +------------------------------------------+
 -- |                  FOLDERS                 |
 -- +------------------------------------------+
--- Trigger on folder inserted
--- create or replace function public.handle_insert_folder()
--- returns trigger
--- language plpgsql
--- security definer set search_path = public
--- as $$
--- begin
---   return new;
--- end;
--- $$;
 
--- drop trigger if exists on_insert_folder on folders;
--- create trigger on_insert_folder
---   before insert on folders
---   for each row execute procedure public.handle_insert_folder();
+-- Trigger on folder moved to trash (temporary delete)
+create or replace function public.handle_temp_delete_folder()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if new.deleted = true then
+    new.deleted_at := timezone('utc'::text, now());
+    update documents 
+    set deleted_at = timezone('utc'::text, now()), deleted = true
+    where folder = new.id and deleted = false;
+  else
+    new.deleted_at := null;
+    update documents
+    set deleted_at = null, deleted = false
+    where folder = new.id and deleted_at = old.deleted_at;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_temp_delete_folder on folders;
+create trigger on_temp_delete_folder
+  before update of deleted on folders
+  for each row execute procedure public.handle_temp_delete_folder();
 
 
 -- +------------------------------------------+
@@ -104,6 +117,37 @@ create trigger on_insert_document
   for each row execute procedure public.handle_insert_document();
 
 
+
+-- Trigger on document moved to trash (temporary delete)
+create or replace function public.handle_temp_delete_document()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if new.deleted = true then
+    new.deleted_at := timezone('utc'::text, now());
+    update documents 
+    set deleted_at = timezone('utc'::text, now()), deleted = true
+    where path like ('%' || new.id::text || '%') and deleted = false;
+  else
+    new.deleted_at := null;
+    update documents
+    set deleted_at = null, deleted = true
+    where path like ('%' || new.id::text || '%') and deleted_at = old.deleted_at;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_temp_delete_document on documents;
+create trigger on_temp_delete_document
+  before update of deleted on documents
+  for each row when (pg_trigger_depth() < 1)
+  execute procedure public.handle_temp_delete_document();
+
+
 -- Trigger on document updated
 create or replace function public.handle_update_document()
 returns trigger
@@ -112,36 +156,11 @@ security definer set search_path = public
 as $$
 begin
   new.updated_at := timezone('utc'::text, now());
-  if new.deleted_at is distinct from old.deleted_at then
-    update documents
-    set deleted_at = new.deleted_at
-    where path like ('%' || new.id::text || '%');
-  end if;
   return new;
 end;
 $$;
 
 drop trigger if exists on_update_document on documents;
 create trigger on_update_document
-  before update on documents
+  before update of state, title on documents
   for each row execute procedure public.handle_update_document();
-
-
-
--- Trigger on document deleted
-create or replace function public.handle_delete_document()
-returns trigger
-language plpgsql
-security definer set search_path = public
-as $$
-begin
-  delete from documents
-  where path like ('%' || old.id::text || '%');
-  return old;
-end;
-$$;
-
-drop trigger if exists on_delete_document on documents;
-create trigger on_delete_document
-  before delete on documents
-  for each row execute procedure public.handle_delete_document();

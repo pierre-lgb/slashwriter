@@ -15,7 +15,7 @@ function updateDocumentsCacheOnEvent(event, payload, draft) {
         case "UPDATE":
             const oldDocument = draft.find((d) => d.id === payload.new.id)
 
-            if (payload.new.deleted_at) {
+            if (payload.new.deleted) {
                 updateDocumentsCacheOnEvent("DELETE", payload, draft)
                 return
             }
@@ -44,7 +44,7 @@ export const documentsApi = baseApi.injectEndpoints({
                 const { data, error } = await supabaseClient
                     .from("documents")
                     .select("id, title, folder, parent")
-                    .is("deleted_at", null)
+                    .is("deleted", false)
 
                 return data ? { data } : { error }
             },
@@ -101,7 +101,7 @@ export const documentsApi = baseApi.injectEndpoints({
                 const { data, error } = await supabaseClient
                     .from("documents")
                     .update({
-                        deleted_at: new Date().toISOString()
+                        deleted: true
                     })
                     .match({ id })
 
@@ -114,7 +114,7 @@ export const documentsApi = baseApi.injectEndpoints({
                 const { data, error } = await supabaseClient
                     .from("documents")
                     .update({
-                        deleted_at: null
+                        deleted: false
                     })
                     .match({ id })
 
