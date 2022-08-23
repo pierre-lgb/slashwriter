@@ -24,6 +24,7 @@ import StarterKit from '@tiptap/starter-kit'
 
 import CommandsMenu from './extensions/CommandsMenu'
 import suggestion from './extensions/CommandsMenu/suggestion'
+import DragAndDrop from './extensions/DragAndDrop'
 import Subdocument from './extensions/Subdocument'
 import TrailingNode from './extensions/TrailingNode'
 
@@ -163,6 +164,7 @@ export default function SlashwriterEditor({ documentId, user }) {
             TaskList,
             Subdocument,
             TrailingNode,
+            DragAndDrop,
             Placeholder.configure({
                 placeholder: "Commencez à écrire ici..."
             }),

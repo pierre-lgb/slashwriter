@@ -1,6 +1,5 @@
+import { Fragment, Slice } from 'prosemirror-model'
 import { Plugin, PluginKey } from 'prosemirror-state'
-import { ReplaceStep } from 'prosemirror-transform'
-import api from 'src/services'
 import { documentsApi } from 'src/services/documents'
 import store from 'src/store'
 
@@ -32,7 +31,6 @@ export default Node.create({
     },
 
     group: "block",
-    // atom: true,
 
     parseHTML() {
         return [{ tag: "div" }]
@@ -59,15 +57,64 @@ export default Node.create({
         return ReactNodeViewRenderer(Component)
     },
 
-    onTransaction(this, { transaction }) {
-        // console.log(transaction.selection)
+    addPasteRules() {
+        // TODO : Add paste rules.
+        return []
     },
 
     addProseMirrorPlugins() {
         return [
             new Plugin({
                 key: new PluginKey(),
+                props: {
+                    handleDrop(view, event, slice) {
+                        if (event.ctrlKey === true) {
+                            // TODO : When dropping a "subdocument" that has been duplicated
+                            // with Ctrl + Drag, create a duplicate in the database too.
+                        }
+                    },
+                    handlePaste(view, event, slice) {
+                        // Filter pasted content by removing subdocuments
+
+                        let filteredChildren = []
+                        let handled = false
+                        slice.content.forEach((node, offset, index) => {
+                            if (node.type.name !== "subdocument") {
+                                filteredChildren.push(node)
+                                handled = true
+                            }
+                        })
+
+                        // If there is no subdocuments, we let the default paste handler
+                        if (handled === false) return false
+
+                        view.dispatch(
+                            view.state.tr.replaceSelection(
+                                new Slice(
+                                    Fragment.fromArray(filteredChildren),
+                                    slice.openStart,
+                                    slice.openEnd
+                                )
+                            )
+                        )
+
+                        return true
+                    }
+                    // transformPasted(slice) {
+                    //     // TODO : Duplicate on database too.
+                    //     // Note : a document with the given ID may exist in the database even if
+                    //     // the user doesn't have access to.
+
+                    //     // const test = new Promise(resolve => setTimeout(resolve, 3000));
+
+                    //     return slice
+                    // }
+                },
                 filterTransaction: (tr, state) => {
+                    if (tr.getMeta("uiEvent") === "drop") {
+                        return true
+                    }
+
                     const replaceSteps = []
                     tr.steps.forEach((step, index) => {
                         if (step.toJSON().stepType === "replace") {

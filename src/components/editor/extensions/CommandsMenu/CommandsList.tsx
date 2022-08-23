@@ -67,7 +67,7 @@ export default forwardRef(function CommandsList(props: any, ref) {
                     </button>
                 ))
             ) : (
-                <div className="item">No result</div>
+                <div className="item">Aucun résultat</div>
             )}
         </div>
     )

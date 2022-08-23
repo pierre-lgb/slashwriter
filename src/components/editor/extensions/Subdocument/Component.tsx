@@ -24,7 +24,12 @@ export default function Subdocument(props) {
 
     const router = useRouter()
     return (
-        <NodeViewWrapper className={styles.subdocument}>
+        <NodeViewWrapper
+            className={[
+                styles.subdocument,
+                props.selected ? "ProseMirror-selectednode" : ""
+            ].join(" ")}
+        >
             <Link href={`/doc/${docId}`}>
                 <a style={{ display: "flex", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
