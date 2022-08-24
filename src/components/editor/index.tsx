@@ -6,6 +6,7 @@ import {
     useRenameDocumentMutation
 } from 'src/services/documents'
 import { useAppDispatch } from 'src/store'
+import styled from 'styled-components'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import * as Y from 'yjs'
 
@@ -38,8 +39,6 @@ function EditorTitle(props: { editor: Editor; documentId: string }) {
         })
     })
 
-    const dispatch = useAppDispatch()
-
     useEffect(() => {
         const titleEditor = new Editor({
             extensions: [
@@ -66,30 +65,22 @@ function EditorTitle(props: { editor: Editor; documentId: string }) {
                     id: documentId,
                     title: editor.getText()
                 })
-            },
-            onUpdate({ editor, transaction }) {
-                // Live updating the cache to see the changes wherever
-                // there is this title on the UI (header, sidebar,...)
-                dispatch(
-                    documentsApi.util.updateQueryData(
-                        "getDocuments",
-                        null,
-                        (draft) => {
-                            const doc = draft.find((d) => d.id === documentId)
-                            Object.assign(doc, {
-                                ...doc,
-                                title: editor.getText()
-                            })
-                        }
-                    )
-                )
             }
         })
 
         setTitleEditor(titleEditor)
 
         return () => {
-            titleEditor?.destroy()
+            if (titleEditor) {
+                if (documentTitle !== titleEditor.getText()) {
+                    // Rename before unmount
+                    renameDocument({
+                        id: documentId,
+                        title: titleEditor.getText()
+                    })
+                }
+                titleEditor.destroy()
+            }
             setTitleEditor(null)
         }
     }, [documentId])
@@ -208,11 +199,124 @@ export default function SlashwriterEditor({ documentId, user }) {
 
     return (
         <>
-            <EditorTitle editor={editor} documentId={documentId} />
-
-            <div className="editor">
+            <EditorTitleStyles>
+                <EditorTitle editor={editor} documentId={documentId} />
+            </EditorTitleStyles>
+            <EditorStyles>
                 <EditorContent editor={editor} spellCheck="false" />
-            </div>
+            </EditorStyles>
         </>
     )
 }
+
+const EditorTitleStyles = styled.div`
+    .ProseMirror {
+        outline: none;
+        font-size: 1em;
+        line-height: 1.6em;
+        padding: 100px calc((100% - (700px + 50px * 2)) / 2) 0;
+        margin: 25px;
+        color: var(--color-n900);
+
+        h1.is-editor-empty::before {
+            color: #adb5bd;
+            content: attr(data-placeholder);
+            float: left;
+            height: 0;
+            pointer-events: none;
+        }
+    }
+`
+
+const EditorStyles = styled.div`
+    .ProseMirror {
+        outline: none;
+        font-size: 1em;
+        line-height: 1.6em;
+
+        padding: 25px calc((100% - (700px + 50px * 2)) / 2);
+        margin: 25px;
+
+        /* Blocks styling */
+        & > * {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+
+        p {
+            font-weight: 400;
+            color: #111319;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--color-n900);
+        }
+
+        /* Node selections */
+        &:not(.dragging) {
+            .ProseMirror-selectednode {
+                border-radius: 0.2rem;
+                outline: none !important;
+                box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px;
+                transition: box-shadow ease-out 100ms;
+            }
+        }
+
+        /* Collaboration cursor */
+        .collaboration-cursor__caret {
+            border-left: 1px solid #0d0d0d;
+            border-right: 1px solid #0d0d0d;
+            margin-left: -1px;
+            margin-right: -1px;
+            position: relative;
+            word-break: normal;
+
+            &::after {
+                content: "";
+                display: block;
+                position: absolute;
+                left: -8px;
+                right: -8px;
+                top: 0;
+                bottom: 0;
+            }
+
+            .collaboration-cursor__label {
+                opacity: 0;
+                border-radius: 3px 3px 3px 0;
+                color: #ffffff;
+                font-size: 12px;
+                font-style: normal;
+                font-weight: 600;
+                left: -1px;
+                line-height: normal;
+                padding: 0.1rem 0.3rem;
+                position: absolute;
+                top: -1.4em;
+                user-select: none;
+                white-space: nowrap;
+                transition: opacity 100ms ease-in-out;
+            }
+
+            &:hover {
+                .collaboration-cursor__label {
+                    opacity: 1;
+                }
+            }
+        }
+
+        /* Placeholder*/
+        p.is-editor-empty:first-child::before {
+            color: #adb5bd;
+            content: attr(data-placeholder);
+            float: left;
+            height: 0;
+            pointer-events: none;
+        }
+    }
+`

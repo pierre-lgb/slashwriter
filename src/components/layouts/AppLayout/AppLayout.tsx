@@ -1,13 +1,14 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import Flex from 'src/components/Flex'
+import styled from 'styled-components'
 
 import { useUser } from '@supabase/auth-helpers-react'
 
-import styles from './AppLayout.module.css'
 import Sidebar from './Sidebar'
 
 function AppLayout(props) {
-    const { user, error, isLoading } = useUser()
+    const { user, isLoading } = useUser()
     const router = useRouter()
 
     useEffect(() => {
@@ -18,12 +19,22 @@ function AppLayout(props) {
 
     return (
         <>
-            <div className={styles.container}>
+            <Container>
                 <Sidebar />
-                <main className={styles.main}>{props.children}</main>
-            </div>
+                <Main>{props.children}</Main>
+            </Container>
         </>
     )
 }
+
+const Container = styled(Flex)`
+    width: 100%;
+    height: 100%;
+`
+
+const Main = styled.main`
+    flex-grow: 1;
+    overflow-y: auto;
+`
 
 export default AppLayout

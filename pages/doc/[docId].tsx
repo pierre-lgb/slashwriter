@@ -7,7 +7,6 @@ import { useGetDocumentsQuery } from 'src/services/documents'
 import { useGetFoldersQuery } from 'src/services/folders'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { setCurrentDocument, setCurrentFolder } from 'src/store/navigation'
-import styles from 'src/styles/Document.module.css'
 import { supabaseClient, useUser, withPageAuth } from 'src/utils/supabase'
 
 const DocumentEditor = dynamic(() => import("src/components/editor"), {
@@ -48,7 +47,7 @@ function Document() {
 
     return (
         <TransitionOpacity>
-            <div className={styles.container}>
+            <div>
                 <div>
                     {!!document && !!user && (
                         <>

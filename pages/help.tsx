@@ -1,14 +1,16 @@
-import Head from 'next/head'
-import styles from 'src/styles/Help.module.css'
+import AppLayout from 'src/components/layouts/AppLayout'
+import TransitionOpacity from 'src/components/TransitionOpacity'
+import { withPageAuth } from 'src/utils/supabase'
 
-function Help() {
+export default function Help() {
     return (
-        <div className={styles.container}>
-            <main className={styles.main}>Aide</main>
-        </div>
+        <TransitionOpacity>
+            <div>Aide</div>
+        </TransitionOpacity>
     )
 }
 
+Help.Layout = AppLayout
 Help.Title = "Aide"
 
-export default Help
+export const getServerSideProps = withPageAuth()

@@ -1,17 +1,25 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import styles from 'src/styles/404.module.css'
+import Flex from 'src/components/Flex'
+import styled from 'styled-components'
 
 function Error404() {
     return (
-        <div className={styles.container}>
-            <img src="/assets/404.svg" alt="404" />
+        <Container align="center" justify="center" column>
+            <Image src="/assets/404.svg" width={500} height={200} alt="404" />
             <h2>Page introuvable</h2>
             <Link href="/">
                 <a>{"Retourner à l'accueil"}</a>
             </Link>
-        </div>
+        </Container>
     )
 }
+
+const Container = styled(Flex)`
+    h2 {
+        font-size: 1.5em;
+    }
+`
 
 Error404.Title = "404"
 

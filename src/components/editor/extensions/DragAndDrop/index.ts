@@ -1,5 +1,4 @@
 import { Extension } from '@tiptap/core'
-import { Editor } from '@tiptap/react'
 
 import DragHandle from './plugins/DragHandle'
 

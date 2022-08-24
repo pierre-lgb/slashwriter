@@ -1,6 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
-
-import styles from './CommandsList.module.css'
+import styled, { css } from 'styled-components'
 
 export default forwardRef(function CommandsList(props: any, ref) {
     const [selectedIndex, setSelectedIndex] = useState(0)
@@ -55,16 +54,13 @@ export default forwardRef(function CommandsList(props: any, ref) {
         <div className="items">
             {props.items.length ? (
                 props.items.map((item, index) => (
-                    <button
-                        className={[
-                            styles.item,
-                            index === selectedIndex ? styles.selectedItem : ""
-                        ].join(" ")}
+                    <Item
                         key={index}
                         onClick={() => selectItem(index)}
+                        selected={selectedIndex === index}
                     >
-                        {JSON.stringify(item)}
-                    </button>
+                        {item.title}
+                    </Item>
                 ))
             ) : (
                 <div className="item">Aucun résultat</div>
@@ -72,3 +68,20 @@ export default forwardRef(function CommandsList(props: any, ref) {
         </div>
     )
 })
+
+const Item = styled.button<{ selected?: boolean }>`
+    display: block;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border-radius: 0.4rem;
+    border: 1px solid transparent;
+    padding: 0.2rem 0.4rem;
+
+    ${({ selected }) =>
+        selected &&
+        css`
+            background-color: var(--color-n100);
+        `}
+`

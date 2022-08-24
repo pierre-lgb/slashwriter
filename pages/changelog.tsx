@@ -1,11 +1,5 @@
-import styles from 'src/styles/Changelog.module.css'
-
 function Changelog() {
-    return (
-        <div className={styles.container}>
-            <main className={styles.main}>Nouveautés</main>
-        </div>
-    )
+    return <div>Nouveautés</div>
 }
 
 Changelog.Title = "Nouveautés"

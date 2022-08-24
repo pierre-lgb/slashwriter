@@ -1,29 +1,46 @@
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { MouseEventHandler, ReactElement } from 'react'
 import Flex from 'src/components/Flex'
 import styled, { css } from 'styled-components'
-import { Instance as TippyInstance } from 'tippy.js'
 
-interface MenuItemProps {
+interface SidebarButtonProps {
     title: string
     icon: ReactElement
     onClick: MouseEventHandler<HTMLButtonElement>
-    menu: TippyInstance
 }
 
-export default function MenuItem(props: MenuItemProps) {
+interface SidebarLinkProps {
+    title: string
+    icon: ReactElement
+    active?: boolean
+    href: string
+}
+
+export function SidebarButton(props: SidebarButtonProps) {
     return (
-        <Wrapper
-            gap={10}
-            align="center"
-            onClick={(e) => {
-                props.menu.hide()
-                props.onClick(e)
-            }}
-            as="button"
-        >
+        <Wrapper gap={10} align="center" onClick={props.onClick} as="button">
             <IconContainer>{props.icon}</IconContainer>
             <Title>{props.title}</Title>
         </Wrapper>
+    )
+}
+
+export function SidebarLink(props: SidebarLinkProps) {
+    const router = useRouter()
+    return (
+        <Link href={props.href}>
+            <a>
+                <Wrapper
+                    gap={10}
+                    align="center"
+                    active={props.active ?? router.asPath === props.href}
+                >
+                    <IconContainer>{props.icon}</IconContainer>
+                    <Title>{props.title}</Title>
+                </Wrapper>
+            </a>
+        </Link>
     )
 }
 
@@ -67,3 +84,8 @@ const IconContainer = styled(Flex)`
         font-size: 1.25em;
     }
 `
+
+export default {
+    Link: SidebarLink,
+    Button: SidebarButton
+}

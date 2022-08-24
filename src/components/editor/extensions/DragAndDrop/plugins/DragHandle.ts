@@ -122,14 +122,15 @@ export default function DragHandle(options: DragHandleOptions) {
                         return
                     }
 
-                    const coords = {
+                    const node = nodeDOMAtCoords({
                         x: event.clientX + 50 + options.dragHandleWidth,
                         y: event.clientY
+                    })
+
+                    if (!(node instanceof Element)) {
+                        dragHandleElement.classList.add("hidden")
+                        return
                     }
-
-                    const node = nodeDOMAtCoords(coords)
-
-                    if (!(node instanceof Element)) return
 
                     const compStyle = window.getComputedStyle(node)
                     const lineHeight = parseInt(compStyle.lineHeight, 10)
@@ -144,6 +145,9 @@ export default function DragHandle(options: DragHandleOptions) {
                     dragHandleElement.style.left = `${rect.left - rect.width}px`
                     dragHandleElement.style.top = `${rect.top}px`
                     dragHandleElement.classList.remove("hidden")
+                },
+                keydown: () => {
+                    dragHandleElement.classList.add("hidden")
                 },
                 dragstart: (view) => {
                     view.dom.classList.add("dragging")

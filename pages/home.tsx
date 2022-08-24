@@ -1,19 +1,16 @@
 import AppLayout from 'src/components/layouts/AppLayout'
 import TransitionOpacity from 'src/components/TransitionOpacity'
-import styles from 'src/styles/Shares.module.css'
 import { withPageAuth } from 'src/utils/supabase'
 
-function Shares() {
+export default function Home() {
     return (
         <TransitionOpacity>
-            <div className={styles.container}>Partages</div>
+            <div>Accueil</div>
         </TransitionOpacity>
     )
 }
 
-Shares.Layout = AppLayout
-Shares.Title = "Partages"
+Home.Layout = AppLayout
+Home.Title = "Rechercher"
 
 export const getServerSideProps = withPageAuth()
-
-export default Shares

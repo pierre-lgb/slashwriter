@@ -8,7 +8,7 @@ export const withPageAuth = ({ redirectTo = "/auth", ...props } = {}) =>
     })
 
 export const withoutPageAuth = ({
-    redirectTo = "/search",
+    redirectTo = "/home",
     getServerSideProps = async (ctx) => {}
 } = {}) =>
     _withPageAuth({
@@ -24,7 +24,7 @@ export const withoutPageAuth = ({
                 }
             }
 
-            return await getServerSideProps(ctx) as any
+            return (await getServerSideProps(ctx)) as any
         }
     })
 

@@ -1,12 +1,13 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import styles from 'src/styles/Home.module.css'
+import Flex from 'src/components/Flex'
 import { withoutPageAuth } from 'src/utils/supabase'
+import styled from 'styled-components'
 
 function Home() {
     return (
-        <div className={styles.container}>
+        <Container>
             <Head>
                 <title>SlashWriter</title>
                 <meta
@@ -16,33 +17,20 @@ function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main className={styles.main}>
-                <h1 className={styles.title}>
-                    Welcome to <a href="https://nextjs.org">Next.js!</a>
-                </h1>
-                <Link href="/auth">Sign In</Link>
-            </main>
-
-            <footer className={styles.footer}>
-                <a
-                    href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Powered by{" "}
-                    <span className={styles.logo}>
-                        <Image
-                            src="/vercel.svg"
-                            alt="Vercel Logo"
-                            width={72}
-                            height={16}
-                        />
-                    </span>
-                </a>
-            </footer>
-        </div>
+            <Main align="center" justify="center">
+                <Link href="/auth">Connexion</Link>
+            </Main>
+        </Container>
     )
 }
+
+const Container = styled.div`
+    padding: 2rem;
+`
+
+const Main = styled(Flex)`
+    height: 100%;
+`
 
 export const getServerSideProps = withoutPageAuth()
 

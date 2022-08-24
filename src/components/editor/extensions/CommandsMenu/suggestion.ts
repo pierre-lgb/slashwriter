@@ -164,6 +164,7 @@ export default {
                     showOnCreate: true,
                     interactive: true,
                     theme: "light-border",
+                    animation: "shift-away",
                     trigger: "manual",
                     placement: "bottom-start",
                     arrow: false

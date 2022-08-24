@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router'
+import Flex from 'src/components/Flex'
+import Menu from 'src/components/ui/navigation/Menu'
 import { supabaseClient } from 'src/utils/supabase'
+import styled from 'styled-components'
 
-import InfoOutlined from '@mui/icons-material/InfoOutlined'
 import KeyboardCommandKeyOutlined from '@mui/icons-material/KeyboardCommandKeyOutlined'
 import ListAltOutlined from '@mui/icons-material/ListAltOutlined'
 import LogoutOutlined from '@mui/icons-material/LogoutOutlined'
 import PersonOutlined from '@mui/icons-material/PersonOutlined'
-
-import { Menu, MenuDivider, MenuItem, MenuItemToggle } from '../ui/navigation/Menu'
 
 function AccountMenu({ children }) {
     const router = useRouter()
@@ -15,52 +15,42 @@ function AccountMenu({ children }) {
     return (
         <Menu
             content={(instance) => (
-                <div style={{ width: 250 }}>
-                    <MenuItem
+                <Container column gap={4}>
+                    <Menu.Item
                         icon={<PersonOutlined />}
-                        label="Profil"
-                        action={() => router.push("/settings")}
+                        title="Profil"
+                        onClick={() => router.push("/settings")}
                         menu={instance}
                     />
-                    <MenuItemToggle
-                        label="Mode sombre"
-                        defaultToggled={false}
-                        action={(checked) => {
-                            console.log(checked)
-                        }}
-                    />
-                    <MenuDivider />
-                    <MenuItem
+                    <Menu.Item
                         icon={<KeyboardCommandKeyOutlined />}
-                        label="Raccourcis clavier"
-                        action={() => {}}
+                        title="Raccourcis clavier"
+                        onClick={() => {}}
                         menu={instance}
                     />
-                    <MenuItem
+                    <Menu.Item
                         icon={<ListAltOutlined />}
-                        label="Journal des modifications"
-                        action={() => router.push("/changelog")}
+                        title="Journal des modifications"
+                        onClick={() => router.push("/changelog")}
                         menu={instance}
                     />
-                    <MenuItem
-                        icon={<InfoOutlined />}
-                        label="Aide"
-                        action={() => router.push("/help")}
-                        menu={instance}
-                    />
-                    <MenuDivider />
-                    <MenuItem
+                    <Menu.Divider />
+                    <Menu.Item
                         icon={<LogoutOutlined />}
-                        label="Déconnexion"
-                        action={() => supabaseClient.auth.signOut()}
+                        title="Déconnexion"
+                        onClick={() => supabaseClient.auth.signOut()}
                         menu={instance}
                     />
-                </div>
+                </Container>
             )}
         >
             {children}
         </Menu>
     )
 }
+
+const Container = styled(Flex)`
+    width: 250px;
+`
 
 export default AccountMenu

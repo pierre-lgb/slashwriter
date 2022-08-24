@@ -1,5 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+import 'tippy.js/themes/light-border.css'
+import 'tippy.js/animations/shift-away.css'
 
+import { createGlobalStyle } from 'styled-components'
+
+const GlobalStyle = createGlobalStyle`
 :root {
     --color-black: #000000;
     --color-gray: #474d66;
@@ -12,16 +16,16 @@
 
     /* Neutral */
     --color-n0: #ffffff;
-    --color-n50: #fafbff;
+    --color-n50: #fbfbfb;
     --color-n75: #f9f9f9;
-    --color-n100: #f4f6fa;
+    --color-n100: #f4f4f4;
     --color-n200: #edeff5;
     --color-n300: #e6e8f0;
     --color-n400: #d8dae5;
     --color-n500: #c1c4d6;
     --color-n600: #8f95b2;
-    --color-n700: #696f8c;
-    --color-n800: #474d66;
+    --color-n700: #696969;
+    --color-n800: #474747;
     --color-n900: #101820;
 
     /* Blue */
@@ -52,9 +56,15 @@ div#__next {
         BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
         sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol,
         "Noto Color Emoji";
-    width: 100%;
+    min-width: 350px;
+}
+
+html,
+body,
+body > div:first-child,
+div#__next,
+div#__next > div {
     height: 100%;
-    min-width: 450px;
 }
 
 a {
@@ -71,113 +81,6 @@ a {
 /*
 * TEMPORARY
 */
-
-.ProseMirror {
-    outline: none;
-    font-size: 1em;
-    line-height: 1.6em;
-}
-
-.editor .ProseMirror > * {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-.editor .ProseMirror {
-    padding: 25px calc((100% - (700px + 50px * 2)) / 2);
-    margin: 25px;
-}
-
-.editor .ProseMirror p {
-    font-weight: 400;
-    color: #111319;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: var(--color-n900);
-}
-
-/* Give a remote user a caret */
-.editor .collaboration-cursor__caret {
-    border-left: 1px solid #0d0d0d;
-    border-right: 1px solid #0d0d0d;
-    margin-left: -1px;
-    margin-right: -1px;
-    position: relative;
-    word-break: normal;
-}
-
-.editor .collaboration-cursor__caret:after {
-    content: "";
-    display: block;
-    position: absolute;
-    left: -8px;
-    right: -8px;
-    top: 0;
-    bottom: 0;
-}
-
-/* Render the username above the caret */
-.editor .collaboration-cursor__label {
-    opacity: 0;
-    border-radius: 3px 3px 3px 0;
-    color: #ffffff;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 600;
-    left: -1px;
-    line-height: normal;
-    padding: 0.1rem 0.3rem;
-    position: absolute;
-    top: -1.4em;
-    user-select: none;
-    white-space: nowrap;
-    transition: opacity 100ms ease-in-out;
-}
-
-.editor .collaboration-cursor__caret:hover > .collaboration-cursor__label {
-    opacity: 1;
-}
-
-.editor .ProseMirror p.is-editor-empty:first-child::before {
-    color: #adb5bd;
-    content: attr(data-placeholder);
-    float: left;
-    height: 0;
-    pointer-events: none;
-}
-
-h1#document-title {
-    outline: none;
-}
-
-h1#document-title[data-placeholder]:empty::before {
-    color: #adb5bd;
-    content: attr(data-placeholder);
-    float: left;
-    height: 0;
-    pointer-events: none;
-}
-
-.document-title .ProseMirror {
-    padding: 100px calc((100% - (700px + 50px * 2)) / 2) 0;
-    margin: 25px;
-}
-
-.document-title .ProseMirror h1.is-editor-empty::before {
-    color: #adb5bd;
-    content: attr(data-placeholder);
-    float: left;
-    height: 0;
-    pointer-events: none;
-}
-
-/* Drag handle */
 
 .drag-handle {
     position: absolute;
@@ -203,10 +106,6 @@ h1#document-title[data-placeholder]:empty::before {
     background-color: #0d0d0d10;
     transition: background-color ease-out 0.2s;
 }
+`
 
-/* Selections */
-.editor .ProseMirror:not(.dragging) .ProseMirror-selectednode {
-    border-radius: 0.2rem;
-    outline: none !important;
-    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px;
-}
+export default GlobalStyle

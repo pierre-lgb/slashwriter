@@ -16,8 +16,8 @@ import {
 } from 'src/services/folders'
 import { useAppDispatch } from 'src/store'
 import { setCurrentFolder } from 'src/store/navigation'
-import styles from 'src/styles/Folder.module.css'
 import { useUser, withPageAuth } from 'src/utils/supabase'
+import styled from 'styled-components'
 
 function DeleteFolderButton({ folderId }) {
     const [deleteFolder] = useDeleteFolderMutation()
@@ -130,11 +130,10 @@ function Folder() {
 
     return (
         <TransitionOpacity>
-            <div className={styles.container}>
+            <div>
                 {!!folder && (
                     <>
-                        <h1 className={styles.folderTitle}>{folder.name}</h1>
-                        <div className={styles.documentList}></div>
+                        <FolderTitle>{folder.name}</FolderTitle>
                         <RenameFolderButton folderId={folderId} />
                         <DeleteFolderButton folderId={folderId} />
                         <AddDocumentButton folderId={folderId} />
@@ -162,6 +161,11 @@ function Folder() {
         </TransitionOpacity>
     )
 }
+
+const FolderTitle = styled.h1`
+    border-bottom: 1px solid var(--color-n300);
+    padding-bottom: 20px;
+`
 
 Folder.Layout = AppLayout
 Folder.Title = "Dossier"
