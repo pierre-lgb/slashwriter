@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import { useUser } from '@supabase/auth-helpers-react'
 
+import Header from './Header'
 import Sidebar from './Sidebar'
 
 function AppLayout(props) {
@@ -21,7 +22,10 @@ function AppLayout(props) {
         <>
             <Container>
                 <Sidebar />
-                <Main>{props.children}</Main>
+                <Main>
+                    <Header title={props.title} icon={props.icon} />
+                    {props.children}
+                </Main>
             </Container>
         </>
     )

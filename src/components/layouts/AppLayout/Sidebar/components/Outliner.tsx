@@ -2,7 +2,7 @@ import Flex from 'src/components/Flex'
 import { useAppSelector } from 'src/store'
 import styled from 'styled-components'
 
-import FolderOutlined from '@mui/icons-material/FolderOutlined'
+import FolderOpenOutlined from '@mui/icons-material/FolderOpenOutlined'
 
 import SidebarItem from './SidebarItem'
 
@@ -28,7 +28,7 @@ export default function Outliner(props: OutlinerProps) {
                 <SidebarItem.Link
                     key={id}
                     href={`/folder/${id}`}
-                    icon={<FolderOutlined />}
+                    icon={<FolderOpenOutlined />}
                     title={name}
                     active={id === currentFolder?.id}
                 />

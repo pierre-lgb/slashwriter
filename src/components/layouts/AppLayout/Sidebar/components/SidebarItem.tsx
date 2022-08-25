@@ -56,7 +56,7 @@ const Wrapper = styled(Flex)<{ active?: boolean }>`
     ${(props) =>
         props.active &&
         css`
-            background: var(--color-b100);
+            background: var(--color-b50);
             color: var(--color-b400);
         `}
 
@@ -65,7 +65,7 @@ const Wrapper = styled(Flex)<{ active?: boolean }>`
         ${({ active }) =>
             !active &&
             css`
-                background-color: var(--color-n100);
+                background-color: var(--color-n75);
             `}
     }
 `

@@ -81,7 +81,6 @@ export default function Sidebar() {
 }
 
 const Container = styled(Flex)`
-    background-color: var(--color-n50);
     border-right: 1px solid var(--color-n300);
     flex-shrink: 0;
     width: 300px;

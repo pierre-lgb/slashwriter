@@ -27,7 +27,8 @@ export default function AccountSection({ user }: AccountSectionProps) {
 }
 
 const Container = styled(Flex)`
-    padding: 16px 20px;
+    height: 60px;
+    padding: 0 20px;
     border-bottom: 1px solid var(--color-n300);
     &:hover {
         cursor: pointer;

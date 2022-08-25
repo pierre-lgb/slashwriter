@@ -27,7 +27,7 @@ function App({ Component, pageProps }) {
             <GlobalStyle />
             <UserProvider supabaseClient={supabaseClient}>
                 <StoreProvider store={store}>
-                    <Layout>
+                    <Layout title={Component.Title} icon={Component.Icon}>
                         <Component {...pageProps} />
                     </Layout>
                 </StoreProvider>
