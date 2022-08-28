@@ -2,14 +2,14 @@ import { createSlice } from '@reduxjs/toolkit'
 
 interface NavigationState {
     /*
-     * The currently active document
+     * The currently active document (`null` if no document is open)
      */
     currentDocument: {
         id: string
         title: string | null
     }
     /*
-     * The currently active folder
+     * The currently active folder (`null` if no folder or document is open)
      */
     currentFolder: {
         id: string

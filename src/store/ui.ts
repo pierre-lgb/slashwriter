@@ -1,13 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = {}
+interface NavigationState {
+    /*
+     * Whether the sidebar is open or not
+     */
+    sidebarOpen: boolean
+}
+
+const initialState: NavigationState = {
+    sidebarOpen: true
+}
 
 export const uiSlice = createSlice({
-    name: "ui",
+    name: "navigation",
     initialState,
     reducers: {
-        changeTheme(theme) {}
+        toggleSidebar(state) {
+            state.sidebarOpen = !state.sidebarOpen
+        }
     }
 })
+
+export const { toggleSidebar } = uiSlice.actions
 
 export default uiSlice.reducer

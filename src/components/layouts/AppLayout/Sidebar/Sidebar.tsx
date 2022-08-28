@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import Flex from 'src/components/Flex'
 import { useGetDocumentsQuery } from 'src/services/documents'
 import { useGetFoldersQuery } from 'src/services/folders'
+import { useAppSelector } from 'src/store'
 import { useUser } from 'src/utils/supabase'
 import styled from 'styled-components'
 
@@ -17,6 +19,7 @@ import SidebarItem from './components/SidebarItem'
 
 export default function Sidebar() {
     const { user } = useUser()
+    const { sidebarOpen } = useAppSelector((store) => store.ui)
 
     const {
         data: folders,
@@ -31,7 +34,7 @@ export default function Sidebar() {
     } = useGetDocumentsQuery(null, { skip: !user })
 
     return (
-        <Container column>
+        <SidebarContainer column open={sidebarOpen}>
             <AccountSection user={user} />
             <Section gap={5}>
                 <SidebarItem.Link
@@ -76,14 +79,16 @@ export default function Sidebar() {
                     href="/help"
                 />
             </Section>
-        </Container>
+        </SidebarContainer>
     )
 }
 
-const Container = styled(Flex)`
+const SidebarContainer = styled(Flex)<{ open?: boolean }>`
     border-right: 1px solid var(--color-n300);
     flex-shrink: 0;
     width: 300px;
+    margin-left: ${({ open }) => `${open ? 0 : -300}px`};
+    transition: margin-left ease-in 250ms;
 `
 
 const Section = styled(Flex)`

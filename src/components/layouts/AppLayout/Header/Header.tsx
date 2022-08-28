@@ -1,13 +1,14 @@
-import Router from 'next/router'
 import { ReactElement } from 'react'
 import Flex from 'src/components/Flex'
-import { documentsApi, useGetDocumentsQuery } from 'src/services/documents'
-import { useAppSelector } from 'src/store'
+import { useGetDocumentsQuery } from 'src/services/documents'
+import { useAppDispatch, useAppSelector } from 'src/store'
+import { toggleSidebar } from 'src/store/ui'
 import { useUser } from 'src/utils/supabase'
 import styled from 'styled-components'
 
 import FolderOpenOutlined from '@mui/icons-material/FolderOpenOutlined'
 import MenuOpenOutlined from '@mui/icons-material/MenuOpenOutlined'
+import MenuOutlined from '@mui/icons-material/MenuOutlined'
 
 interface HeaderProps {
     title: string
@@ -18,7 +19,9 @@ const BREADCRUMB_ITEMS_MAX = 3
 
 export default function Header({ title, icon }: HeaderProps) {
     const { user } = useUser()
+    const dispatch = useAppDispatch()
 
+    const { sidebarOpen } = useAppSelector((state) => state.ui)
     const { currentFolder, currentDocument } = useAppSelector(
         (state) => state.navigation
     )
@@ -34,8 +37,13 @@ export default function Header({ title, icon }: HeaderProps) {
 
     return (
         <Container align="center" gap={20}>
-            <ToggleSidebarButton as="button">
-                <MenuOpenOutlined />
+            <ToggleSidebarButton
+                as="button"
+                onClick={() => {
+                    dispatch(toggleSidebar())
+                }}
+            >
+                {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
             </ToggleSidebarButton>
             <Breadcrumb auto>
                 {!!currentFolder ? (
@@ -50,8 +58,8 @@ export default function Header({ title, icon }: HeaderProps) {
                         {!!documentPath.length &&
                             documentPath
                                 .slice(-BREADCRUMB_ITEMS_MAX)
-                                .map((document) => (
-                                    <BreadcrumbItem as="span">
+                                .map((document, index) => (
+                                    <BreadcrumbItem as="span" key={index}>
                                         {document.title || "Sans titre"}
                                     </BreadcrumbItem>
                                 ))}
