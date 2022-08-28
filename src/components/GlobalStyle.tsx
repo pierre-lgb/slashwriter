@@ -83,7 +83,7 @@ a {
 */
 
 .drag-handle {
-    position: absolute;
+    position: fixed;
     opacity: 1;
     transition: opacity ease-in 0.2s;
     border-radius: 0.25rem;
@@ -95,16 +95,16 @@ a {
     height: 1.5rem;
     cursor: grab;
     z-index: 999;
-}
 
-.drag-handle.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
+    &.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
 
-.drag-handle:hover {
-    background-color: #0d0d0d10;
-    transition: background-color ease-out 0.2s;
+    &:hover {
+        background-color: #0d0d0d10;
+        transition: background-color ease-out 0.2s;
+    }
 }
 `
 

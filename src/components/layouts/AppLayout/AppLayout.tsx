@@ -24,7 +24,7 @@ function AppLayout(props) {
                 <Sidebar />
                 <Main>
                     <Header title={props.title} icon={props.icon} />
-                    {props.children}
+                    <PageContent>{props.children}</PageContent>
                 </Main>
             </Container>
         </>
@@ -37,7 +37,13 @@ const Container = styled(Flex)`
 `
 
 const Main = styled.main`
-    flex-grow: 1;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+`
+
+const PageContent = styled.div`
+    margin-top: 60px;
     overflow-y: auto;
 `
 

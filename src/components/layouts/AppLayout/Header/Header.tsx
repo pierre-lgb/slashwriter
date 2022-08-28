@@ -95,6 +95,8 @@ const Container = styled(Flex)`
     height: 60px;
     padding: 0 20px;
     border-bottom: 1px solid var(--color-n300);
+    position: fixed;
+    width: 100%;
 `
 
 const ToggleSidebarButton = styled(Flex)`

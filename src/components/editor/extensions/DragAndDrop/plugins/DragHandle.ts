@@ -92,19 +92,31 @@ export default function DragHandle(options: DragHandleOptions) {
 
     let dragHandleElement: HTMLElement = null
 
+    function hideDragHandle() {
+        if (dragHandleElement) {
+            dragHandleElement.classList.add("hidden")
+        }
+    }
+
+    function showDragHandle() {
+        if (dragHandleElement) {
+            dragHandleElement.classList.remove("hidden")
+        }
+    }
+
     return new Plugin({
         view: (view) => {
             dragHandleElement = document.createElement("div")
             dragHandleElement.draggable = true
             dragHandleElement.classList.add("drag-handle")
-            dragHandleElement.classList.add("hidden")
-
             dragHandleElement.addEventListener("dragstart", (e) => {
                 handleDragStart(e, view)
             })
             dragHandleElement.addEventListener("click", (e) => {
                 handleClick(e, view)
             })
+
+            hideDragHandle()
 
             document.body.appendChild(dragHandleElement)
 
@@ -128,7 +140,7 @@ export default function DragHandle(options: DragHandleOptions) {
                     })
 
                     if (!(node instanceof Element)) {
-                        dragHandleElement.classList.add("hidden")
+                        hideDragHandle()
                         return
                     }
 
@@ -144,11 +156,15 @@ export default function DragHandle(options: DragHandleOptions) {
 
                     dragHandleElement.style.left = `${rect.left - rect.width}px`
                     dragHandleElement.style.top = `${rect.top}px`
-                    dragHandleElement.classList.remove("hidden")
+                    showDragHandle()
                 },
                 keydown: () => {
-                    dragHandleElement.classList.add("hidden")
+                    hideDragHandle()
                 },
+                mousewheel: () => {
+                    hideDragHandle()
+                },
+                // dragging class is used for CSS
                 dragstart: (view) => {
                     view.dom.classList.add("dragging")
                 },
