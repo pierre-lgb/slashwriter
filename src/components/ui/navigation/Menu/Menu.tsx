@@ -37,6 +37,7 @@ Menu.Item = MenuItem
 
 const StyledTippy = styled(Tippy)`
     border-radius: 5px;
+    font-size: 0.9em;
 
     & > div {
         padding: 6px;

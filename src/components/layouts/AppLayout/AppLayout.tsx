@@ -45,6 +45,7 @@ const Main = styled.main`
 const PageContent = styled.div`
     margin-top: 60px;
     overflow-y: auto;
+    flex: 1 1 auto;
 `
 
 export default AppLayout

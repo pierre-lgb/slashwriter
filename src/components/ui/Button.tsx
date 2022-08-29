@@ -1,18 +1,19 @@
-import { MouseEventHandler, ReactElement } from 'react'
+import { forwardRef, MouseEventHandler, ReactElement } from 'react'
 import styled, { css } from 'styled-components'
 
 interface ButtonProps {
-    primary?: boolean
+    color?: string
     border?: boolean
     text?: string
     icon?: ReactElement
-    onClick: MouseEventHandler<HTMLButtonElement>
+    [x: string]: any
 }
 
-export default function Button(props: ButtonProps) {
+export default forwardRef(function Button(props: ButtonProps, ref) {
     return (
         <StyledButton
             {...props}
+            ref={ref}
             onClick={(e) => {
                 e.preventDefault()
                 props.onClick(e)
@@ -22,16 +23,18 @@ export default function Button(props: ButtonProps) {
             {props.text}
         </StyledButton>
     )
-}
+})
 
 const StyledButton = styled.button<ButtonProps>`
     display: flex;
     align-items: center;
     padding: ${({ text }) => (text ? "8px 16px" : "8px")};
+    gap: 5px;
     flex-grow: 0;
-    background: ${({ primary }) => (primary ? "var(--color-b400)" : "none")};
-    color: ${({ primary }) =>
-        primary ? "var(--color-white)" : "var(--color-n700)"};
+    background: ${({ color }) =>
+        color === "primary" ? "var(--color-b400)" : "none"};
+    color: ${({ color }) =>
+        color === "primary" ? "var(--color-white)" : "var(--color-n700)"};
     ${({ border }) =>
         border &&
         css`
@@ -44,8 +47,8 @@ const StyledButton = styled.button<ButtonProps>`
     transition: background 100ms ease-out;
 
     &:hover {
-        background: ${({ primary }) =>
-            primary ? "var(--color-b500)" : "var(--color-n100)"};
+        background: ${({ color }) =>
+            color === "primary" ? "var(--color-b500)" : "var(--color-n100)"};
         cursor: pointer;
     }
 `

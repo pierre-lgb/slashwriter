@@ -22,37 +22,50 @@ import { setCurrentFolder } from 'src/store/navigation'
 import { useUser, withPageAuth } from 'src/utils/supabase'
 import styled from 'styled-components'
 
+import AddOutlined from '@mui/icons-material/AddOutlined'
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined'
 import DriveFileRenameOutlineOutlined from '@mui/icons-material/DriveFileRenameOutlineOutlined'
+import { Select } from '@supabase/ui'
+import Tippy from '@tippyjs/react'
 
 function DeleteFolderButton({ folderId }) {
     const [deleteFolder] = useDeleteFolderMutation()
+
     return (
-        <Button
-            onClick={() => {
-                deleteFolder({
-                    id: folderId
-                })
-            }}
-            icon={<DeleteOutlined />}
-        />
+        <Tippy content="Supprimer" arrow={false}>
+            <Button
+                onClick={() => {
+                    const confirmation = confirm(
+                        "Êtes-vous certain de vouloir supprimer ce dossier ?"
+                    )
+                    if (!confirmation) return
+
+                    deleteFolder({
+                        id: folderId
+                    })
+                }}
+                icon={<DeleteOutlined />}
+            />
+        </Tippy>
     )
 }
 
 function RenameFolderButton({ folderId }) {
     const [updateFolder] = useUpdateFolderMutation()
     return (
-        <Button
-            onClick={() => {
-                const folderName = prompt("Nouveau nom:")
-                if (!folderName) return
-                updateFolder({
-                    id: folderId,
-                    update: { name: folderName }
-                })
-            }}
-            icon={<DriveFileRenameOutlineOutlined />}
-        />
+        <Tippy content="Renommer" arrow={false}>
+            <Button
+                onClick={() => {
+                    const folderName = prompt("Nouveau nom:")
+                    if (!folderName) return
+                    updateFolder({
+                        id: folderId,
+                        update: { name: folderName }
+                    })
+                }}
+                icon={<DriveFileRenameOutlineOutlined />}
+            />
+        </Tippy>
     )
 }
 
@@ -60,15 +73,16 @@ function AddDocumentButton({ folderId }) {
     const [addDocument] = useAddDocumentMutation()
 
     return (
-        <button
+        <Button
+            color="primary"
+            icon={<AddOutlined fontSize="small" />}
+            text="Nouveau"
             onClick={() => {
                 const title = prompt("Titre du document:")
                 if (!title) return
                 addDocument({ title, folderId })
             }}
-        >
-            Ajouter un document
-        </button>
+        />
     )
 }
 
@@ -102,6 +116,7 @@ function RenameDocumentButton({ documentId }) {
 }
 
 function Folder() {
+    const [sortOrder, setSortOrder] = useState("a-z")
     const { user } = useUser()
     const router = useRouter()
     const { folderId } = router.query as { folderId: string }
@@ -135,17 +150,39 @@ function Folder() {
             <Container>
                 {!!folder && (
                     <Flex column gap={10}>
-                        <Flex gap={20}>
-                            <FolderTitle>{folder.name}</FolderTitle>
-                            <Flex>
+                        <FolderTitle>
+                            {folder.name}
+                            <Flex gap={5}>
                                 <RenameFolderButton folderId={folderId} />
                                 <DeleteFolderButton folderId={folderId} />
                             </Flex>
-                        </Flex>
+                        </FolderTitle>
 
-                        <Divider />
+                        <DocumentList column gap={5}>
+                            <Flex
+                                align="center"
+                                justify="space-between"
+                                gap={10}
+                            >
+                                <Select
+                                    onChange={(e) => {
+                                        setSortOrder(e.target.value)
+                                    }}
+                                >
+                                    <Select.Option value="a-z">
+                                        De A à Z
+                                    </Select.Option>
+                                    <Select.Option value="z-a">
+                                        De Z à A
+                                    </Select.Option>
+                                    <Select.Option value="recent">
+                                        Modifiés récemment
+                                    </Select.Option>
+                                </Select>
 
-                        <Flex column gap={5}>
+                                <AddDocumentButton folderId={folderId} />
+                            </Flex>
+                            <Divider />
                             {documents?.map((doc, index) => (
                                 <Link href={`/doc/${doc.id}`} key={index}>
                                     <DocumentListItem
@@ -175,7 +212,7 @@ function Folder() {
                                     </DocumentListItem>
                                 </Link>
                             ))}
-                        </Flex>
+                        </DocumentList>
                     </Flex>
                 )}
                 {!folder && !isFolderLoading && (
@@ -191,13 +228,28 @@ function Folder() {
 
 const Container = styled.div`
     padding: 100px calc((100% - (700px + 50px * 2)) / 2);
-    /* background-color: red; */
+    margin: 25px;
 `
 
 const FolderTitle = styled.h1`
     color: var(--color-n900);
     font-size: 2em;
     margin: 0;
+    display: flex;
+    gap: 20px;
+
+    & button {
+        opacity: 0;
+        transition: opacity ease-out 100ms;
+    }
+
+    &:hover button {
+        opacity: 1;
+    }
+`
+
+const DocumentList = styled(Flex)`
+    margin-top: 20px;
 `
 
 const DocumentListItem = styled(Flex)`
