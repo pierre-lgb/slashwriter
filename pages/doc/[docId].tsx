@@ -1,13 +1,13 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import AppLayout from 'src/components/layouts/AppLayout'
 import TransitionOpacity from 'src/components/TransitionOpacity'
 import { useGetDocumentsQuery } from 'src/services/documents'
 import { useGetFoldersQuery } from 'src/services/folders'
-import { useAppDispatch, useAppSelector } from 'src/store'
+import { useAppDispatch } from 'src/store'
 import { setCurrentDocument, setCurrentFolder } from 'src/store/navigation'
-import { supabaseClient, useUser, withPageAuth } from 'src/utils/supabase'
+import { useUser, withPageAuth } from 'src/utils/supabase'
 
 const DocumentEditor = dynamic(() => import("src/components/editor"), {
     ssr: false
@@ -48,23 +48,20 @@ function Document() {
     return (
         <TransitionOpacity>
             <div>
-                <div>
-                    {!!document && !!user && (
-                        <>
-                            <DocumentEditor
-                                documentId={docId}
-                                user={{ email: user.email }}
-                            />
-                        </>
-                    )}
-                    {!document && !isDocumentLoading && (
-                        <span>
-                            Désolé, ce document n&apos;existe pas. S&apos;il
-                            existait avant, cela signifie qu&apos;il a été
-                            supprimé.
-                        </span>
-                    )}
-                </div>
+                {!!document && !!user && (
+                    <>
+                        <DocumentEditor
+                            documentId={docId}
+                            user={{ email: user.email }}
+                        />
+                    </>
+                )}
+                {!document && !isDocumentLoading && (
+                    <span>
+                        Désolé, ce document n&apos;existe pas. S&apos;il
+                        existait avant, cela signifie qu&apos;il a été supprimé.
+                    </span>
+                )}
             </div>
         </TransitionOpacity>
     )

@@ -9,7 +9,8 @@ function updateDocumentsCacheOnEvent(event, payload, draft) {
                 id: payload.new.id,
                 title: payload.new.title,
                 folder: payload.new.folder,
-                parent: payload.new.parent
+                parent: payload.new.parent,
+                updated_at: payload.new.updated_at
             })
             break
         case "UPDATE":
@@ -24,7 +25,8 @@ function updateDocumentsCacheOnEvent(event, payload, draft) {
                 id: payload.new.id,
                 title: payload.new.title,
                 folder: payload.new.folder,
-                parent: payload.new.parent
+                parent: payload.new.parent,
+                updated_at: payload.new.updated_at
             })
             break
         case "DELETE":
@@ -43,7 +45,7 @@ export const documentsApi = baseApi.injectEndpoints({
                 console.log("Fetching document titles")
                 const { data, error } = await supabaseClient
                     .from("documents")
-                    .select("id, title, folder, parent")
+                    .select("id, title, folder, parent, updated_at")
                     .is("deleted", false)
 
                 return data ? { data } : { error }

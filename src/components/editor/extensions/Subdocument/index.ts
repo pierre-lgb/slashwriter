@@ -73,37 +73,6 @@ export default Node.create({
                             // with Ctrl + Drag, create a duplicate in the database too.
                         }
                     }
-                    // handlePaste(view, event, slice) {
-                    //     // Filter pasted content by removing subdocuments
-
-                    //     let filteredContent = []
-                    //     let handled = false
-
-                    //     // slice.content.forEach((node) => {
-                    //     //     if (node.type.name !== "subdocuments") {
-                    //     //         node.descendants((node, pos, parent, index) => {
-
-                    //     //         })
-                    //     //         filteredContent.push(node)
-                    //     //     }
-                    //     // })
-
-                    //     // If there is no subdocuments, we let the default paste
-                    //     // handler do the transaction
-                    //     if (handled === false) return false
-
-                    //     view.dispatch(
-                    //         view.state.tr.replaceSelection(
-                    //             new Slice(
-                    //                 Fragment.fromArray(filteredContent),
-                    //                 slice.openStart,
-                    //                 slice.openEnd
-                    //             )
-                    //         )
-                    //     )
-
-                    //     return true
-                    // }
                     // transformPasted(slice) {
                     //     // TODO : Duplicate on database too.
                     //     // Note : a document with the given ID may exist in the database even if

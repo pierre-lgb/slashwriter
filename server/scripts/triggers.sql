@@ -162,5 +162,5 @@ $$;
 
 drop trigger if exists on_update_document on documents;
 create trigger on_update_document
-  before update of state, title on documents
+  before update of state on documents
   for each row execute procedure public.handle_update_document();

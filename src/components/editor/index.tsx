@@ -148,7 +148,11 @@ export default function SlashwriterEditor({ documentId, user }) {
     const extensions = useMemo(() => {
         return [
             StarterKit.configure({
-                history: false
+                history: false,
+                heading: false
+            }),
+            Heading.configure({
+                levels: [1, 2, 3]
             }),
             Highlight,
             TaskItem,
@@ -156,11 +160,11 @@ export default function SlashwriterEditor({ documentId, user }) {
             Subdocument,
             TrailingNode,
             DragAndDrop,
-            Placeholder.configure({
-                placeholder: "Commencez à écrire ici..."
-            }),
             CommandsMenu.configure({
                 suggestion
+            }),
+            Placeholder.configure({
+                placeholder: "Commencez à écrire ici..."
             }),
             Collaboration.configure({
                 document: ydoc
@@ -225,6 +229,10 @@ const EditorTitleStyles = styled.div`
             height: 0;
             pointer-events: none;
         }
+
+        h1 {
+            font-size: 2em;
+        }
     }
 `
 
@@ -250,11 +258,21 @@ const EditorStyles = styled.div`
 
         h1,
         h2,
-        h3,
-        h4,
-        h5,
-        h6 {
+        h3 {
             color: var(--color-n900);
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 1.8em;
+        }
+
+        h2 {
+            font-size: 1.5em;
+        }
+
+        h3 {
+            font-size: 1.2em;
         }
 
         /* Node selections */

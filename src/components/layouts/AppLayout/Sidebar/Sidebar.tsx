@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Divider from 'src/components/Divider'
 import Flex from 'src/components/Flex'
 import { useGetDocumentsQuery } from 'src/services/documents'
 import { useGetFoldersQuery } from 'src/services/folders'
@@ -94,11 +95,4 @@ const SidebarContainer = styled(Flex)<{ open?: boolean }>`
 const Section = styled(Flex)`
     margin: 16px 20px;
     flex-direction: column;
-`
-
-const Divider = styled.hr`
-    margin: 0 16px;
-    border-width: 0 0 thin;
-    border-style: solid;
-    border-color: var(--color-n300);
 `
