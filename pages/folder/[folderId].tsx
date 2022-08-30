@@ -1,3 +1,4 @@
+import moment from 'moment'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -74,12 +75,14 @@ function DeleteDocumentButton({ documentId }) {
     const [deleteDocument] = useDeleteDocumentMutation()
 
     return (
-        <Button
-            onClick={() => {
-                deleteDocument({ id: documentId })
-            }}
-            icon={<DeleteOutlined fontSize="small" />}
-        />
+        <Tippy content="Supprimer" arrow={false}>
+            <Button
+                onClick={() => {
+                    deleteDocument({ id: documentId })
+                }}
+                icon={<DeleteOutlined fontSize="small" />}
+            />
+        </Tippy>
     )
 }
 
@@ -87,15 +90,17 @@ function RenameDocumentButton({ documentId }) {
     const [renameDocument] = useRenameDocumentMutation()
 
     return (
-        <Button
-            onClick={() => {
-                const documentTitle = prompt("Renommer le document:")
-                if (!documentTitle) return
+        <Tippy content="Renommer" arrow={false}>
+            <Button
+                onClick={() => {
+                    const documentTitle = prompt("Renommer le document:")
+                    if (!documentTitle) return
 
-                renameDocument({ id: documentId, title: documentTitle })
-            }}
-            icon={<DriveFileRenameOutlineOutlined fontSize="small" />}
-        />
+                    renameDocument({ id: documentId, title: documentTitle })
+                }}
+                icon={<DriveFileRenameOutlineOutlined fontSize="small" />}
+            />
+        </Tippy>
     )
 }
 
@@ -160,7 +165,10 @@ function Folder() {
                                         De Z à A
                                     </Select.Option>
                                     <Select.Option value="recent">
-                                        Modifiés récemment
+                                        Récents
+                                    </Select.Option>
+                                    <Select.Option value="old">
+                                        Anciens
                                     </Select.Option>
                                 </Select>
 
@@ -170,35 +178,74 @@ function Folder() {
                                 />
                             </Flex>
                             <Separator />
-                            {documents?.map((doc, index) => (
-                                <Link href={`/doc/${doc.id}`} key={index}>
-                                    <DocumentListItem
-                                        key={doc.id}
-                                        gap={10}
-                                        as="a"
+                            {documents
+                                ?.sort((a, b) => {
+                                    switch (sortOrder) {
+                                        case "a-z":
+                                            return a.title.localeCompare(
+                                                b.title
+                                            )
+                                        case "z-a":
+                                            return b.title.localeCompare(
+                                                a.title
+                                            )
+                                        case "recent":
+                                            return (
+                                                new Date(
+                                                    b.updated_at
+                                                ).getTime() -
+                                                new Date(a.updated_at).getTime()
+                                            )
+
+                                        case "old":
+                                            return (
+                                                new Date(
+                                                    a.updated_at
+                                                ).getTime() -
+                                                new Date(b.updated_at).getTime()
+                                            )
+                                    }
+                                })
+                                .map((doc, index) => (
+                                    <Link
+                                        href={`/doc/${doc.id}`}
+                                        key={index}
+                                        passHref
                                     >
-                                        <DocumentIcon />
+                                        <DocumentListItem
+                                            key={doc.id}
+                                            gap={10}
+                                            as="a"
+                                        >
+                                            <DocumentIcon />
 
-                                        <Flex auto column justify="center">
-                                            <DocumentTitle>
-                                                {doc.title}
-                                            </DocumentTitle>
-                                            <DocumentMeta>
-                                                {doc.updated_at}
-                                            </DocumentMeta>
-                                        </Flex>
+                                            <Flex auto column justify="center">
+                                                <DocumentTitle>
+                                                    {doc.title}
+                                                </DocumentTitle>
+                                                <DocumentMeta>
+                                                    Modifié le{" "}
+                                                    {moment(
+                                                        new Date(doc.updated_at)
+                                                    ).format("DD/MM/YYYY")}{" "}
+                                                    à{" "}
+                                                    {moment(
+                                                        new Date(doc.updated_at)
+                                                    ).format("hh:mm")}
+                                                </DocumentMeta>
+                                            </Flex>
 
-                                        <Flex gap={5} align="center">
-                                            <RenameDocumentButton
-                                                documentId={doc.id}
-                                            />
-                                            <DeleteDocumentButton
-                                                documentId={doc.id}
-                                            />
-                                        </Flex>
-                                    </DocumentListItem>
-                                </Link>
-                            ))}
+                                            <Flex gap={5} align="center">
+                                                <RenameDocumentButton
+                                                    documentId={doc.id}
+                                                />
+                                                <DeleteDocumentButton
+                                                    documentId={doc.id}
+                                                />
+                                            </Flex>
+                                        </DocumentListItem>
+                                    </Link>
+                                ))}
                         </DocumentList>
                     </Flex>
                 )}
@@ -247,6 +294,15 @@ const DocumentListItem = styled(Flex)`
     &:hover {
         background-color: var(--color-n50);
         cursor: pointer;
+    }
+
+    & button {
+        opacity: 0;
+        transition: opacity ease-out 100ms;
+    }
+
+    &:hover button {
+        opacity: 1;
     }
 `
 

@@ -11,7 +11,7 @@ interface BreadcrumbItemProps {
 
 export default function BreadcrumbItem(props: BreadcrumbItemProps) {
     return props.href ? (
-        <Link href={props.href}>
+        <Link href={props.href} passHref>
             <StyledBreadcrumbItem as="a" gap={10} link>
                 {props.icon}
                 {props.text}

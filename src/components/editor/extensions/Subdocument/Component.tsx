@@ -24,21 +24,21 @@ export default function Subdocument(props) {
         <NodeViewWrapper
             className={props.selected ? "ProseMirror-selectednode" : ""}
         >
-            <Link href={`/doc/${docId}`}>
-                <Container as="a" align="center" gap={5}>
+            <Link href={`/doc/${docId}`} passHref>
+                <StyledLink as="a" align="center" gap={5}>
                     <DocumentIcon />
                     <div>
                         <DocumentTitle>
                             {document?.title || "Document sans titre"}
                         </DocumentTitle>
                     </div>
-                </Container>
+                </StyledLink>
             </Link>
         </NodeViewWrapper>
     )
 }
 
-const Container = styled(Flex)`
+const StyledLink = styled(Flex)`
     border-radius: 4px;
 
     &:hover {

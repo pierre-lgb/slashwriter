@@ -19,18 +19,18 @@ interface SidebarLinkProps {
 
 export function SidebarButton(props: SidebarButtonProps) {
     return (
-        <Wrapper gap={10} align="center" onClick={props.onClick} as="button">
+        <Container gap={10} align="center" onClick={props.onClick} as="button">
             <IconContainer>{props.icon}</IconContainer>
             <Title>{props.title}</Title>
-        </Wrapper>
+        </Container>
     )
 }
 
 export function SidebarLink(props: SidebarLinkProps) {
     const router = useRouter()
     return (
-        <Link href={props.href}>
-            <Wrapper
+        <Link href={props.href} passHref>
+            <Container
                 gap={10}
                 align="center"
                 active={props.active ?? router.asPath === props.href}
@@ -39,12 +39,12 @@ export function SidebarLink(props: SidebarLinkProps) {
             >
                 <IconContainer>{props.icon}</IconContainer>
                 <Title>{props.title}</Title>
-            </Wrapper>
+            </Container>
         </Link>
     )
 }
 
-const Wrapper = styled(Flex)<{ active?: boolean }>`
+const Container = styled(Flex)<{ active?: boolean }>`
     border-radius: 4px;
     padding: 2px;
     color: var(--color-n700);

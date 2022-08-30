@@ -56,10 +56,10 @@ if (!dev && cluster.isPrimary) {
     const nextHandler = nextApp.getRequestHandler()
 
     nextApp.prepare().then(() => {
-        const server = express()
+        const app = express()
 
         if (!dev) {
-            server.use((req, res, next) => {
+            app.use((req, res, next) => {
                 const proto = req.headers["x-forwarded-proto"]
                 if (proto === "https") {
                     res.set({
@@ -72,14 +72,19 @@ if (!dev && cluster.isPrimary) {
             })
         }
 
-        server.get("*", (req, res) => {
+        app.get("*", (req, res) => {
             const parsedUrl = url.parse(req.url, true)
             nextHandler(req, res, parsedUrl)
         })
 
-        server.listen(port, (err) => {
+        const server = app.listen(port, (err) => {
             if (err) throw err
             console.log(`Listening on http://localhost:${port}`)
         })
+
+        // The env variables need to be loaded before
+        import("./collaboration/index").then(({ initCollaboration }) =>
+            initCollaboration(server)
+        )
     })
 }
