@@ -7,7 +7,7 @@ import { ReactRenderer } from '@tiptap/react'
 
 import CommandsList from './CommandsList'
 
-export default {
+const suggestionConfig = {
     items: ({ query }) => {
         return [
             {
@@ -200,3 +200,5 @@ export default {
         }
     }
 }
+
+export default suggestionConfig

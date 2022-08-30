@@ -90,7 +90,9 @@ const IconContainer = styled(Flex)`
     }
 `
 
-export default {
+const SidebarItem = {
     Link: SidebarLink,
     Button: SidebarButton
 }
+
+export default SidebarItem
