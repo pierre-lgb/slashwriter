@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import Divider from 'src/components/Divider'
+import AddDocumentButton from 'src/components/AddDocumentButton'
 import Flex from 'src/components/Flex'
 import AppLayout from 'src/components/layouts/AppLayout'
+import Separator from 'src/components/Separator'
 import TransitionOpacity from 'src/components/TransitionOpacity'
 import Button from 'src/components/ui/Button'
 import {
@@ -56,7 +57,7 @@ function RenameFolderButton({ folderId }) {
         <Tippy content="Renommer" arrow={false}>
             <Button
                 onClick={() => {
-                    const folderName = prompt("Nouveau nom:")
+                    const folderName = prompt("Renommer le dossier:")
                     if (!folderName) return
                     updateFolder({
                         id: folderId,
@@ -69,23 +70,6 @@ function RenameFolderButton({ folderId }) {
     )
 }
 
-function AddDocumentButton({ folderId }) {
-    const [addDocument] = useAddDocumentMutation()
-
-    return (
-        <Button
-            color="primary"
-            icon={<AddOutlined fontSize="small" />}
-            text="Nouveau"
-            onClick={() => {
-                const title = prompt("Titre du document:")
-                if (!title) return
-                addDocument({ title, folderId })
-            }}
-        />
-    )
-}
-
 function DeleteDocumentButton({ documentId }) {
     const [deleteDocument] = useDeleteDocumentMutation()
 
@@ -94,7 +78,7 @@ function DeleteDocumentButton({ documentId }) {
             onClick={() => {
                 deleteDocument({ id: documentId })
             }}
-            icon={<DeleteOutlined fontSize="inherit" />}
+            icon={<DeleteOutlined fontSize="small" />}
         />
     )
 }
@@ -105,12 +89,12 @@ function RenameDocumentButton({ documentId }) {
     return (
         <Button
             onClick={() => {
-                const documentTitle = prompt("Titre du document:")
+                const documentTitle = prompt("Renommer le document:")
                 if (!documentTitle) return
 
                 renameDocument({ id: documentId, title: documentTitle })
             }}
-            icon={<DriveFileRenameOutlineOutlined fontSize="inherit" />}
+            icon={<DriveFileRenameOutlineOutlined fontSize="small" />}
         />
     )
 }
@@ -180,9 +164,12 @@ function Folder() {
                                     </Select.Option>
                                 </Select>
 
-                                <AddDocumentButton folderId={folderId} />
+                                <AddDocumentButton
+                                    folderId={folderId}
+                                    color="primary"
+                                />
                             </Flex>
-                            <Divider />
+                            <Separator />
                             {documents?.map((doc, index) => (
                                 <Link href={`/doc/${doc.id}`} key={index}>
                                     <DocumentListItem

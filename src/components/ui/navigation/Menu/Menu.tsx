@@ -4,8 +4,8 @@ import { Instance } from 'tippy.js'
 
 import Tippy from '@tippyjs/react'
 
-import MenuDivider from './MenuDivider'
 import MenuItem from './MenuItem'
+import MenuSeparator from './MenuSeparator'
 
 interface MenuProps {
     children: ReactElement
@@ -32,7 +32,7 @@ export default function Menu({ children, content, ...rest }: MenuProps) {
     )
 }
 
-Menu.Divider = MenuDivider
+Menu.Separator = MenuSeparator
 Menu.Item = MenuItem
 
 const StyledTippy = styled(Tippy)`

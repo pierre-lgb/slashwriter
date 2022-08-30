@@ -1,6 +1,5 @@
-import { useState } from 'react'
-import Divider from 'src/components/Divider'
 import Flex from 'src/components/Flex'
+import Separator from 'src/components/Separator'
 import { useGetDocumentsQuery } from 'src/services/documents'
 import { useGetFoldersQuery } from 'src/services/folders'
 import { useAppSelector } from 'src/store'
@@ -54,7 +53,7 @@ export default function Sidebar() {
                     href="/settings"
                 />
             </Section>
-            <Divider />
+            <Separator />
             <Section gap={5} auto>
                 {(isLoadingFolders || isLoadingDocuments) && (
                     <span>Chargement...</span>
@@ -67,7 +66,7 @@ export default function Sidebar() {
                 )}
                 <AddFolderButton />
             </Section>
-            <Divider />
+            <Separator />
             <Section gap={5}>
                 <SidebarItem.Link
                     icon={<DeleteOutlined />}

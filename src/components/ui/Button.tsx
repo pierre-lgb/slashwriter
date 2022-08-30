@@ -16,7 +16,7 @@ export default forwardRef(function Button(props: ButtonProps, ref) {
             ref={ref}
             onClick={(e) => {
                 e.preventDefault()
-                props.onClick(e)
+                props.onClick?.(e)
             }}
         >
             {props.icon}
@@ -29,26 +29,37 @@ const StyledButton = styled.button<ButtonProps>`
     display: flex;
     align-items: center;
     padding: ${({ text }) => (text ? "8px 16px" : "8px")};
-    gap: 5px;
+    gap: 8px;
     flex-grow: 0;
     background: ${({ color }) =>
         color === "primary" ? "var(--color-b400)" : "none"};
     color: ${({ color }) =>
         color === "primary" ? "var(--color-white)" : "var(--color-n700)"};
+    border: none;
     ${({ border }) =>
         border &&
         css`
-            box-shadow: 0 0 0px 1px var(--color-n300) inset;
+            border: 1px solid var(--color-n300);
         `}
     border-radius: 4px;
-    border: none;
     outline: none;
     font-size: 0.9em;
-    transition: background 100ms ease-out;
+    transition: background ease-out 100ms, box-shadow ease-out 200ms;
+    outline: none;
+
+    & > svg {
+        color: ${({ color }) =>
+            color === "primary" ? "var(--color-white)" : "var(--color-n600)"};
+    }
 
     &:hover {
         background: ${({ color }) =>
             color === "primary" ? "var(--color-b500)" : "var(--color-n100)"};
         cursor: pointer;
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 2px var(--color-b200);
+        border-color: transparent;
     }
 `

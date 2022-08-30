@@ -34,7 +34,7 @@ function AccountMenu({ children }) {
                         onClick={() => router.push("/changelog")}
                         menu={instance}
                     />
-                    <Menu.Divider />
+                    <Menu.Separator />
                     <Menu.Item
                         icon={<LogoutOutlined />}
                         title="Déconnexion"

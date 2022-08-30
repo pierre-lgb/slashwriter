@@ -30,16 +30,16 @@ export function SidebarLink(props: SidebarLinkProps) {
     const router = useRouter()
     return (
         <Link href={props.href}>
-            <a>
-                <Wrapper
-                    gap={10}
-                    align="center"
-                    active={props.active ?? router.asPath === props.href}
-                >
-                    <IconContainer>{props.icon}</IconContainer>
-                    <Title>{props.title}</Title>
-                </Wrapper>
-            </a>
+            <Wrapper
+                gap={10}
+                align="center"
+                active={props.active ?? router.asPath === props.href}
+                as="a"
+                href={props.href}
+            >
+                <IconContainer>{props.icon}</IconContainer>
+                <Title>{props.title}</Title>
+            </Wrapper>
         </Link>
     )
 }
@@ -51,7 +51,8 @@ const Wrapper = styled(Flex)<{ active?: boolean }>`
     border: none;
     font-size: 1em;
     background: none;
-    transition: background-color ease-out 50ms;
+    transition: background-color ease-out 50ms, box-shadow ease-out 200ms;
+    outline: none;
 
     ${(props) =>
         props.active &&
@@ -67,6 +68,10 @@ const Wrapper = styled(Flex)<{ active?: boolean }>`
             css`
                 background-color: var(--color-n75);
             `}
+    }
+
+    &:focus {
+        box-shadow: 0 0 0 2px var(--color-b200);
     }
 `
 

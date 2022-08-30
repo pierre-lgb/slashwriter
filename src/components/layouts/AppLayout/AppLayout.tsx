@@ -23,7 +23,7 @@ function AppLayout(props) {
             <Container>
                 <Sidebar />
                 <Main>
-                    <Header title={props.title} icon={props.icon} />
+                    <Header pageTitle={props.title} pageIcon={props.icon} />
                     <PageContent>{props.children}</PageContent>
                 </Main>
             </Container>
@@ -43,7 +43,6 @@ const Main = styled.main`
 `
 
 const PageContent = styled.div`
-    margin-top: 60px;
     overflow-y: auto;
     flex: 1 1 auto;
 `

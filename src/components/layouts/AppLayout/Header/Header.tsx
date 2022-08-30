@@ -1,5 +1,8 @@
-import { ReactElement } from 'react'
+import { Fragment, ReactElement } from 'react'
+import AddDocumentButton from 'src/components/AddDocumentButton'
 import Flex from 'src/components/Flex'
+import ShareDocumentButton from 'src/components/ShareDocumentButton'
+import Button from 'src/components/ui/Button'
 import { useGetDocumentsQuery } from 'src/services/documents'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { toggleSidebar } from 'src/store/ui'
@@ -9,15 +12,18 @@ import styled from 'styled-components'
 import FolderOpenOutlined from '@mui/icons-material/FolderOpenOutlined'
 import MenuOpenOutlined from '@mui/icons-material/MenuOpenOutlined'
 import MenuOutlined from '@mui/icons-material/MenuOutlined'
+import MoreHorizOutlined from '@mui/icons-material/MoreHorizOutlined'
+
+import Breadcrumb from './components/Breadcrumb'
 
 interface HeaderProps {
-    title: string
-    icon: ReactElement
+    pageTitle: string
+    pageIcon: ReactElement
 }
 
 const BREADCRUMB_ITEMS_MAX = 3
 
-export default function Header({ title, icon }: HeaderProps) {
+export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     const { user } = useUser()
     const dispatch = useAppDispatch()
 
@@ -45,32 +51,61 @@ export default function Header({ title, icon }: HeaderProps) {
             >
                 {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
             </ToggleSidebarButton>
-            <Breadcrumb auto>
+            <Breadcrumb>
                 {!!currentFolder ? (
                     <>
-                        <BreadcrumbItem as="span" gap={10}>
-                            <FolderOpenOutlined />
-                            {currentFolder.name}
-                        </BreadcrumbItem>
+                        <Breadcrumb.Item
+                            text={currentFolder.name}
+                            icon={<FolderOpenOutlined />}
+                            href={`/folder/${currentFolder.id}`}
+                        />
+
                         {documentPath.length > BREADCRUMB_ITEMS_MAX && (
-                            <BreadcrumbItem as="span">...</BreadcrumbItem>
+                            <>
+                                <Breadcrumb.Separator />
+                                <Breadcrumb.Item text="..." />
+                            </>
                         )}
                         {!!documentPath.length &&
                             documentPath
                                 .slice(-BREADCRUMB_ITEMS_MAX)
                                 .map((document, index) => (
-                                    <BreadcrumbItem as="span" key={index}>
-                                        {document.title || "Sans titre"}
-                                    </BreadcrumbItem>
+                                    <Fragment key={index}>
+                                        <Breadcrumb.Separator />
+                                        <Breadcrumb.Item
+                                            text={
+                                                document.title || "Sans titre"
+                                            }
+                                            href={`/doc/${document.id}`}
+                                        />
+                                    </Fragment>
                                 ))}
                     </>
                 ) : (
-                    <BreadcrumbItem as="span" gap={10}>
-                        {icon}
-                        {title}
-                    </BreadcrumbItem>
+                    <Breadcrumb.Item text={pageTitle} icon={pageIcon} />
                 )}
             </Breadcrumb>
+
+            <Flex align="center" gap={8}>
+                {!!currentDocument && <ShareDocumentButton />}
+                {!!currentFolder && (
+                    <AddDocumentButton folderId={currentFolder.id} border />
+                )}
+                {!!currentFolder && (
+                    <>
+                        <VerticalSeparator />
+                        {!!currentDocument ? (
+                            <Button
+                                icon={<MoreHorizOutlined fontSize="small" />}
+                            />
+                        ) : (
+                            <Button
+                                icon={<MoreHorizOutlined fontSize="small" />}
+                            />
+                        )}
+                    </>
+                )}
+            </Flex>
         </Container>
     )
 }
@@ -95,7 +130,7 @@ const Container = styled(Flex)`
     height: 60px;
     padding: 0 20px;
     border-bottom: 1px solid var(--color-n300);
-    position: fixed;
+    flex-shrink: 0;
     width: 100%;
 `
 
@@ -110,27 +145,13 @@ const ToggleSidebarButton = styled(Flex)`
         cursor: pointer;
         background-color: var(--color-n75);
     }
+
+    outline-color: var(--color-b200);
 `
 
-const Breadcrumb = styled(Flex)``
-const BreadcrumbItem = styled(Flex)`
-    color: var(--color-n600);
-    flex-shrink: 0;
-    align-items: center;
-    font-size: 0.95em;
-
-    & > svg {
-        font-size: 1.25em;
-    }
-
-    &:last-child {
-        color: var(--color-n900);
-        font-weight: 500;
-    }
-
-    &:not(:first-child)::before {
-        content: "/";
-        margin: 10px;
-        color: var(--color-n400);
-    }
+const VerticalSeparator = styled.div`
+    width: 1px;
+    height: 30px;
+    margin: 0 5px;
+    background-color: var(--color-n300);
 `
