@@ -1,12 +1,11 @@
-import { prosemirrorJSONToYDoc } from 'y-prosemirror'
-import * as Y from 'yjs'
+import { Node } from "prosemirror-model"
+import { yDocToProsemirrorJSON } from "y-prosemirror"
+import * as Y from "yjs"
 
-import { Extension, onLoadDocumentPayload, onStoreDocumentPayload } from '@hocuspocus/server'
-import { supabaseClient } from '@supabase/auth-helpers-nextjs'
-import { getSchema } from '@tiptap/core'
-import StarterKit from '@tiptap/starter-kit'
+import { Extension, onLoadDocumentPayload, onStoreDocumentPayload } from "@hocuspocus/server"
+import { supabaseClient } from "@supabase/auth-helpers-nextjs"
 
-import { supabaseServerClient } from '../utils'
+import { editorSchema, supabaseServerClient } from "../utils"
 
 export default class PersistenceExtension implements Extension {
     async onLoadDocument({
@@ -36,10 +35,6 @@ export default class PersistenceExtension implements Extension {
             return console.error(error)
         }
 
-        if (document.text) {
-            console.log(document.text)
-        }
-
         if (document.state) {
             const { state: stateHEX } = document
             const ydoc = new Y.Doc()
@@ -66,18 +61,21 @@ export default class PersistenceExtension implements Extension {
             `Persisting document ${documentId} for user ${user.email} (${user.id})`
         )
 
-        // const json = yDocToProsemirrorJSON(ydoc, "default")
-        // TODO : Markdown
+        const title = Node.fromJSON(
+            editorSchema,
+            yDocToProsemirrorJSON(ydoc, "title")
+        ).textContent
+
         const state = Y.encodeStateAsUpdate(ydoc)
 
         const { data, error } = await supabaseClient
             .from("documents")
-            .update({ state: state })
+            .update({ title, state })
             .eq("id", documentId)
 
         if (error) {
             console.error(error)
-        } else if (data == []) {
+        } else if (!data.length) {
             console.error("Couldn't update document", documentId)
         }
     }

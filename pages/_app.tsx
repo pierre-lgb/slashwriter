@@ -1,8 +1,8 @@
-import Head from 'next/head'
-import { Provider as StoreProvider } from 'react-redux'
-import GlobalStyle from 'src/components/GlobalStyle'
-import store from 'src/store'
-import { supabaseClient, UserProvider } from 'src/utils/supabase'
+import Head from "next/head"
+import { Provider as StoreProvider } from "react-redux"
+import GlobalStyle from "src/components/GlobalStyle"
+import store from "src/store"
+import { supabaseClient, UserProvider } from "src/utils/supabase"
 
 function App({ Component, pageProps }) {
     const Layout = Component.Layout || (({ children }) => <>{children}</>)

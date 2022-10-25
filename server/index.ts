@@ -43,7 +43,6 @@ if (!dev && cluster.isPrimary) {
         }
 
         app.all("*", function handler(req, res) {
-            console.log(req)
             const parsedUrl = url.parse(req.url, true)
             nextHandler(req, res, parsedUrl)
         })

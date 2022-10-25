@@ -1,12 +1,13 @@
-import { Fragment, Slice } from 'prosemirror-model'
-import { Plugin, PluginKey } from 'prosemirror-state'
-import { documentsApi } from 'src/services/documents'
-import store from 'src/store'
+import { Fragment, Slice } from "prosemirror-model"
+import { Plugin, PluginKey } from "prosemirror-state"
+import { documentsApi } from "src/services/documents"
+import store from "src/store"
+import { ySyncPluginKey } from "y-prosemirror"
 
-import { mergeAttributes, Node } from '@tiptap/core'
-import { ReactNodeViewRenderer } from '@tiptap/react'
+import { mergeAttributes, Node } from "@tiptap/core"
+import { ReactNodeViewRenderer } from "@tiptap/react"
 
-import Component from './Component'
+import Component from "./Component"
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
@@ -84,7 +85,10 @@ export default Node.create({
                     // }
                 },
                 filterTransaction: (tr, state) => {
-                    if (tr.getMeta("uiEvent") === "drop") {
+                    if (
+                        tr.getMeta("uiEvent") === "drop" ||
+                        tr.getMeta(ySyncPluginKey) !== undefined
+                    ) {
                         return true
                     }
 

@@ -1,12 +1,12 @@
-import 'tippy.js/dist/tippy.css'
-import 'tippy.js/themes/light-border.css'
-import 'tippy.js/animations/shift-away.css'
+import "tippy.js/dist/tippy.css"
+import "tippy.js/themes/light-border.css"
+import "tippy.js/animations/shift-away.css"
 
-import { createGlobalStyle } from 'styled-components'
+import { createGlobalStyle } from "styled-components"
 
 const GlobalStyle = createGlobalStyle`
 :root {
-    --color-black: #000000;
+    --color-black: #333333;
     --color-gray: #474d66;
     --color-white: #ffffff;
 
@@ -71,7 +71,7 @@ div#__next > div {
 a {
     color: inherit;
     text-decoration: none;
-    outline-color: var(--color-b200);
+    outline: none;
 }
 
 * {

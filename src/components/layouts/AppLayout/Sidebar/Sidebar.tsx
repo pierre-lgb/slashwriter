@@ -1,21 +1,21 @@
-import Flex from 'src/components/Flex'
-import Separator from 'src/components/Separator'
-import { useGetDocumentsQuery } from 'src/services/documents'
-import { useGetFoldersQuery } from 'src/services/folders'
-import { useAppSelector } from 'src/store'
-import { useUser } from 'src/utils/supabase'
-import styled from 'styled-components'
+import Flex from "src/components/Flex"
+import Separator from "src/components/Separator"
+import { useGetDocumentsQuery } from "src/services/documents"
+import { useGetFoldersQuery } from "src/services/folders"
+import { useAppSelector } from "src/store"
+import { useUser } from "src/utils/supabase"
+import styled from "styled-components"
 
-import DeleteOutlined from '@mui/icons-material/DeleteOutlined'
-import HelpOutlineOutlined from '@mui/icons-material/HelpOutlineOutlined'
-import HomeOutlined from '@mui/icons-material/HomeOutlined'
-import StarBorderOutlined from '@mui/icons-material/StarBorderOutlined'
-import TuneOutlined from '@mui/icons-material/TuneOutlined'
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined"
+import HelpOutlineOutlined from "@mui/icons-material/HelpOutlineOutlined"
+import HomeOutlined from "@mui/icons-material/HomeOutlined"
+import StarBorderOutlined from "@mui/icons-material/StarBorderOutlined"
+import TuneOutlined from "@mui/icons-material/TuneOutlined"
 
-import AccountSection from './components/AccountSection'
-import AddFolderButton from './components/AddFolderButton'
-import Outliner from './components/Outliner'
-import SidebarItem from './components/SidebarItem'
+import AccountSection from "./components/AccountSection"
+import AddFolderButton from "./components/AddFolderButton"
+import Outliner from "./components/Outliner"
+import SidebarItem from "./components/SidebarItem"
 
 export default function Sidebar() {
     const { user } = useUser()

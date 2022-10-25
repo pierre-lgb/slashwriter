@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion"
 
 function TransitionOpacity(props) {
     const { children, ...otherProps } = props
@@ -10,6 +10,7 @@ function TransitionOpacity(props) {
                 hidden: { opacity: 0 },
                 show: { opacity: 1 }
             }}
+            style={{ width: "100%", height: "100%" }}
             {...otherProps}
         >
             {children}

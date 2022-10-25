@@ -1,34 +1,28 @@
-import moment from 'moment'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import AddDocumentButton from 'src/components/AddDocumentButton'
-import Flex from 'src/components/Flex'
-import AppLayout from 'src/components/layouts/AppLayout'
-import Separator from 'src/components/Separator'
-import TransitionOpacity from 'src/components/TransitionOpacity'
-import Button from 'src/components/ui/Button'
-import {
-    useAddDocumentMutation,
-    useDeleteDocumentMutation,
-    useGetDocumentsQuery,
-    useRenameDocumentMutation
-} from 'src/services/documents'
+import moment from "moment"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
+import AddDocumentButton from "src/components/AddDocumentButton"
+import Flex from "src/components/Flex"
+import AppLayout from "src/components/layouts/AppLayout"
+import Separator from "src/components/Separator"
+import TransitionOpacity from "src/components/TransitionOpacity"
+import Button from "src/components/ui/Button"
+import { useDeleteDocumentMutation, useGetDocumentsQuery } from "src/services/documents"
 import {
     useDeleteFolderMutation,
     useGetFoldersQuery,
     useUpdateFolderMutation
-} from 'src/services/folders'
-import { useAppDispatch } from 'src/store'
-import { setCurrentFolder } from 'src/store/navigation'
-import { useUser, withPageAuth } from 'src/utils/supabase'
-import styled from 'styled-components'
+} from "src/services/folders"
+import { useAppDispatch } from "src/store"
+import { setCurrentFolder } from "src/store/navigation"
+import { useUser, withPageAuth } from "src/utils/supabase"
+import styled from "styled-components"
 
-import AddOutlined from '@mui/icons-material/AddOutlined'
-import DeleteOutlined from '@mui/icons-material/DeleteOutlined'
-import DriveFileRenameOutlineOutlined from '@mui/icons-material/DriveFileRenameOutlineOutlined'
-import { Select } from '@supabase/ui'
-import Tippy from '@tippyjs/react'
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined"
+import DriveFileRenameOutlineOutlined from "@mui/icons-material/DriveFileRenameOutlineOutlined"
+import { Select } from "@supabase/ui"
+import Tippy from "@tippyjs/react"
 
 function DeleteFolderButton({ folderId }) {
     const [deleteFolder] = useDeleteFolderMutation()
@@ -47,6 +41,7 @@ function DeleteFolderButton({ folderId }) {
                     })
                 }}
                 icon={<DeleteOutlined />}
+                tabIndex="-1"
             />
         </Tippy>
     )
@@ -66,6 +61,7 @@ function RenameFolderButton({ folderId }) {
                     })
                 }}
                 icon={<DriveFileRenameOutlineOutlined />}
+                tabIndex="-1"
             />
         </Tippy>
     )
@@ -75,30 +71,16 @@ function DeleteDocumentButton({ documentId }) {
     const [deleteDocument] = useDeleteDocumentMutation()
 
     return (
-        <Tippy content="Supprimer" arrow={false}>
+        <Tippy content="Supprimer" arrow={false} placement="bottom">
             <Button
-                onClick={() => {
-                    deleteDocument({ id: documentId })
+                onClick={(e) => {
+                    e.preventDefault()
+
+                    !confirm("Voulez-vous supprimer ce document ?") ||
+                        deleteDocument({ id: documentId })
                 }}
                 icon={<DeleteOutlined fontSize="small" />}
-            />
-        </Tippy>
-    )
-}
-
-function RenameDocumentButton({ documentId }) {
-    const [renameDocument] = useRenameDocumentMutation()
-
-    return (
-        <Tippy content="Renommer" arrow={false}>
-            <Button
-                onClick={() => {
-                    const documentTitle = prompt("Renommer le document:")
-                    if (!documentTitle) return
-
-                    renameDocument({ id: documentId, title: documentTitle })
-                }}
-                icon={<DriveFileRenameOutlineOutlined fontSize="small" />}
+                tabIndex="-1"
             />
         </Tippy>
     )
@@ -231,14 +213,11 @@ function Folder() {
                                                     à{" "}
                                                     {moment(
                                                         new Date(doc.updated_at)
-                                                    ).format("hh:mm")}
+                                                    ).format("HH:mm")}
                                                 </DocumentMeta>
                                             </Flex>
 
-                                            <Flex gap={5} align="center">
-                                                <RenameDocumentButton
-                                                    documentId={doc.id}
-                                                />
+                                            <Flex align="center">
                                                 <DeleteDocumentButton
                                                     documentId={doc.id}
                                                 />
@@ -261,8 +240,8 @@ function Folder() {
 }
 
 const Container = styled.div`
-    padding: 100px calc((100% - (700px + 50px * 2)) / 2);
-    margin: 25px;
+    padding: 125px calc((100% - (700px + 50px * 2)) / 2);
+    margin: 0 25px;
 `
 
 const FolderTitle = styled.h1`

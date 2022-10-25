@@ -1,16 +1,16 @@
-import { ReactElement, useState } from 'react'
-import styled from 'styled-components'
-import { Instance } from 'tippy.js'
+import { ReactElement, useState } from "react"
+import styled from "styled-components"
+import { Instance } from "tippy.js"
 
-import Tippy from '@tippyjs/react'
+import Tippy from "@tippyjs/react"
 
-import MenuItem from './MenuItem'
-import MenuSeparator from './MenuSeparator'
+import MenuItem from "./MenuItem"
+import MenuSeparator from "./MenuSeparator"
 
 interface MenuProps {
     children: ReactElement
     content: (instance: Instance) => ReactElement
-    [x: string]: any
+    [key: string]: any
 }
 
 export default function Menu({ children, content, ...rest }: MenuProps) {

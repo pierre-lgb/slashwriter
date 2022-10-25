@@ -92,7 +92,60 @@ create trigger on_temp_delete_folder
 -- +------------------------------------------+
 -- |                  SHARES                  |
 -- +------------------------------------------+
+-- Trigger on share settings inserted or (un)applied to subdocuments
+create or replace function public.handle_upsert_share()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if new.include_subdocuments = true then
+    update documents
+    set share_settings = new.id
+    where id = new.document_id or path like ('%' || new.document_id::text || '%');
+  else
+    update documents
+    set share_settings = new.id
+    where id = new.document_id;
 
+    update documents
+    set share_settings = null
+    where path like ('%' || new.document_id::text || '%') and share_settings = new.id;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_insert_share on shares;
+create trigger on_insert_share
+  after insert on shares
+  for each row execute procedure public.handle_upsert_share();
+
+drop trigger if exists on_update_share on shares;
+create trigger on_update_share
+  after update of include_subdocuments on shares
+  for each row execute procedure public.handle_upsert_share();
+
+
+
+-- Trigger on share settings deleted
+create or replace function public.handle_delete_share()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  update documents
+  set share_settings = null
+  where share_settings = old.id;
+  return old;
+end;
+$$;
+
+drop trigger if exists on_delete_share on shares;
+create trigger on_delete_share
+  before delete on shares
+  for each row execute procedure public.handle_delete_share();
 
 -- +------------------------------------------+
 -- |                 DOCUMENTS                |
@@ -105,7 +158,11 @@ security definer set search_path = public
 as $$
 begin
   if new.parent is not null then
-    new.path := (SELECT at.path FROM documents at where at.id = new.parent)::citext || new.parent::citext || '/';
+    new.path := (SELECT at.path FROM documents at WHERE at.id = new.parent)::citext || new.parent::citext || '/';
+    new.share_settings := (SELECT at.share_settings FROM documents at WHERE at.id = new.parent)::uuid;
+    if not (SELECT at.include_subdocuments FROM shares at WHERE at.id = new.share_settings) then
+      new.share_settings := null;
+    end if;
   end if;
   return new;
 end;
@@ -133,7 +190,7 @@ begin
   else
     new.deleted_at := null;
     update documents
-    set deleted_at = null, deleted = true
+    set deleted_at = null, deleted = false
     where path like ('%' || new.id::text || '%') and deleted_at = old.deleted_at;
   end if;
 

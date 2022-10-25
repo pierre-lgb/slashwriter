@@ -1,13 +1,14 @@
-import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import AppLayout from 'src/components/layouts/AppLayout'
-import TransitionOpacity from 'src/components/TransitionOpacity'
-import { useGetDocumentsQuery } from 'src/services/documents'
-import { useGetFoldersQuery } from 'src/services/folders'
-import { useAppDispatch } from 'src/store'
-import { setCurrentDocument, setCurrentFolder } from 'src/store/navigation'
-import { useUser, withPageAuth } from 'src/utils/supabase'
+import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
+import Flex from "src/components/Flex"
+import AppLayout from "src/components/layouts/AppLayout"
+import TransitionOpacity from "src/components/TransitionOpacity"
+import { useGetDocumentsQuery } from "src/services/documents"
+import { useGetFoldersQuery } from "src/services/folders"
+import { useAppDispatch } from "src/store"
+import { setCurrentDocument, setCurrentFolder } from "src/store/navigation"
+import { useUser, withPageAuth } from "src/utils/supabase"
 
 const DocumentEditor = dynamic(() => import("src/components/editor"), {
     ssr: false
@@ -15,7 +16,7 @@ const DocumentEditor = dynamic(() => import("src/components/editor"), {
 
 function Document() {
     const router = useRouter()
-    const { docId } = router.query
+    const { docId } = router.query as { docId: string }
     const { user } = useUser()
 
     const { document, isDocumentLoading } = useGetDocumentsQuery(null, {
@@ -47,22 +48,27 @@ function Document() {
 
     return (
         <TransitionOpacity>
-            <div>
-                {!!document && !!user && (
-                    <>
-                        <DocumentEditor
-                            documentId={docId}
-                            user={{ email: user.email }}
-                        />
-                    </>
-                )}
-                {!document && !isDocumentLoading && (
-                    <span>
-                        Désolé, ce document n&apos;existe pas. S&apos;il
-                        existait avant, cela signifie qu&apos;il a été supprimé.
-                    </span>
-                )}
-            </div>
+            {!!document && !!user ? (
+                <DocumentEditor
+                    documentId={docId}
+                    user={{ email: user.email }}
+                />
+            ) : (
+                <Flex
+                    align="center"
+                    justify="center"
+                    style={{ width: "100%", height: "100%" }}
+                >
+                    {!!isDocumentLoading ? (
+                        <span>Chargement...</span>
+                    ) : (
+                        <span>
+                            Ce document n&apos;existe pas. Il a peut-être été
+                            supprimé.
+                        </span>
+                    )}
+                </Flex>
+            )}
         </TransitionOpacity>
     )
 }

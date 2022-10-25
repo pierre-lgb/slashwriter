@@ -81,4 +81,67 @@ drop policy if exists "Users can delete their own documents" on documents;
 create policy "Users can delete their own documents" on documents
   for delete using (auth.uid() = user_id);
 
--- TODO : Other users that have access to documents through shares settings
+
+create or replace function canRead(user_id uuid, share_id uuid) returns boolean
+language plpgsql
+as
+$$
+declare
+  can_read boolean;
+  share_settings shares%rowtype;
+begin
+select * into share_settings from shares where id=share_id;
+if not found then
+  can_read := false;
+else
+  if share_settings.anyone_can_read then
+    can_read := true;
+  elsif user_id = any(share_settings.users_can_read) then
+    can_read := true;
+  else
+    can_read := false;
+  end if;
+end if;
+return can_read;
+end; $$;
+
+create or replace function canEdit(user_id uuid, share_id uuid) returns boolean
+language plpgsql
+as
+$$
+declare
+  can_edit boolean;
+  share_settings shares%rowtype;
+begin
+select * into share_settings from shares where id=share_id;
+if not found then
+  can_edit := false;
+else
+  if share_settings.anyone_can_edit then
+    can_edit := true;
+  elsif user_id = any(share_settings.users_can_edit) then
+    can_edit := true;
+  else
+    can_edit := false;
+  end if;
+end if;
+return can_edit;
+end; $$;
+
+drop policy if exists "Other users may read a shared document" on documents;
+create policy "Other users may read a shared document" on documents
+  for select using (
+    deleted is not true and
+    share_settings is not null and
+    (canRead(auth.uid(), share_settings) 
+      or canEdit(auth.uid(), share_settings))
+  );
+
+drop policy if exists "Other users may edit a shared document" on documents;
+create policy "Other users may edit a shared document" on documents
+  for update using (
+    deleted is not true and
+    share_settings is not null and 
+    canEdit(auth.uid(), share_settings)
+  ); 
+

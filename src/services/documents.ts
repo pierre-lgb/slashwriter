@@ -1,6 +1,6 @@
-import { supabaseClient } from 'src/utils/supabase'
+import { supabaseClient } from "src/utils/supabase"
 
-import baseApi from './'
+import baseApi from "./"
 
 function updateDocumentsCacheOnEvent(event, payload, draft) {
     switch (event) {
@@ -20,6 +20,8 @@ function updateDocumentsCacheOnEvent(event, payload, draft) {
                 updateDocumentsCacheOnEvent("DELETE", payload, draft)
                 return
             }
+
+            if (!oldDocument) return
 
             Object.assign(oldDocument, {
                 id: payload.new.id,
@@ -42,11 +44,16 @@ export const documentsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getDocuments: build.query<any, void>({
             queryFn: async () => {
-                console.log("Fetching document titles")
+                console.log("Fetching documents")
+                const { user } = await supabaseClient.auth.api.getUser(
+                    supabaseClient.auth.session().access_token
+                )
+
                 const { data, error } = await supabaseClient
                     .from("documents")
                     .select("id, title, folder, parent, updated_at")
                     .is("deleted", false)
+                    .match({ user_id: user.id })
 
                 return data ? { data } : { error }
             },
@@ -88,7 +95,7 @@ export const documentsApi = baseApi.injectEndpoints({
         }),
         renameDocument: build.mutation<any, { id: string; title: string }>({
             queryFn: async ({ id, title }) => {
-                console.log("renaming document", id)
+                console.log("Renaming document", id)
                 const { data, error } = await supabaseClient
                     .from("documents")
                     .update({ title })
@@ -99,7 +106,7 @@ export const documentsApi = baseApi.injectEndpoints({
         }),
         deleteDocument: build.mutation<any, { id: string }>({
             queryFn: async ({ id }) => {
-                console.log("delete document", id)
+                console.log("Deleting document", id)
                 const { data, error } = await supabaseClient
                     .from("documents")
                     .update({
@@ -112,7 +119,7 @@ export const documentsApi = baseApi.injectEndpoints({
         }),
         restoreDocument: build.mutation<any, { id: string }>({
             queryFn: async ({ id }) => {
-                console.log("restore document", id)
+                console.log("Restoring document", id)
                 const { data, error } = await supabaseClient
                     .from("documents")
                     .update({

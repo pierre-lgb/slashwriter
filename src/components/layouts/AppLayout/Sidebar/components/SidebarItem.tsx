@@ -1,8 +1,8 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { MouseEventHandler, ReactElement } from 'react'
-import Flex from 'src/components/Flex'
-import styled, { css } from 'styled-components'
+import Link from "next/link"
+import { useRouter } from "next/router"
+import { MouseEventHandler, ReactElement } from "react"
+import Flex from "src/components/Flex"
+import styled, { css } from "styled-components"
 
 interface SidebarButtonProps {
     title: string
@@ -53,25 +53,21 @@ const Container = styled(Flex)<{ active?: boolean }>`
     background: none;
     transition: background-color ease-out 50ms, box-shadow ease-out 200ms;
     outline: none;
+    cursor: pointer;
 
     ${(props) =>
         props.active &&
         css`
-            background: var(--color-b50);
-            color: var(--color-b400);
+            background: var(--color-n100);
+            color: var(--color-black);
         `}
 
-    &:hover {
-        cursor: pointer;
+    &:hover, &:focus {
         ${({ active }) =>
             !active &&
             css`
                 background-color: var(--color-n75);
             `}
-    }
-
-    &:focus {
-        box-shadow: 0 0 0 2px var(--color-b200);
     }
 `
 

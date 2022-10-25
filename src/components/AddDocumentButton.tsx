@@ -1,16 +1,16 @@
-import { useRouter } from 'next/router'
-import { useAddDocumentMutation } from 'src/services/documents'
+import { useRouter } from "next/router"
+import { useAddDocumentMutation } from "src/services/documents"
 
-import AddOutlined from '@mui/icons-material/AddOutlined'
+import AddOutlined from "@mui/icons-material/AddOutlined"
 
-import Button from './ui/Button'
+import Button from "./ui/Button"
 
 interface AddDocumentButtonProps {
     /**
      * The folder to add a document in.
      */
     folderId: string
-    [x: string]: any
+    [key: string]: any
 }
 
 export default function AddDocumentButton(props: AddDocumentButtonProps) {

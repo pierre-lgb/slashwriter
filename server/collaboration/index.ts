@@ -1,9 +1,9 @@
-import WebSocket from 'ws'
+import WebSocket from "ws"
 
-import { Server } from '@hocuspocus/server'
+import { Server } from "@hocuspocus/server"
 
-import AuthenticationExtension from './AuthentificationExtension'
-import PersistenceExtension from './PersistenceExtension'
+import AuthenticationExtension from "./AuthenticationExtension"
+import PersistenceExtension from "./PersistenceExtension"
 
 export function initCollaboration(server) {
     const wss = new WebSocket.Server({ noServer: true })

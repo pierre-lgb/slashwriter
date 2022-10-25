@@ -1,127 +1,43 @@
-import { TextSelection } from 'prosemirror-state'
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import {
-    documentsApi,
-    useGetDocumentsQuery,
-    useRenameDocumentMutation
-} from 'src/services/documents'
-import { useAppDispatch } from 'src/store'
-import styled from 'styled-components'
-import { IndexeddbPersistence } from 'y-indexeddb'
-import * as Y from 'yjs'
+import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
+import styled from "styled-components"
+import { IndexeddbPersistence } from "y-indexeddb"
+import * as Y from "yjs"
 
-import { HocuspocusProvider } from '@hocuspocus/provider'
-import Collaboration from '@tiptap/extension-collaboration'
-import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
-import Document from '@tiptap/extension-document'
-import Heading from '@tiptap/extension-heading'
-import Highlight from '@tiptap/extension-highlight'
-import Placeholder from '@tiptap/extension-placeholder'
-import TaskItem from '@tiptap/extension-task-item'
-import TaskList from '@tiptap/extension-task-list'
-import Text from '@tiptap/extension-text'
-import { Editor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import { HocuspocusProvider } from "@hocuspocus/provider"
+import Collaboration from "@tiptap/extension-collaboration"
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor"
+import Document from "@tiptap/extension-document"
+import Heading from "@tiptap/extension-heading"
+import Highlight from "@tiptap/extension-highlight"
+import Placeholder from "@tiptap/extension-placeholder"
+import TaskItem from "@tiptap/extension-task-item"
+import TaskList from "@tiptap/extension-task-list"
+import Text from "@tiptap/extension-text"
+import { Editor, EditorContent as TiptapEditorContent } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
 
-import CommandsMenu from './extensions/CommandsMenu'
-import suggestion from './extensions/CommandsMenu/suggestion'
-import DragAndDrop from './extensions/DragAndDrop'
-import Subdocument from './extensions/Subdocument'
-import TrailingNode from './extensions/TrailingNode'
+import CommandsMenu from "./extensions/CommandsMenu"
+import suggestion from "./extensions/CommandsMenu/suggestion"
+import DragAndDrop from "./extensions/DragAndDrop"
+import Subdocument from "./extensions/Subdocument"
+import TrailingNode from "./extensions/TrailingNode"
 
-function EditorTitle(props: { editor: Editor; documentId: string }) {
-    const { editor, documentId } = props
-    const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
-    const [renameDocument] = useRenameDocumentMutation()
-    const { documentTitle } = useGetDocumentsQuery(null, {
-        selectFromResult: ({ data }) => ({
-            documentTitle: (data?.find((d) => d.id === documentId)).title
-        })
-    })
-
-    useEffect(() => {
-        const titleEditor = new Editor({
-            extensions: [
-                Document.extend({
-                    content: "heading"
-                }),
-                Text,
-                Heading.configure({
-                    levels: [1]
-                }),
-                Placeholder.configure({
-                    placeholder: "Entrez un titre"
-                })
-            ],
-            content: `<h1>${documentTitle || ""}</h1>`,
-            onCreate({ editor }) {
-                // Autofocus
-                if (!documentTitle) {
-                    editor.commands.focus()
-                }
-            },
-            onBlur({ editor, event }) {
-                renameDocument({
-                    id: documentId,
-                    title: editor.getText()
-                })
-            }
-        })
-
-        setTitleEditor(titleEditor)
-
-        return () => {
-            if (titleEditor) {
-                if (documentTitle !== titleEditor.getText()) {
-                    // Rename before unmount
-                    renameDocument({
-                        id: documentId,
-                        title: titleEditor.getText()
-                    })
-                }
-                titleEditor.destroy()
-            }
-            setTitleEditor(null)
-        }
-    }, [documentId])
-
-    function handleKeyDown(event) {
-        const selection = titleEditor.state.selection
-        if (event.shiftKey) {
-            return
-        }
-
-        if (event.key === "Enter" || event.key === "ArrowDown") {
-            editor.commands.focus("start")
-        }
-
-        if (event.key === "ArrowRight") {
-            if (selection?.$head.nodeAfter === null) {
-                editor.commands.focus("start")
-            }
-        }
-    }
-
-    return (
-        <div className="document-title">
-            <EditorContent
-                editor={titleEditor}
-                onKeyDown={handleKeyDown}
-                spellCheck="false"
-            />
-        </div>
-    )
+function getRandomColor() {
+    const COLORS = ["#ffb020", "#3366ff", "#474d66"]
+    return COLORS[Math.round(Math.random() * (COLORS.length - 1))]
 }
 
-const CURSOR_COLORS = ["#ffb020", "#3366ff", "#474d66"]
-
-const getRandomCursorColor = () =>
-    CURSOR_COLORS[Math.round(Math.random() * CURSOR_COLORS.length)]
-
-export default function SlashwriterEditor({ documentId, user }) {
-    const [editor, setEditor] = useState<Editor | null>(null)
-    const [status, setStatus] = useState("connecting")
+export default function SlashwriterEditor(props: {
+    documentId: string
+    user: { email: string }
+    editable?: boolean
+}) {
+    const { documentId, user, editable = true } = props
+    const [contentEditor, setContentEditor] = useState<Editor | null>(null)
+    const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
     const ydoc = useMemo(() => new Y.Doc(), [documentId])
+
+    // const [status, setStatus] = useState("connecting")
 
     const websocketProvider = useMemo(
         () =>
@@ -145,39 +61,38 @@ export default function SlashwriterEditor({ documentId, user }) {
         [documentId, ydoc]
     )
 
-    const extensions = useMemo(() => {
+    function getCollaborationExtensions(yDocField: string) {
         return [
-            StarterKit.configure({
-                history: false,
-                heading: false
-            }),
-            Heading.configure({
-                levels: [1, 2, 3]
-            }),
-            Highlight,
-            TaskItem,
-            TaskList,
-            Subdocument,
-            TrailingNode,
-            DragAndDrop,
-            CommandsMenu.configure({
-                suggestion
-            }),
-            Placeholder.configure({
-                placeholder: "Commencez à écrire ici..."
-            }),
             Collaboration.configure({
-                document: ydoc
+                document: websocketProvider.document,
+                field: yDocField || "default"
             }),
             CollaborationCursor.configure({
                 provider: websocketProvider,
                 user: {
                     name: user.email,
-                    color: getRandomCursorColor()
+                    color: getRandomColor()
                 }
             })
         ]
-    }, [ydoc])
+    }
+
+    function handleTitleEditorKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+        const selection = titleEditor.state.selection
+        if (event.shiftKey) {
+            return
+        }
+
+        if (event.key === "Enter" || event.key === "ArrowDown") {
+            contentEditor.commands.focus("start")
+        }
+
+        if (event.key === "ArrowRight") {
+            if (selection?.$head.nodeAfter === null) {
+                contentEditor.commands.focus("start")
+            }
+        }
+    }
 
     useLayoutEffect(() => {
         websocketProvider.connect()
@@ -189,61 +104,90 @@ export default function SlashwriterEditor({ documentId, user }) {
     }, [websocketProvider, localProvider])
 
     useEffect(() => {
-        const editor = new Editor({
-            extensions
+        const titleEditor = new Editor({
+            extensions: [
+                Document.extend({
+                    content: "heading"
+                }),
+                Text,
+                Heading.configure({
+                    levels: [1]
+                }),
+                Placeholder.configure({
+                    placeholder: "Entrez un titre"
+                }),
+                ...getCollaborationExtensions("title")
+            ],
+            onCreate({ editor }) {
+                // Autofocus
+                editor.commands.focus()
+            },
+            editable
         })
 
-        setEditor(editor)
+        const contentEditor = new Editor({
+            extensions: [
+                StarterKit.configure({
+                    history: false,
+                    heading: false
+                }),
+                Heading.configure({
+                    levels: [1, 2, 3]
+                }),
+                Highlight,
+                TaskItem,
+                TaskList,
+                Subdocument,
+                TrailingNode,
+                DragAndDrop,
+                CommandsMenu.configure({
+                    suggestion
+                }),
+                Placeholder.configure({
+                    placeholder: "Commencez à écrire ici..."
+                }),
+                ...getCollaborationExtensions("default")
+            ],
+            editable
+        })
+
+        setTitleEditor(titleEditor)
+        setContentEditor(contentEditor)
 
         return () => {
-            editor?.destroy()
-            setEditor(null)
+            titleEditor?.destroy()
+            setTitleEditor(null)
+            contentEditor?.destroy()
+            setContentEditor(null)
         }
-    }, [documentId, extensions])
+    }, [documentId])
 
     return (
-        <>
-            <EditorTitleStyles>
-                <EditorTitle editor={editor} documentId={documentId} />
-            </EditorTitleStyles>
-            <EditorStyles>
-                <EditorContent editor={editor} spellCheck="false" />
-            </EditorStyles>
-        </>
+        <Container>
+            <EditorTitle
+                editor={titleEditor}
+                onKeyDown={handleTitleEditorKeyDown}
+                spellCheck="false"
+            />
+            <EditorContent editor={contentEditor} spellCheck="false" />
+        </Container>
     )
 }
 
-const EditorTitleStyles = styled.div`
+const EditorTitle = styled(TiptapEditorContent)`
     .ProseMirror {
-        outline: none;
-        font-size: 1em;
-        line-height: 1.6em;
-        padding: 100px calc((100% - (700px + 50px * 2)) / 2) 0;
-        margin: 25px;
-        color: var(--color-n900);
-
-        h1.is-editor-empty::before {
-            color: #adb5bd;
-            content: attr(data-placeholder);
-            float: left;
-            height: 0;
-            pointer-events: none;
-        }
-
         h1 {
+            margin: 0;
+            font-weight: 700;
             font-size: 2em;
         }
     }
 `
 
-const EditorStyles = styled.div`
+const EditorContent = styled(TiptapEditorContent)`
     .ProseMirror {
-        outline: none;
         font-size: 1em;
         line-height: 1.6em;
-
-        padding: 25px calc((100% - (700px + 50px * 2)) / 2);
-        margin: 25px;
 
         /* Blocks styling */
         & > * {
@@ -284,15 +228,27 @@ const EditorStyles = styled.div`
                 transition: box-shadow ease-out 100ms;
             }
         }
+    }
+`
+
+const Container = styled.div`
+    padding-top: 100px;
+
+    .ProseMirror {
+        padding: 25px calc((100% - (700px + 50px * 2)) / 2);
+        margin: 0 25px;
+        outline: none;
 
         /* Collaboration cursor */
         .collaboration-cursor__caret {
             border-left: 1px solid #0d0d0d;
             border-right: 1px solid #0d0d0d;
+
             margin-left: -1px;
             margin-right: -1px;
             position: relative;
             word-break: normal;
+            box-sizing: border-box;
 
             &::after {
                 content: "";
@@ -329,7 +285,7 @@ const EditorStyles = styled.div`
         }
 
         /* Placeholder*/
-        p.is-editor-empty:first-child::before {
+        & > .is-editor-empty:first-child::before {
             color: #adb5bd;
             content: attr(data-placeholder);
             float: left;

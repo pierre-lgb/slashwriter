@@ -1,24 +1,20 @@
-import { forwardRef, MouseEventHandler, ReactElement } from 'react'
-import styled, { css } from 'styled-components'
+import { forwardRef, MouseEventHandler, ReactElement } from "react"
+import styled, { css } from "styled-components"
 
 interface ButtonProps {
     color?: string
     border?: boolean
     text?: string
     icon?: ReactElement
-    [x: string]: any
+    [key: string]: any
 }
 
-export default forwardRef(function Button(props: ButtonProps, ref) {
+export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+    props,
+    ref
+) {
     return (
-        <StyledButton
-            {...props}
-            ref={ref}
-            onClick={(e) => {
-                e.preventDefault()
-                props.onClick?.(e)
-            }}
-        >
+        <StyledButton {...props} ref={ref} onClick={props.onClick}>
             {props.icon}
             {props.text}
         </StyledButton>
@@ -32,7 +28,7 @@ const StyledButton = styled.button<ButtonProps>`
     gap: 8px;
     flex-grow: 0;
     background: ${({ color }) =>
-        color === "primary" ? "var(--color-b400)" : "none"};
+        color === "primary" ? "var(--color-black)" : "none"};
     color: ${({ color }) =>
         color === "primary" ? "var(--color-white)" : "var(--color-n700)"};
     border: none;
@@ -44,8 +40,9 @@ const StyledButton = styled.button<ButtonProps>`
     border-radius: 4px;
     outline: none;
     font-size: 0.9em;
-    transition: background ease-out 100ms, box-shadow ease-out 200ms;
+    transition: background-color ease-out 50ms, box-shadow ease-out 200ms;
     outline: none;
+    cursor: pointer;
 
     & > svg {
         color: ${({ color }) =>
@@ -54,12 +51,11 @@ const StyledButton = styled.button<ButtonProps>`
 
     &:hover {
         background: ${({ color }) =>
-            color === "primary" ? "var(--color-b500)" : "var(--color-n100)"};
-        cursor: pointer;
+            color === "primary" ? "var(--color-n800)" : "var(--color-n100)"};
     }
 
-    &:focus {
-        box-shadow: 0 0 0 2px var(--color-b200);
+    &:focus-visible {
+        box-shadow: 0 0 0 2px var(--color-n200);
         border-color: transparent;
     }
 `

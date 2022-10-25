@@ -1,20 +1,20 @@
-import { Fragment, ReactElement } from 'react'
-import AddDocumentButton from 'src/components/AddDocumentButton'
-import Flex from 'src/components/Flex'
-import ShareDocumentButton from 'src/components/ShareDocumentButton'
-import Button from 'src/components/ui/Button'
-import { useGetDocumentsQuery } from 'src/services/documents'
-import { useAppDispatch, useAppSelector } from 'src/store'
-import { toggleSidebar } from 'src/store/ui'
-import { useUser } from 'src/utils/supabase'
-import styled from 'styled-components'
+import { Fragment, ReactElement } from "react"
+import AddDocumentButton from "src/components/AddDocumentButton"
+import Flex from "src/components/Flex"
+import ShareDocumentButton from "src/components/ShareDocumentButton"
+import Button from "src/components/ui/Button"
+import { useGetDocumentsQuery } from "src/services/documents"
+import { useAppDispatch, useAppSelector } from "src/store"
+import { toggleSidebar } from "src/store/ui"
+import { useUser } from "src/utils/supabase"
+import styled from "styled-components"
 
-import FolderOpenOutlined from '@mui/icons-material/FolderOpenOutlined'
-import MenuOpenOutlined from '@mui/icons-material/MenuOpenOutlined'
-import MenuOutlined from '@mui/icons-material/MenuOutlined'
-import MoreHorizOutlined from '@mui/icons-material/MoreHorizOutlined'
+import FolderOpenOutlined from "@mui/icons-material/FolderOpenOutlined"
+import MenuOpenOutlined from "@mui/icons-material/MenuOpenOutlined"
+import MenuOutlined from "@mui/icons-material/MenuOutlined"
+import MoreHorizOutlined from "@mui/icons-material/MoreHorizOutlined"
 
-import Breadcrumb from './components/Breadcrumb'
+import Breadcrumb from "./components/Breadcrumb"
 
 interface HeaderProps {
     pageTitle: string
@@ -87,7 +87,9 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
             </Breadcrumb>
 
             <Flex align="center" gap={8}>
-                {!!currentDocument && <ShareDocumentButton />}
+                {!!currentDocument && (
+                    <ShareDocumentButton documentId={currentDocument.id} />
+                )}
                 {!!currentFolder && (
                     <AddDocumentButton folderId={currentFolder.id} border />
                 )}
@@ -97,10 +99,12 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                         {!!currentDocument ? (
                             <Button
                                 icon={<MoreHorizOutlined fontSize="small" />}
+                                onClick={() => console.log("document options")}
                             />
                         ) : (
                             <Button
                                 icon={<MoreHorizOutlined fontSize="small" />}
+                                onClick={() => console.log("folder options")}
                             />
                         )}
                     </>
@@ -140,13 +144,13 @@ const ToggleSidebarButton = styled(Flex)`
     color: var(--color-n600);
     padding: 5px;
     border-radius: 4px;
+    cursor: pointer;
 
     &:hover {
-        cursor: pointer;
         background-color: var(--color-n75);
     }
 
-    outline-color: var(--color-b200);
+    outline-color: var(--color-n200);
 `
 
 const VerticalSeparator = styled.div`
