@@ -1,6 +1,6 @@
 import { supabaseClient } from "@supabase/auth-helpers-nextjs"
 
-const supabaseServerClient = (accessToken?: string) => {
+const supabaseServerClient = (accessToken: string) => {
     supabaseClient.auth.setAuth(accessToken)
     return supabaseClient
 }

@@ -1,8 +1,7 @@
 import cookieParser from "cookie-parser"
 import express from "express"
+import { createServer } from "http"
 import next from "next"
-import { createServer } from "node:http"
-import process from "node:process"
 import url from "url"
 
 const port = parseInt(process.env.PORT || "3000", 10)
@@ -28,6 +27,7 @@ nextApp.prepare().then(() => {
 
     try {
         server.listen(port)
+        console.log("Server listening on port", port)
     } catch (error) {
         console.log(error)
     }
