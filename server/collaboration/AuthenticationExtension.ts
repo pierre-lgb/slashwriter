@@ -12,7 +12,7 @@ export default class AuthenticationExtension implements Extension {
         requestHeaders
     }: onAuthenticatePayload) {
         const cookies = cookie.parse(requestHeaders.cookie || "")
-        const accessToken = cookies["sb-access-token"] || ""
+        const accessToken = cookies["sb-access-token"]
 
         const { user } = await supabaseClient.auth.api.getUser(accessToken)
 
@@ -26,6 +26,8 @@ export default class AuthenticationExtension implements Extension {
             .single()
 
         if (error) {
+            console.log(user)
+            console.log("accessToken", accessToken)
             console.log(error)
             throw new Error("An error occured.")
         }
@@ -44,7 +46,7 @@ export default class AuthenticationExtension implements Extension {
 
         return {
             user: {
-                accessToken,
+                accessToken: accessToken || "",
                 ...user
             }
         }

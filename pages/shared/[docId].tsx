@@ -52,13 +52,9 @@ function Shared() {
                         user_id: user?.id || null
                     }
 
-                    await supabaseClient
-                        .rpc("canread", params)
-                        .then(({ data: canRead }) => {
-                            if (canRead) {
-                                setPermission("read")
-                            }
-                        })
+                    if (document) {
+                        setPermission("read")
+                    }
 
                     await supabaseClient
                         .rpc("canedit", params)
@@ -67,7 +63,8 @@ function Shared() {
                                 setPermission("read|edit")
                             }
                         })
-
+                })
+                .then(() => {
                     setLoadingPermission(false)
                 })
         }

@@ -1,4 +1,5 @@
 import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
+import Flex from "src/components/Flex"
 import styled from "styled-components"
 import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
@@ -37,7 +38,7 @@ export default function SlashwriterEditor(props: {
     const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
     const ydoc = useMemo(() => new Y.Doc(), [documentId])
 
-    // const [status, setStatus] = useState("connecting")
+    const [status, setStatus] = useState("connecting")
 
     const websocketProvider = useMemo(
         () =>
@@ -51,7 +52,10 @@ export default function SlashwriterEditor(props: {
                 // The token is retrieved from the cookies server-side,
                 // we only set a value for `token` here so that the
                 // onAuthenticate hook does not log a warning message.
-                token: "token"
+                token: "token",
+                onStatus({ status }) {
+                    setStatus(status)
+                }
             }),
         [documentId, ydoc]
     )
@@ -164,12 +168,31 @@ export default function SlashwriterEditor(props: {
 
     return (
         <Container>
-            <EditorTitle
-                editor={titleEditor}
-                onKeyDown={handleTitleEditorKeyDown}
-                spellCheck="false"
-            />
-            <EditorContent editor={contentEditor} spellCheck="false" />
+            {status === "connecting" ? (
+                <Flex
+                    align="center"
+                    justify="center"
+                    style={{ width: "100%", height: "100%" }}
+                >
+                    <span>Connexion...</span>
+                </Flex>
+            ) : (
+                <>
+                    <pre>
+                        {JSON.stringify(
+                            titleEditor.storage.collaborationCursor,
+                            null,
+                            2
+                        )}
+                    </pre>
+                    <EditorTitle
+                        editor={titleEditor}
+                        onKeyDown={handleTitleEditorKeyDown}
+                        spellCheck="false"
+                    />
+                    <EditorContent editor={contentEditor} spellCheck="false" />
+                </>
+            )}
         </Container>
     )
 }
@@ -232,11 +255,10 @@ const EditorContent = styled(TiptapEditorContent)`
 `
 
 const Container = styled.div`
-    padding-top: 100px;
+    padding: 100px 25px;
 
     .ProseMirror {
         padding: 25px calc((100% - (700px + 50px * 2)) / 2);
-        margin: 0 25px;
         outline: none;
 
         /* Collaboration cursor */

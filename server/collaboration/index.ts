@@ -28,6 +28,7 @@ export function initCollaboration(server) {
         ) {
             const documentName = req.url.split("/").pop()
             if (documentName) {
+                console.log(`Upgrading connection (document: ${documentName})`)
                 wss.handleUpgrade(req, socket, head, (client) => {
                     client.on("error", (error) => {
                         console.error(
