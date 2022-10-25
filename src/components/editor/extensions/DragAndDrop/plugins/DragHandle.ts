@@ -1,8 +1,8 @@
 // https://github.com/ueberdosis/tiptap/blob/main/demos/src/Experiments/GlobalDragHandle/Vue/DragHandle.js
 
-import { NodeSelection, Plugin } from 'prosemirror-state'
+import { NodeSelection, Plugin } from "prosemirror-state"
 // @ts-ignore
-import { __serializeForClipboard, EditorView } from 'prosemirror-view'
+import { __serializeForClipboard, EditorView } from "prosemirror-view"
 
 export interface DragHandleOptions {
     /**
@@ -148,10 +148,8 @@ export default function DragHandle(options: DragHandleOptions) {
                     const lineHeight = parseInt(compStyle.lineHeight, 10)
 
                     const rect = absoluteRect(node)
-                    const win = node.ownerDocument.defaultView
 
-                    rect.top += win.scrollY + (lineHeight - 24) / 2
-                    rect.left += win.scrollX
+                    rect.top += (lineHeight - 24) / 2
                     rect.width = options.dragHandleWidth
 
                     dragHandleElement.style.left = `${rect.left - rect.width}px`
