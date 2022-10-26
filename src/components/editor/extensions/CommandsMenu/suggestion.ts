@@ -1,11 +1,11 @@
-import Router from 'next/router'
-import store from 'src/store'
-import { supabaseClient } from 'src/utils/supabase'
-import tippy from 'tippy.js'
+import Router from "next/router"
+import store from "src/store"
+import { supabaseClient } from "src/utils/supabase"
+import tippy from "tippy.js"
 
-import { ReactRenderer } from '@tiptap/react'
+import { ReactRenderer } from "@tiptap/react"
 
-import CommandsList from './CommandsList'
+import CommandsList from "./CommandsList"
 
 const suggestionConfig = {
     items: ({ query }) => {
@@ -115,22 +115,25 @@ const suggestionConfig = {
                 title: "Subdocument",
                 command: async ({ editor, range }) => {
                     const navigationStore = store.getState().navigation
+                    console.log(navigationStore.activeDocument)
                     const { data, error } = await supabaseClient
                         .from("documents")
                         .insert({
-                            folder: navigationStore.currentFolder.id,
-                            parent: navigationStore.currentDocument.id
+                            parent: navigationStore.activeDocument
                         })
 
                     if (data) {
+                        const docId = data[0].id
                         editor
                             .chain()
                             .focus()
                             .deleteRange(range)
-                            .insertSubdocument(data[0].id)
+                            .insertSubdocument(docId)
                             .run()
 
-                        Router.push(`/doc/${data[0].id}`)
+                        Router.push(
+                            `${Router.asPath.split(/\/[^/]*$/)[0]}/${docId}`
+                        )
                     } else {
                         console.error(error)
                         return alert("Impossible de créer un sous-document")

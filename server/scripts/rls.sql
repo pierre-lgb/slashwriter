@@ -131,7 +131,6 @@ end; $$;
 drop policy if exists "Other users may read a shared document" on documents;
 create policy "Other users may read a shared document" on documents
   for select using (
-    deleted is not true and
     share_settings is not null and
     (canRead(auth.uid(), share_settings) 
       or canEdit(auth.uid(), share_settings))
@@ -140,8 +139,35 @@ create policy "Other users may read a shared document" on documents
 drop policy if exists "Other users may edit a shared document" on documents;
 create policy "Other users may edit a shared document" on documents
   for update using (
-    deleted is not true and
     share_settings is not null and 
     canEdit(auth.uid(), share_settings)
   ); 
 
+create or replace function canInsertSubdocument(user_id uuid, parent_document_id uuid) returns boolean
+language plpgsql
+as
+$$
+declare
+  can_insert_subdocument boolean;
+  parent_document documents%rowtype;
+  parent_share_settings shares%rowtype;
+begin
+select * into parent_document from documents where id=parent_document_id;
+if not found then
+  can_insert_subdocument := false;
+else
+  if (select include_subdocuments from shares where id=parent_document.share_settings) is true and canEdit(user_id, parent_document.share_settings) then
+    can_insert_subdocument := true;
+  else
+    can_insert_subdocument := false;
+  end if;
+end if;
+return can_insert_subdocument;
+end; $$;
+
+drop policy if exists "Other users may insert subdocuments in a shared document" on documents;
+create policy "Other users may insert subdocuments in a shared document" on documents
+  for insert with check (
+    parent is not null and
+    canInsertSubdocument(auth.uid(), parent)
+  ); 

@@ -1,4 +1,5 @@
 import Head from "next/head"
+import { useEffect } from "react"
 import { Provider as StoreProvider } from "react-redux"
 import GlobalStyle from "src/components/GlobalStyle"
 import store from "src/store"

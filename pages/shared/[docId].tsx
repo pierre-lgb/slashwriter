@@ -4,6 +4,8 @@ import { useEffect, useLayoutEffect, useMemo, useState } from "react"
 import Flex from "src/components/Flex"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import { useGetDocumentsQuery } from "src/services/documents"
+import { useAppDispatch } from "src/store"
+import { setActiveDocument } from "src/store/navigation"
 import { supabaseClient, useUser } from "src/utils/supabase"
 
 const DocumentEditor = dynamic(() => import("src/components/editor"), {
@@ -38,6 +40,16 @@ function Shared() {
             router.push(router.asPath.replace("shared", "doc"))
         }
     }, [docId, cacheDocument])
+
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(setActiveDocument(docId))
+
+        return () => {
+            dispatch(setActiveDocument(null))
+        }
+    }, [docId])
 
     useEffect(() => {
         if ((user || isAnonymous) && loadingPermission) {

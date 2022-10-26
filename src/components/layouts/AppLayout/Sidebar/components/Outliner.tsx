@@ -1,10 +1,10 @@
-import Flex from 'src/components/Flex'
-import { useAppSelector } from 'src/store'
-import styled from 'styled-components'
+import Flex from "src/components/Flex"
+import { useAppSelector } from "src/store"
+import styled from "styled-components"
 
-import FolderOpenOutlined from '@mui/icons-material/FolderOpenOutlined'
+import FolderOpenOutlined from "@mui/icons-material/FolderOpenOutlined"
 
-import SidebarItem from './SidebarItem'
+import SidebarItem from "./SidebarItem"
 
 interface OutlinerProps {
     folders: any[]
@@ -12,7 +12,7 @@ interface OutlinerProps {
 }
 
 export default function Outliner(props: OutlinerProps) {
-    const { currentFolder } = useAppSelector((store) => store.navigation)
+    const { activeFolder } = useAppSelector((store) => store.navigation)
 
     return (
         <>
@@ -30,7 +30,7 @@ export default function Outliner(props: OutlinerProps) {
                     href={`/folder/${id}`}
                     icon={<FolderOpenOutlined />}
                     title={name}
-                    active={id === currentFolder?.id}
+                    active={id === activeFolder}
                 />
             ))}
         </>

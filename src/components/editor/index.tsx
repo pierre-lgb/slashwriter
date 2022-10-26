@@ -168,31 +168,18 @@ export default function SlashwriterEditor(props: {
 
     return (
         <Container>
-            {status === "connecting" ? (
-                <Flex
-                    align="center"
-                    justify="center"
-                    style={{ width: "100%", height: "100%" }}
-                >
-                    <span>Connexion...</span>
+            {status !== "connected" && (
+                <Flex align="center" justify="center">
+                    <span>Hors ligne</span>
                 </Flex>
-            ) : (
-                <>
-                    <pre>
-                        {JSON.stringify(
-                            titleEditor.storage.collaborationCursor,
-                            null,
-                            2
-                        )}
-                    </pre>
-                    <EditorTitle
-                        editor={titleEditor}
-                        onKeyDown={handleTitleEditorKeyDown}
-                        spellCheck="false"
-                    />
-                    <EditorContent editor={contentEditor} spellCheck="false" />
-                </>
             )}
+
+            <EditorTitle
+                editor={titleEditor}
+                onKeyDown={handleTitleEditorKeyDown}
+                spellCheck="false"
+            />
+            <EditorContent editor={contentEditor} spellCheck="false" />
         </Container>
     )
 }

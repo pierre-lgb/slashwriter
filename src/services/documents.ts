@@ -63,8 +63,13 @@ export const documentsApi = baseApi.injectEndpoints({
             ) => {
                 await cacheDataLoaded
 
+                const { user } = await supabaseClient.auth.api.getUser(
+                    supabaseClient.auth.session().access_token
+                )
+
                 const subscription = supabaseClient
-                    .from("documents")
+                    // .from("documents")
+                    .from(`documents:user_id=eq.${user.id}`)
                     .on("*", (payload) => {
                         updateCachedData((draft) => {
                             updateDocumentsCacheOnEvent(
@@ -74,6 +79,7 @@ export const documentsApi = baseApi.injectEndpoints({
                             )
                         })
                     })
+
                     .subscribe()
 
                 await cacheEntryRemoved

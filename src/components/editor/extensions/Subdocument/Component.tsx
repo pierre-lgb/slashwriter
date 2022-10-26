@@ -37,7 +37,7 @@ export default function Subdocument(props) {
                     if (error) {
                         setDocumentTitle("(Document inexistant)")
                     } else {
-                        setDocumentTitle(data.title)
+                        setDocumentTitle(data.title || "Sans titre")
                     }
                 })
         }

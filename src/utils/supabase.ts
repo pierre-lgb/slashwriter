@@ -1,4 +1,11 @@
-import { getUser, withPageAuth as _withPageAuth } from '@supabase/auth-helpers-nextjs'
+import api from "src/services"
+import store from "src/store"
+
+import {
+    getUser,
+    supabaseClient,
+    withPageAuth as _withPageAuth
+} from "@supabase/auth-helpers-nextjs"
 
 export const withPageAuth = ({ redirectTo = "/auth", ...props } = {}) =>
     _withPageAuth({
@@ -27,6 +34,11 @@ export const withoutPageAuth = ({
             return (await getServerSideProps(ctx)) as any
         }
     })
+
+export const signOut = () => {
+    supabaseClient.auth.signOut()
+    store.dispatch(api.util.resetApiState())
+}
 
 export { UserProvider, useUser } from "@supabase/auth-helpers-react"
 export { supabaseClient, getUser } from "@supabase/auth-helpers-nextjs"

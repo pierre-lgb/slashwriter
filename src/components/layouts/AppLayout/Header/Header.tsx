@@ -4,6 +4,7 @@ import Flex from "src/components/Flex"
 import ShareDocumentButton from "src/components/ShareDocumentButton"
 import Button from "src/components/ui/Button"
 import { useGetDocumentsQuery } from "src/services/documents"
+import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { toggleSidebar } from "src/store/ui"
 import { useUser } from "src/utils/supabase"
@@ -28,14 +29,21 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     const dispatch = useAppDispatch()
 
     const { sidebarOpen } = useAppSelector((state) => state.ui)
-    const { currentFolder, currentDocument } = useAppSelector(
+    const { activeFolder, activeDocument } = useAppSelector(
         (state) => state.navigation
     )
 
+    const { folderName } = useGetFoldersQuery(null, {
+        selectFromResult: ({ data }) => ({
+            folderName: data?.find((f) => f.id === activeFolder)?.name
+        }),
+        skip: !user
+    })
+
     const { documentPath } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data }) => ({
-            documentPath: currentDocument
-                ? getDocumentPath(currentDocument.id, data)
+            documentPath: activeDocument
+                ? getDocumentPath(activeDocument, data)
                 : []
         }),
         skip: !user
@@ -52,12 +60,12 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                 {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
             </ToggleSidebarButton>
             <Breadcrumb>
-                {!!currentFolder ? (
+                {!!activeFolder ? (
                     <>
                         <Breadcrumb.Item
-                            text={currentFolder.name}
+                            text={folderName || "Dossier"}
                             icon={<FolderOpenOutlined />}
-                            href={`/folder/${currentFolder.id}`}
+                            href={`/folder/${activeFolder}`}
                         />
 
                         {documentPath.length > BREADCRUMB_ITEMS_MAX && (
@@ -87,16 +95,16 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
             </Breadcrumb>
 
             <Flex align="center" gap={8}>
-                {!!currentDocument && (
-                    <ShareDocumentButton documentId={currentDocument.id} />
+                {!!activeDocument && (
+                    <ShareDocumentButton documentId={activeDocument} />
                 )}
-                {!!currentFolder && (
-                    <AddDocumentButton folderId={currentFolder.id} border />
+                {!!activeFolder && (
+                    <AddDocumentButton folderId={activeFolder} border />
                 )}
-                {!!currentFolder && (
+                {!!activeFolder && (
                     <>
                         <VerticalSeparator />
-                        {!!currentDocument ? (
+                        {!!activeDocument ? (
                             <Button
                                 icon={<MoreHorizOutlined fontSize="small" />}
                                 onClick={() => console.log("document options")}
@@ -115,7 +123,9 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
 }
 
 function getDocumentPath(documentId: string, documents: any[]) {
-    const document = documents.find((d) => d.id === documentId)
+    const document = (documents || []).find((d) => d.id === documentId)
+
+    if (!document) return []
 
     let path = [document]
     let parent = documents.find((d) => d.id === document.parent)

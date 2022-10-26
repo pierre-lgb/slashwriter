@@ -158,6 +158,8 @@ security definer set search_path = public
 as $$
 begin
   if new.parent is not null then
+    new.folder := (SELECT at.folder FROM documents at WHERE at.id = new.parent);
+    new.user_id := (SELECT at.user_id FROM documents at WHERE at.id = new.parent);
     new.path := (SELECT at.path FROM documents at WHERE at.id = new.parent)::citext || new.parent::citext || '/';
     new.share_settings := (SELECT at.share_settings FROM documents at WHERE at.id = new.parent)::uuid;
     if not (SELECT at.include_subdocuments FROM shares at WHERE at.id = new.share_settings) then

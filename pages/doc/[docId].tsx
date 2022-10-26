@@ -7,7 +7,7 @@ import TransitionOpacity from "src/components/TransitionOpacity"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch } from "src/store"
-import { setCurrentDocument, setCurrentFolder } from "src/store/navigation"
+import { setActiveDocument, setActiveFolder } from "src/store/navigation"
 import { useUser, withPageAuth } from "src/utils/supabase"
 
 const DocumentEditor = dynamic(() => import("src/components/editor"), {
@@ -37,12 +37,12 @@ function Document() {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(setCurrentDocument(document))
-        dispatch(setCurrentFolder(folder))
+        dispatch(setActiveDocument(document?.id))
+        dispatch(setActiveFolder(folder?.id))
 
         return () => {
-            dispatch(setCurrentDocument(null))
-            dispatch(setCurrentFolder(null))
+            dispatch(setActiveDocument(null))
+            dispatch(setActiveFolder(null))
         }
     }, [document, folder])
 

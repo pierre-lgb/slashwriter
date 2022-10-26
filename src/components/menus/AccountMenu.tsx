@@ -1,13 +1,13 @@
-import { useRouter } from 'next/router'
-import Flex from 'src/components/Flex'
-import Menu from 'src/components/ui/navigation/Menu'
-import { supabaseClient } from 'src/utils/supabase'
-import styled from 'styled-components'
+import { useRouter } from "next/router"
+import Flex from "src/components/Flex"
+import Menu from "src/components/ui/navigation/Menu"
+import { signOut } from "src/utils/supabase"
+import styled from "styled-components"
 
-import KeyboardCommandKeyOutlined from '@mui/icons-material/KeyboardCommandKeyOutlined'
-import ListAltOutlined from '@mui/icons-material/ListAltOutlined'
-import LogoutOutlined from '@mui/icons-material/LogoutOutlined'
-import PersonOutlined from '@mui/icons-material/PersonOutlined'
+import KeyboardCommandKeyOutlined from "@mui/icons-material/KeyboardCommandKeyOutlined"
+import ListAltOutlined from "@mui/icons-material/ListAltOutlined"
+import LogoutOutlined from "@mui/icons-material/LogoutOutlined"
+import PersonOutlined from "@mui/icons-material/PersonOutlined"
 
 function AccountMenu({ children }) {
     const router = useRouter()
@@ -38,7 +38,7 @@ function AccountMenu({ children }) {
                     <Menu.Item
                         icon={<LogoutOutlined />}
                         title="Déconnexion"
-                        onClick={() => supabaseClient.auth.signOut()}
+                        onClick={() => signOut()}
                         menu={instance}
                     />
                 </Container>
