@@ -142,11 +142,13 @@ function Folder() {
                                     align="center"
                                     justify="space-between"
                                     gap={10}
+                                    style={{ flexWrap: "wrap" }}
                                 >
                                     <Select
                                         onChange={(e) => {
                                             setSortOrder(e.target.value)
                                         }}
+                                        style={{ minWidth: 150 }}
                                     >
                                         <Select.Option value="a-z">
                                             De A à Z
@@ -165,7 +167,9 @@ function Folder() {
                                     <AddDocumentButton
                                         folderId={folderId}
                                         appearance="primary"
-                                    />
+                                    >
+                                        Nouveau
+                                    </AddDocumentButton>
                                 </Flex>
                                 <Separator />
                                 {documents

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import Flex from "src/components/Flex"
 import Button from "src/components/ui/Button"
 import Modal from "src/components/ui/Modal"
@@ -9,47 +9,11 @@ import IosShareOutlined from "@mui/icons-material/IosShareOutlined"
 
 interface ShareDocumentButtonProps {
     documentId: string
-}
-
-async function getDocumentShareSettings({ documentId }) {
-    const { data, error } = await supabaseClient
-        .from("documents")
-        .select("share_settings(*)")
-        .eq("id", documentId)
-        .single()
-
-    return data ? { data: data.share_settings } : { error }
-}
-
-function createShareSettings({ documentId }) {
-    return supabaseClient
-        .from("shares")
-        .insert({
-            document_id: documentId
-        })
-        .single()
-}
-
-function deleteShareSettings({ id }) {
-    return supabaseClient.from("shares").delete().match({ id }).single()
-}
-
-function updateShareSettings({ id, ...updates }) {
-    return supabaseClient.from("shares").update(updates).match({ id }).single()
-}
-
-async function getUserIdByEmail({ email }) {
-    const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("id")
-        .eq("email", email)
-        .single()
-
-    return data ? data.id : { error }
+    children?: ReactNode
 }
 
 export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
-    const { documentId } = props
+    const { documentId, children } = props
 
     const [email, setEmail] = useState<string>("")
     const [permission, setPermission] = useState<string>("read")
@@ -106,7 +70,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                     appearance="secondary"
                     icon={<IosShareOutlined />}
                 >
-                    Partager
+                    {children}
                 </Button>
             }
             closeButton
@@ -280,3 +244,40 @@ const PopoverContainer = styled(Flex)`
 const PopoverTitle = styled.h3`
     margin: 10px 0;
 `
+
+async function getDocumentShareSettings({ documentId }) {
+    const { data, error } = await supabaseClient
+        .from("documents")
+        .select("share_settings(*)")
+        .eq("id", documentId)
+        .single()
+
+    return data ? { data: data.share_settings } : { error }
+}
+
+function createShareSettings({ documentId }) {
+    return supabaseClient
+        .from("shares")
+        .insert({
+            document_id: documentId
+        })
+        .single()
+}
+
+function deleteShareSettings({ id }) {
+    return supabaseClient.from("shares").delete().match({ id }).single()
+}
+
+function updateShareSettings({ id, ...updates }) {
+    return supabaseClient.from("shares").update(updates).match({ id }).single()
+}
+
+async function getUserIdByEmail({ email }) {
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("id")
+        .eq("email", email)
+        .single()
+
+    return data ? data.id : { error }
+}

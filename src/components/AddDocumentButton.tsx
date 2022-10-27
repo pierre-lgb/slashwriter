@@ -1,4 +1,5 @@
 import { useRouter } from "next/router"
+import { ReactNode } from "react"
 import { useAddDocumentMutation } from "src/services/documents"
 
 import AddOutlined from "@mui/icons-material/AddOutlined"
@@ -10,12 +11,13 @@ interface AddDocumentButtonProps {
      * The folder to add a document in.
      */
     folderId: string
+    children?: ReactNode
     [key: string]: any
 }
 
 export default function AddDocumentButton(props: AddDocumentButtonProps) {
     const router = useRouter()
-    const { folderId, ...rest } = props
+    const { folderId, children, ...rest } = props
     const [addDocument] = useAddDocumentMutation()
 
     return (
@@ -36,7 +38,7 @@ export default function AddDocumentButton(props: AddDocumentButtonProps) {
             }}
             {...rest}
         >
-            Nouveau
+            {children}
         </Button>
     )
 }

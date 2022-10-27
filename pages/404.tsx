@@ -10,7 +10,7 @@ function Error404() {
             <Image src="/assets/404.svg" width={500} height={200} alt="404" />
             <Typography.Title level={3}>Page introuvable</Typography.Title>
             <Link href="/" passHref legacyBehavior>
-                <Typography.Link>Retourner à l'accueil</Typography.Link>
+                <Typography.Link>Retourner à l&apos;accueil</Typography.Link>
             </Link>
         </Container>
     )

@@ -1,7 +1,9 @@
-import { Fragment, ReactNode } from "react"
+import Link from "next/link"
+import { ReactNode } from "react"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import Flex from "src/components/Flex"
 import ShareDocumentButton from "src/components/ShareDocumentButton"
+import Breadcrumbs from "src/components/ui/Breadcrumbs"
 import Button from "src/components/ui/Button"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
@@ -15,14 +17,10 @@ import MenuOpenOutlined from "@mui/icons-material/MenuOpenOutlined"
 import MenuOutlined from "@mui/icons-material/MenuOutlined"
 import MoreHorizOutlined from "@mui/icons-material/MoreHorizOutlined"
 
-import Breadcrumb from "./components/Breadcrumb"
-
 interface HeaderProps {
     pageTitle: string
     pageIcon: ReactNode
 }
-
-const BREADCRUMB_ITEMS_MAX = 3
 
 export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     const { user } = useUser()
@@ -52,91 +50,86 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     })
 
     return (
-        <Container align="center" gap={20}>
-            <ToggleSidebarButtonContainer>
-                <ToggleSidebarButton
-                    as="button"
-                    onClick={() => {
-                        dispatch(toggleSidebar())
-                    }}
-                >
-                    {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
-                </ToggleSidebarButton>
-            </ToggleSidebarButtonContainer>
-            <MobileToggleSidebarButtonContainer>
-                <ToggleSidebarButton
-                    as="button"
-                    onClick={() => {
-                        dispatch(toggleMobileSidebar())
-                    }}
-                >
-                    {mobileSidebarOpen ? (
-                        <MenuOpenOutlined />
-                    ) : (
-                        <MenuOutlined />
-                    )}
-                </ToggleSidebarButton>
-            </MobileToggleSidebarButtonContainer>
-
-            <Breadcrumb>
-                {!!activeFolder ? (
-                    <>
-                        <Breadcrumb.Item
-                            text={folderName || "Dossier"}
-                            icon={<FolderOpenOutlined />}
-                            href={`/folder/${activeFolder}`}
-                        />
-
-                        {documentPath.length > BREADCRUMB_ITEMS_MAX && (
-                            <>
-                                <Breadcrumb.Separator />
-                                <Breadcrumb.Item text="..." />
-                            </>
+        <Container>
+            <Flex auto align="center" gap={20}>
+                <ToggleSidebarButtonContainer>
+                    <ToggleSidebarButton
+                        as="button"
+                        onClick={() => {
+                            dispatch(toggleSidebar())
+                        }}
+                    >
+                        {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
+                    </ToggleSidebarButton>
+                </ToggleSidebarButtonContainer>
+                <MobileToggleSidebarButtonContainer>
+                    <ToggleSidebarButton
+                        as="button"
+                        onClick={() => {
+                            dispatch(toggleMobileSidebar())
+                        }}
+                    >
+                        {mobileSidebarOpen ? (
+                            <MenuOpenOutlined />
+                        ) : (
+                            <MenuOutlined />
                         )}
-                        {!!documentPath.length &&
-                            documentPath
-                                .slice(-BREADCRUMB_ITEMS_MAX)
-                                .map((document, index) => (
-                                    <Fragment key={index}>
-                                        <Breadcrumb.Separator />
-                                        <Breadcrumb.Item
-                                            text={
-                                                document.title || "Sans titre"
-                                            }
-                                            href={`/doc/${document.id}`}
-                                        />
-                                    </Fragment>
-                                ))}
-                    </>
-                ) : (
-                    <Breadcrumb.Item text={pageTitle} icon={pageIcon} />
-                )}
-            </Breadcrumb>
+                    </ToggleSidebarButton>
+                </MobileToggleSidebarButtonContainer>
 
-            <Flex align="center" gap={8}>
+                <Breadcrumbs
+                    maxItems={4}
+                    aria-label="breadcrumbs"
+                    className="breadcrumbs"
+                >
+                    {activeFolder && (
+                        <Link href={`/folder/${activeFolder}`} legacyBehavior>
+                            <Flex as="a" align="center" gap={10}>
+                                <FolderOpenOutlined />
+                                {folderName || "Dossier"}
+                            </Flex>
+                        </Link>
+                    )}
+                    {!!activeFolder &&
+                        !!documentPath.length &&
+                        documentPath.map((document, index) => (
+                            <Link
+                                key={index}
+                                href={`/doc/${document.id}`}
+                                legacyBehavior
+                            >
+                                <a>{document.title || "Sans titre"}</a>
+                            </Link>
+                        ))}
+                    )
+                    {!activeFolder && (
+                        <Flex as="a" align="center" gap={10}>
+                            {pageIcon}
+                            {pageTitle}
+                        </Flex>
+                    )}
+                </Breadcrumbs>
+            </Flex>
+            <Flex
+                align="center"
+                gap={8}
+                style={{ justifySelf: "flex-end", flexShrink: 0 }}
+            >
                 {!!activeDocument && (
-                    <ShareDocumentButton documentId={activeDocument} />
+                    <ShareDocumentButton documentId={activeDocument}>
+                        Partager
+                    </ShareDocumentButton>
                 )}
                 {!!activeFolder && (
-                    <AddDocumentButton folderId={activeFolder} border />
+                    <AddDocumentButton folderId={activeFolder} />
                 )}
-                {!!activeFolder && (
+                {(!!activeDocument || !!activeFolder) && (
                     <>
                         <VerticalSeparator />
-                        {!!activeDocument ? (
-                            <Button
-                                size="medium"
-                                appearance="text"
-                                icon={<MoreHorizOutlined />}
-                                onClick={() => console.log("document options")}
-                            />
-                        ) : (
-                            <Button
-                                appearance="text"
-                                icon={<MoreHorizOutlined />}
-                                onClick={() => console.log("folder options")}
-                            />
-                        )}
+                        <Button
+                            appearance="text"
+                            icon={<MoreHorizOutlined />}
+                        />
                     </>
                 )}
             </Flex>
@@ -162,12 +155,37 @@ function getDocumentPath(documentId: string, documents: any[]) {
     return path
 }
 
-const Container = styled(Flex)`
+const Container = styled.div`
     height: 60px;
     padding: 0 20px;
-    border-bottom: 1px solid var(--color-n300);
+    display: flex;
     flex-shrink: 0;
-    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--color-n300);
+
+    @media (max-width: 768px) {
+        .breadcrumbs {
+            display: none;
+        }
+    }
+`
+
+const HeaderContent = styled(Flex)`
+    display: flex;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+`
+
+const MobileHeaderContent = styled(Flex)`
+    display: none;
+
+    @media (max-width: 768px) {
+        display: flex;
+    }
 `
 
 const ToggleSidebarButton = styled(Flex)`

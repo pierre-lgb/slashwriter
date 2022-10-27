@@ -39,15 +39,16 @@ const Container = styled(Flex)`
 `
 
 const Main = styled.main`
-    max-height: 100vh;
     display: flex;
-    flex: 1 1 auto;
     flex-direction: column;
+    max-height: 100vh;
+    width: 100%;
+    overflow: hidden;
 `
 
 const PageContent = styled.div`
     overflow-y: auto;
-    flex: 1 1 auto;
+    width: 100%;
 `
 
 export default AppLayout
