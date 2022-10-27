@@ -86,7 +86,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                         <Link href={`/folder/${activeFolder}`} legacyBehavior>
                             <Flex as="a" align="center" gap={10}>
                                 <FolderOpenOutlined />
-                                {folderName || "Dossier"}
+                                <span>{folderName || "Dossier"}</span>
                             </Flex>
                         </Link>
                     )}

@@ -31,7 +31,10 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
                     ? items
                     : [
                           items[0],
-                          <Typography.Text style={{ userSelect: "none" }}>
+                          <Typography.Text
+                              style={{ userSelect: "none" }}
+                              key="ellipsis"
+                          >
                               …
                           </Typography.Text>,
                           ...items.slice(
@@ -49,6 +52,7 @@ const BreadcrumbsList = styled.ol`
     list-style: none;
     display: flex;
     overflow: hidden;
+    text-overflow: ellipsis;
     padding: 0;
     margin: 0;
 `
@@ -67,6 +71,11 @@ const BreadcrumbsItem = styled.li<{ active: boolean }>`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    * {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 
     &:hover {
         background-color: var(--color-n100);
