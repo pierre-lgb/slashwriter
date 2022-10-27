@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
+import Loader from "src/components/ui/Loader"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch } from "src/store"
@@ -60,7 +61,7 @@ function Document() {
                     style={{ width: "100%", height: "100%" }}
                 >
                     {!!isDocumentLoading ? (
-                        <span>Chargement...</span>
+                        <Loader size="large" />
                     ) : (
                         <span>
                             Ce document n&apos;existe pas. Il a peut-être été

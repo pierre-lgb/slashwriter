@@ -1,10 +1,10 @@
-import Link from 'next/link'
-import { ReactElement } from 'react'
-import Flex from 'src/components/Flex'
-import styled, { css } from 'styled-components'
+import Link from "next/link"
+import { ReactNode } from "react"
+import Flex from "src/components/Flex"
+import styled, { css } from "styled-components"
 
 interface BreadcrumbItemProps {
-    icon?: ReactElement
+    icon?: ReactNode
     text?: string
     href?: string
 }

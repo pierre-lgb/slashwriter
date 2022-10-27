@@ -170,7 +170,7 @@ export default function SlashwriterEditor(props: {
         <Container>
             {status !== "connected" && (
                 <Flex align="center" justify="center">
-                    <span>Hors ligne</span>
+                    {/* <span>Hors ligne</span> */}
                 </Flex>
             )}
 
@@ -187,9 +187,9 @@ export default function SlashwriterEditor(props: {
 const EditorTitle = styled(TiptapEditorContent)`
     .ProseMirror {
         h1 {
-            margin: 0;
+            margin: 1rem 0;
             font-weight: 700;
-            font-size: 2em;
+            font-size: 2.25em;
         }
     }
 `
@@ -245,7 +245,7 @@ const Container = styled.div`
     padding: 100px 25px;
 
     .ProseMirror {
-        padding: 25px calc((100% - (700px + 50px * 2)) / 2);
+        padding: 25px calc((100% - (700px)) / 2);
         outline: none;
 
         /* Collaboration cursor */

@@ -1,5 +1,5 @@
-import { CSSProperties } from 'react'
-import styled from 'styled-components'
+import { CSSProperties } from "react"
+import styled from "styled-components"
 
 interface FlexProps {
     auto?: boolean

@@ -8,6 +8,8 @@ import AppLayout from "src/components/layouts/AppLayout"
 import Separator from "src/components/Separator"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Button from "src/components/ui/Button"
+import Loader from "src/components/ui/Loader"
+import Typography from "src/components/ui/Typography"
 import { useDeleteDocumentMutation, useGetDocumentsQuery } from "src/services/documents"
 import {
     useDeleteFolderMutation,
@@ -30,6 +32,7 @@ function DeleteFolderButton({ folderId }) {
     return (
         <Tippy content="Supprimer" arrow={false}>
             <Button
+                appearance="text"
                 onClick={() => {
                     const confirmation = confirm(
                         "Êtes-vous certain de vouloir supprimer ce dossier ?"
@@ -41,7 +44,7 @@ function DeleteFolderButton({ folderId }) {
                     })
                 }}
                 icon={<DeleteOutlined />}
-                tabIndex="-1"
+                tabIndex={-1}
             />
         </Tippy>
     )
@@ -52,6 +55,7 @@ function RenameFolderButton({ folderId }) {
     return (
         <Tippy content="Renommer" arrow={false}>
             <Button
+                appearance="text"
                 onClick={() => {
                     const folderName = prompt("Renommer le dossier:")
                     if (!folderName) return
@@ -61,7 +65,7 @@ function RenameFolderButton({ folderId }) {
                     })
                 }}
                 icon={<DriveFileRenameOutlineOutlined />}
-                tabIndex="-1"
+                tabIndex={-1}
             />
         </Tippy>
     )
@@ -73,14 +77,15 @@ function DeleteDocumentButton({ documentId }) {
     return (
         <Tippy content="Supprimer" arrow={false} placement="bottom">
             <Button
+                appearance="text"
                 onClick={(e) => {
                     e.preventDefault()
 
                     !confirm("Voulez-vous supprimer ce document ?") ||
                         deleteDocument({ id: documentId })
                 }}
-                icon={<DeleteOutlined fontSize="small" />}
-                tabIndex="-1"
+                icon={<DeleteOutlined />}
+                tabIndex={-1}
             />
         </Tippy>
     )
@@ -119,136 +124,162 @@ function Folder() {
     return (
         <TransitionOpacity>
             <Container>
-                {!!folder && (
-                    <Flex column gap={10}>
-                        <FolderTitle>
-                            {folder.name}
-                            <Flex gap={5}>
-                                <RenameFolderButton folderId={folderId} />
-                                <DeleteFolderButton folderId={folderId} />
-                            </Flex>
-                        </FolderTitle>
+                <Content>
+                    {!!folder && (
+                        <>
+                            <FolderTitle>
+                                <Typography.Title level={2}>
+                                    {folder.name}
+                                </Typography.Title>
+                                <Flex gap={5}>
+                                    <RenameFolderButton folderId={folderId} />
+                                    <DeleteFolderButton folderId={folderId} />
+                                </Flex>
+                            </FolderTitle>
 
-                        <DocumentList column gap={5}>
-                            <Flex
-                                align="center"
-                                justify="space-between"
-                                gap={10}
-                            >
-                                <Select
-                                    onChange={(e) => {
-                                        setSortOrder(e.target.value)
-                                    }}
+                            <DocumentList column gap={5}>
+                                <Flex
+                                    align="center"
+                                    justify="space-between"
+                                    gap={10}
                                 >
-                                    <Select.Option value="a-z">
-                                        De A à Z
-                                    </Select.Option>
-                                    <Select.Option value="z-a">
-                                        De Z à A
-                                    </Select.Option>
-                                    <Select.Option value="recent">
-                                        Récents
-                                    </Select.Option>
-                                    <Select.Option value="old">
-                                        Anciens
-                                    </Select.Option>
-                                </Select>
-
-                                <AddDocumentButton
-                                    folderId={folderId}
-                                    color="primary"
-                                />
-                            </Flex>
-                            <Separator />
-                            {documents
-                                ?.sort((a, b) => {
-                                    switch (sortOrder) {
-                                        case "a-z":
-                                            return a.title.localeCompare(
-                                                b.title
-                                            )
-                                        case "z-a":
-                                            return b.title.localeCompare(
-                                                a.title
-                                            )
-                                        case "recent":
-                                            return (
-                                                new Date(
-                                                    b.updated_at
-                                                ).getTime() -
-                                                new Date(a.updated_at).getTime()
-                                            )
-
-                                        case "old":
-                                            return (
-                                                new Date(
-                                                    a.updated_at
-                                                ).getTime() -
-                                                new Date(b.updated_at).getTime()
-                                            )
-                                    }
-                                })
-                                .map((doc, index) => (
-                                    <Link
-                                        href={`/doc/${doc.id}`}
-                                        key={index}
-                                        passHref
+                                    <Select
+                                        onChange={(e) => {
+                                            setSortOrder(e.target.value)
+                                        }}
                                     >
-                                        <DocumentListItem
-                                            key={doc.id}
-                                            gap={10}
-                                            as="a"
+                                        <Select.Option value="a-z">
+                                            De A à Z
+                                        </Select.Option>
+                                        <Select.Option value="z-a">
+                                            De Z à A
+                                        </Select.Option>
+                                        <Select.Option value="recent">
+                                            Récents
+                                        </Select.Option>
+                                        <Select.Option value="old">
+                                            Anciens
+                                        </Select.Option>
+                                    </Select>
+
+                                    <AddDocumentButton
+                                        folderId={folderId}
+                                        appearance="primary"
+                                    />
+                                </Flex>
+                                <Separator />
+                                {documents
+                                    ?.sort((a, b) => {
+                                        switch (sortOrder) {
+                                            case "a-z":
+                                                return a.title.localeCompare(
+                                                    b.title
+                                                )
+                                            case "z-a":
+                                                return b.title.localeCompare(
+                                                    a.title
+                                                )
+                                            case "recent":
+                                                return (
+                                                    new Date(
+                                                        b.updated_at
+                                                    ).getTime() -
+                                                    new Date(
+                                                        a.updated_at
+                                                    ).getTime()
+                                                )
+
+                                            case "old":
+                                                return (
+                                                    new Date(
+                                                        a.updated_at
+                                                    ).getTime() -
+                                                    new Date(
+                                                        b.updated_at
+                                                    ).getTime()
+                                                )
+                                        }
+                                    })
+                                    .map((doc, index) => (
+                                        <Link
+                                            href={`/doc/${doc.id}`}
+                                            key={index}
+                                            passHref
                                         >
-                                            <DocumentIcon />
+                                            <DocumentListItem
+                                                key={doc.id}
+                                                gap={10}
+                                                as="a"
+                                            >
+                                                <DocumentIcon />
 
-                                            <Flex auto column justify="center">
-                                                <DocumentTitle>
-                                                    {doc.title}
-                                                </DocumentTitle>
-                                                <DocumentMeta>
-                                                    Modifié le{" "}
-                                                    {moment(
-                                                        new Date(doc.updated_at)
-                                                    ).format("DD/MM/YYYY")}{" "}
-                                                    à{" "}
-                                                    {moment(
-                                                        new Date(doc.updated_at)
-                                                    ).format("HH:mm")}
-                                                </DocumentMeta>
-                                            </Flex>
+                                                <Flex
+                                                    auto
+                                                    column
+                                                    justify="center"
+                                                >
+                                                    <DocumentTitle>
+                                                        {doc.title}
+                                                    </DocumentTitle>
+                                                    <DocumentMeta>
+                                                        Modifié le{" "}
+                                                        {moment(
+                                                            new Date(
+                                                                doc.updated_at
+                                                            )
+                                                        ).format(
+                                                            "DD/MM/YYYY"
+                                                        )}{" "}
+                                                        à{" "}
+                                                        {moment(
+                                                            new Date(
+                                                                doc.updated_at
+                                                            )
+                                                        ).format("HH:mm")}
+                                                    </DocumentMeta>
+                                                </Flex>
 
-                                            <Flex align="center">
-                                                <DeleteDocumentButton
-                                                    documentId={doc.id}
-                                                />
-                                            </Flex>
-                                        </DocumentListItem>
-                                    </Link>
-                                ))}
-                        </DocumentList>
-                    </Flex>
-                )}
-                {!folder && !isFolderLoading && (
-                    <span>
-                        Désolé, ce dossier n&apos;existe pas. S&apos;il existait
-                        avant, cela signifie qu&apos;il a été supprimé.
-                    </span>
-                )}
+                                                <Flex align="center">
+                                                    <DeleteDocumentButton
+                                                        documentId={doc.id}
+                                                    />
+                                                </Flex>
+                                            </DocumentListItem>
+                                        </Link>
+                                    ))}
+                            </DocumentList>
+                        </>
+                    )}
+                    {!folder && !isFolderLoading && (
+                        <span>
+                            Désolé, ce dossier n&apos;existe pas. S&apos;il
+                            existait avant, cela signifie qu&apos;il a été
+                            supprimé.
+                        </span>
+                    )}
+                </Content>
             </Container>
         </TransitionOpacity>
     )
 }
 
+Folder.Layout = AppLayout
+Folder.Title = "Dossier"
+
 const Container = styled.div`
-    padding: 125px calc((100% - (700px + 50px * 2)) / 2);
-    margin: 0 25px;
+    padding: 100px 25px;
 `
 
-const FolderTitle = styled.h1`
-    color: var(--color-n900);
-    font-size: 2em;
-    margin: 0;
+const Content = styled.div`
+    margin: 25px auto;
+    max-width: 700px;
     display: flex;
+    flex-direction: column;
+`
+
+const FolderTitle = styled.div`
+    display: inline-flex;
+    align-items: center;
     gap: 20px;
 
     & button {
@@ -305,9 +336,6 @@ const DocumentMeta = styled.span`
     font-size: 0.9em;
     color: var(--color-n600);
 `
-
-Folder.Layout = AppLayout
-Folder.Title = "Dossier"
 
 export const getServerSideProps = withPageAuth()
 

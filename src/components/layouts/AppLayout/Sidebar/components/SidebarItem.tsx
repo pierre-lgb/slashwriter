@@ -1,18 +1,18 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { MouseEventHandler, ReactElement } from "react"
+import { MouseEventHandler, ReactNode } from "react"
 import Flex from "src/components/Flex"
 import styled, { css } from "styled-components"
 
 interface SidebarButtonProps {
     title: string
-    icon: ReactElement
+    icon: ReactNode
     onClick: MouseEventHandler<HTMLButtonElement>
 }
 
 interface SidebarLinkProps {
     title: string
-    icon: ReactElement
+    icon: ReactNode
     active?: boolean
     href: string
 }

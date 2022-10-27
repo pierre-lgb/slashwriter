@@ -1,11 +1,11 @@
-import { MouseEventHandler, ReactElement } from 'react'
-import Flex from 'src/components/Flex'
-import styled, { css } from 'styled-components'
-import { Instance as TippyInstance } from 'tippy.js'
+import { MouseEventHandler, ReactNode } from "react"
+import Flex from "src/components/Flex"
+import styled, { css } from "styled-components"
+import { Instance as TippyInstance } from "tippy.js"
 
 interface MenuItemProps {
     title: string
-    icon: ReactElement
+    icon: ReactNode
     onClick: MouseEventHandler<HTMLButtonElement>
     menu: TippyInstance
 }

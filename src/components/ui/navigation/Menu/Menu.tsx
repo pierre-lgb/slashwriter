@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react"
+import { ReactElement, ReactNode, useState } from "react"
 import styled from "styled-components"
 import { Instance } from "tippy.js"
 
@@ -9,11 +9,12 @@ import MenuSeparator from "./MenuSeparator"
 
 interface MenuProps {
     children: ReactElement
-    content: (instance: Instance) => ReactElement
+    content: (instance: Instance) => ReactNode
     [key: string]: any
 }
 
-export default function Menu({ children, content, ...rest }: MenuProps) {
+export default function Menu(props: MenuProps) {
+    const { children, content, ...rest } = props
     const [instance, setInstance] = useState<Instance>(null)
 
     return (
@@ -25,6 +26,7 @@ export default function Menu({ children, content, ...rest }: MenuProps) {
             animation="shift-away"
             content={content(instance)}
             onCreate={setInstance}
+            appendTo="parent"
             {...rest}
         >
             {children}

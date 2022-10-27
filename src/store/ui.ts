@@ -1,14 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit"
 
 interface NavigationState {
-    /*
-     * Whether the sidebar is open or not
-     */
     sidebarOpen: boolean
+    mobileSidebarOpen: boolean
 }
 
 const initialState: NavigationState = {
-    sidebarOpen: true
+    sidebarOpen: true,
+    mobileSidebarOpen: false
 }
 
 export const uiSlice = createSlice({
@@ -17,10 +16,17 @@ export const uiSlice = createSlice({
     reducers: {
         toggleSidebar(state) {
             state.sidebarOpen = !state.sidebarOpen
+        },
+        toggleMobileSidebar(state) {
+            state.mobileSidebarOpen = !state.mobileSidebarOpen
+        },
+        hideMobileSidebar(state) {
+            state.mobileSidebarOpen = false
         }
     }
 })
 
-export const { toggleSidebar } = uiSlice.actions
+export const { toggleSidebar, toggleMobileSidebar, hideMobileSidebar } =
+    uiSlice.actions
 
 export default uiSlice.reducer

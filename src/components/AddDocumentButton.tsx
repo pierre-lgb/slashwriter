@@ -20,8 +20,8 @@ export default function AddDocumentButton(props: AddDocumentButtonProps) {
 
     return (
         <Button
-            icon={<AddOutlined fontSize="small" />}
-            text="Nouveau"
+            icon={<AddOutlined />}
+            appearance="secondary"
             onClick={() => {
                 const title = prompt("Nouveau document:")
                 if (!title) return
@@ -35,6 +35,8 @@ export default function AddDocumentButton(props: AddDocumentButtonProps) {
                 })
             }}
             {...rest}
-        />
+        >
+            Nouveau
+        </Button>
     )
 }

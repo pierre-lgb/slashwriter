@@ -1,10 +1,14 @@
+import { useRouter } from "next/router"
+import { useEffect } from "react"
 import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
+import Loader from "src/components/ui/Loader"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
-import { useAppSelector } from "src/store"
+import { useAppDispatch, useAppSelector } from "src/store"
+import { hideMobileSidebar } from "src/store/ui"
 import { useUser } from "src/utils/supabase"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined"
 import HelpOutlineOutlined from "@mui/icons-material/HelpOutlineOutlined"
@@ -18,8 +22,12 @@ import Outliner from "./components/Outliner"
 import SidebarItem from "./components/SidebarItem"
 
 export default function Sidebar() {
+    const router = useRouter()
     const { user } = useUser()
-    const { sidebarOpen } = useAppSelector((store) => store.ui)
+    const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
+        (store) => store.ui
+    )
+    const dispatch = useAppDispatch()
 
     const {
         data: folders,
@@ -33,62 +41,109 @@ export default function Sidebar() {
         isLoading: isLoadingDocuments
     } = useGetDocumentsQuery(null, { skip: !user })
 
+    useEffect(() => {
+        dispatch(hideMobileSidebar())
+    }, [router.asPath])
+
     return (
-        <SidebarContainer column open={sidebarOpen}>
-            <AccountSection user={user} />
-            <Section gap={5}>
-                <SidebarItem.Link
-                    icon={<HomeOutlined />}
-                    title="Accueil"
-                    href="/home"
-                />
-                <SidebarItem.Link
-                    icon={<StarBorderOutlined />}
-                    title="Favoris"
-                    href="/favorites"
-                />
-                <SidebarItem.Link
-                    icon={<TuneOutlined />}
-                    title="Paramètres"
-                    href="/settings"
-                />
-            </Section>
-            <Separator />
-            <Section gap={5} auto>
-                {(isLoadingFolders || isLoadingDocuments) && (
-                    <span>Chargement...</span>
-                )}
-                {(foldersError || documentsError) && (
-                    <span>Une erreur est survenue. Voir la console.</span>
-                )}
-                {folders && documents && (
-                    <Outliner folders={folders} documents={documents} />
-                )}
-                <AddFolderButton />
-            </Section>
-            <Separator />
-            <Section gap={5}>
-                <SidebarItem.Link
-                    icon={<DeleteOutlined />}
-                    title="Corbeille"
-                    href="/trash"
-                />
-                <SidebarItem.Link
-                    icon={<HelpOutlineOutlined />}
-                    title="Aide"
-                    href="/help"
-                />
-            </Section>
-        </SidebarContainer>
+        <>
+            <Backdrop
+                onClick={() => dispatch(hideMobileSidebar())}
+                visible={mobileSidebarOpen}
+            />
+            <SidebarComponent
+                column
+                open={sidebarOpen}
+                mobileOpen={mobileSidebarOpen}
+            >
+                <AccountSection user={user} />
+                <Section gap={5}>
+                    <SidebarItem.Link
+                        icon={<HomeOutlined />}
+                        title="Accueil"
+                        href="/home"
+                    />
+                    <SidebarItem.Link
+                        icon={<StarBorderOutlined />}
+                        title="Favoris"
+                        href="/favorites"
+                    />
+                    <SidebarItem.Link
+                        icon={<TuneOutlined />}
+                        title="Paramètres"
+                        href="/settings"
+                    />
+                </Section>
+                <Separator />
+                <Section gap={5} auto>
+                    {(isLoadingFolders || isLoadingDocuments) && <Loader />}
+                    {(foldersError || documentsError) && (
+                        <span>Une erreur est survenue. Voir la console.</span>
+                    )}
+                    {folders && documents && (
+                        <Outliner folders={folders} documents={documents} />
+                    )}
+                    <AddFolderButton />
+                </Section>
+                <Separator />
+                <Section gap={5}>
+                    <SidebarItem.Link
+                        icon={<DeleteOutlined />}
+                        title="Corbeille"
+                        href="/trash"
+                    />
+                    <SidebarItem.Link
+                        icon={<HelpOutlineOutlined />}
+                        title="Aide"
+                        href="/help"
+                    />
+                </Section>
+            </SidebarComponent>
+        </>
     )
 }
 
-const SidebarContainer = styled(Flex)<{ open?: boolean }>`
+const Backdrop = styled.div<{ visible: boolean }>`
+    display: none;
+
+    @media (max-width: 768px) {
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: 25;
+        background: var(--color-black);
+        pointer-events: none;
+        opacity: 0;
+        ${({ visible }) =>
+            visible &&
+            css`
+                opacity: 0.75;
+                pointer-events: all;
+            `}
+        transition: all ease-out 0.2s;
+    }
+`
+
+const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
+    position: relative;
+    max-height: 100vh;
+    min-width: 300px;
     border-right: 1px solid var(--color-n300);
-    flex-shrink: 0;
-    width: 300px;
+
+    background-color: var(--color-white);
     margin-left: ${({ open }) => `${open ? 0 : -300}px`};
-    transition: margin-left ease-in 250ms;
+    transition: all ease-out 0.25s;
+    z-index: 25;
+
+    @media (max-width: 768px) {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin-left: 0;
+        opacity: ${({ mobileOpen }) => (mobileOpen ? 1 : 0)};
+        transform: ${({ mobileOpen }) =>
+            mobileOpen ? "translateX(0)" : "translateX(-100%)"};
+    }
 `
 
 const Section = styled(Flex)`

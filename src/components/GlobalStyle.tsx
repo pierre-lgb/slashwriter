@@ -53,19 +53,10 @@ body,
 div#__next {
     padding: 0;
     margin: 0;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-        BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
-        sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol,
-        "Noto Color Emoji";
-    min-width: 350px;
 }
 
-html,
-body,
-body > div:first-child,
-div#__next,
-div#__next > div {
-    height: 100%;
+body {
+    min-height: 100vh;
 }
 
 a {
@@ -76,7 +67,10 @@ a {
 
 * {
     box-sizing: border-box;
-    font-family: "Inter", sans-serif;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans,
+        sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol,
+        "Noto Color Emoji";
 }
 
 /*
@@ -95,7 +89,7 @@ a {
     width: 1.2rem;
     height: 1.5rem;
     cursor: grab;
-    z-index: 999;
+    z-index: 50;
 
     &.hidden {
         opacity: 0;

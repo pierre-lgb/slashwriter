@@ -1,4 +1,4 @@
-import { Fragment, ReactElement } from "react"
+import { Fragment, ReactNode } from "react"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import Flex from "src/components/Flex"
 import ShareDocumentButton from "src/components/ShareDocumentButton"
@@ -6,7 +6,7 @@ import Button from "src/components/ui/Button"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
-import { toggleSidebar } from "src/store/ui"
+import { toggleMobileSidebar, toggleSidebar } from "src/store/ui"
 import { useUser } from "src/utils/supabase"
 import styled from "styled-components"
 
@@ -19,7 +19,7 @@ import Breadcrumb from "./components/Breadcrumb"
 
 interface HeaderProps {
     pageTitle: string
-    pageIcon: ReactElement
+    pageIcon: ReactNode
 }
 
 const BREADCRUMB_ITEMS_MAX = 3
@@ -28,7 +28,9 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     const { user } = useUser()
     const dispatch = useAppDispatch()
 
-    const { sidebarOpen } = useAppSelector((state) => state.ui)
+    const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
+        (state) => state.ui
+    )
     const { activeFolder, activeDocument } = useAppSelector(
         (state) => state.navigation
     )
@@ -51,14 +53,31 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
 
     return (
         <Container align="center" gap={20}>
-            <ToggleSidebarButton
-                as="button"
-                onClick={() => {
-                    dispatch(toggleSidebar())
-                }}
-            >
-                {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
-            </ToggleSidebarButton>
+            <ToggleSidebarButtonContainer>
+                <ToggleSidebarButton
+                    as="button"
+                    onClick={() => {
+                        dispatch(toggleSidebar())
+                    }}
+                >
+                    {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
+                </ToggleSidebarButton>
+            </ToggleSidebarButtonContainer>
+            <MobileToggleSidebarButtonContainer>
+                <ToggleSidebarButton
+                    as="button"
+                    onClick={() => {
+                        dispatch(toggleMobileSidebar())
+                    }}
+                >
+                    {mobileSidebarOpen ? (
+                        <MenuOpenOutlined />
+                    ) : (
+                        <MenuOutlined />
+                    )}
+                </ToggleSidebarButton>
+            </MobileToggleSidebarButtonContainer>
+
             <Breadcrumb>
                 {!!activeFolder ? (
                     <>
@@ -106,12 +125,15 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                         <VerticalSeparator />
                         {!!activeDocument ? (
                             <Button
-                                icon={<MoreHorizOutlined fontSize="small" />}
+                                size="medium"
+                                appearance="text"
+                                icon={<MoreHorizOutlined />}
                                 onClick={() => console.log("document options")}
                             />
                         ) : (
                             <Button
-                                icon={<MoreHorizOutlined fontSize="small" />}
+                                appearance="text"
+                                icon={<MoreHorizOutlined />}
                                 onClick={() => console.log("folder options")}
                             />
                         )}
@@ -154,13 +176,28 @@ const ToggleSidebarButton = styled(Flex)`
     color: var(--color-n600);
     padding: 5px;
     border-radius: 4px;
+    outline-color: var(--color-n200);
     cursor: pointer;
 
     &:hover {
         background-color: var(--color-n75);
     }
+`
 
-    outline-color: var(--color-n200);
+const ToggleSidebarButtonContainer = styled.div`
+    display: block;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+`
+
+const MobileToggleSidebarButtonContainer = styled.div`
+    display: none;
+
+    @media (max-width: 768px) {
+        display: block;
+    }
 `
 
 const VerticalSeparator = styled.div`

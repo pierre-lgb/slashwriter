@@ -15,6 +15,7 @@
     "@hocuspocus/transformer": "^1.0.0-beta.2",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.10.11",
+    "@radix-ui/react-dialog": "^1.0.2",
     "@reduxjs/toolkit": "^1.9.0-alpha.1",
     "@supabase/auth-helpers-nextjs": "^0.2.6",
     "@supabase/auth-helpers-react": "^0.2.3",
