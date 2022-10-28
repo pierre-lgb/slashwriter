@@ -25,10 +25,7 @@ export default function AddDocumentButton(props: AddDocumentButtonProps) {
             icon={<AddOutlined />}
             appearance="secondary"
             onClick={() => {
-                const title = prompt("Nouveau document:")
-                if (!title) return
                 addDocument({
-                    title,
                     folderId: folderId
                 }).then((res) => {
                     // Redirecting

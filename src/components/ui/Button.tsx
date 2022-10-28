@@ -87,19 +87,19 @@ const ButtonComponent = styled.button<{
     padding: ${({ size, iconOnly }) =>
         iconOnly
             ? {
-                  small: "0.4rem",
+                  small: "0.3rem",
                   medium: "0.5rem",
                   large: "0.6rem"
               }[size]
             : {
-                  small: "0.4rem 0.6rem",
+                  small: "0.3rem 0.6rem",
                   medium: "0.5rem 1rem",
                   large: "0.6rem 1.4rem"
               }[size]};
     color: ${({ appearance }) =>
         appearance === "primary" ? "var(--color-white)" : "var(--color-n800)"};
     background: ${({ appearance }) =>
-        appearance === "primary" ? "var(--color-black)" : "none"};
+        appearance === "primary" ? "var(--color-black)" : "var(--color-white)"};
     border: ${({ appearance }) =>
         appearance === "secondary"
             ? "1px solid var(--color-n400)"

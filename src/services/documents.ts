@@ -87,18 +87,17 @@ export const documentsApi = baseApi.injectEndpoints({
                 supabaseClient.removeSubscription(subscription)
             }
         }),
-        addDocument: build.mutation<
-            any,
-            { title: string; folderId: string; parent?: string }
-        >({
-            queryFn: async ({ title, folderId, parent }) => {
-                const { data, error } = await supabaseClient
-                    .from("documents")
-                    .insert({ title, folder: folderId, parent })
+        addDocument: build.mutation<any, { folderId: string; parent?: string }>(
+            {
+                queryFn: async ({ folderId, parent }) => {
+                    const { data, error } = await supabaseClient
+                        .from("documents")
+                        .insert({ title: "", folder: folderId, parent })
 
-                return data ? { data } : { error }
+                    return data ? { data } : { error }
+                }
             }
-        }),
+        ),
         renameDocument: build.mutation<any, { id: string; title: string }>({
             queryFn: async ({ id, title }) => {
                 console.log("Renaming document", id)

@@ -176,13 +176,13 @@ function Folder() {
                                     ?.sort((a, b) => {
                                         switch (sortOrder) {
                                             case "a-z":
-                                                return a.title.localeCompare(
-                                                    b.title
-                                                )
+                                                return (
+                                                    a.title || ""
+                                                ).localeCompare(b.title || "")
                                             case "z-a":
-                                                return b.title.localeCompare(
-                                                    a.title
-                                                )
+                                                return (
+                                                    b.title || ""
+                                                ).localeCompare(a.title || "")
                                             case "recent":
                                                 return (
                                                     new Date(
@@ -223,7 +223,8 @@ function Folder() {
                                                     justify="center"
                                                 >
                                                     <DocumentTitle>
-                                                        {doc.title}
+                                                        {doc.title ||
+                                                            "Sans titre"}
                                                     </DocumentTitle>
                                                     <DocumentMeta>
                                                         Modifié le{" "}
