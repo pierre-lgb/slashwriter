@@ -5,6 +5,7 @@ import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Loader from "src/components/ui/Loader"
+import Typography from "src/components/ui/Typography"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch } from "src/store"
@@ -63,10 +64,10 @@ function Document() {
                     {!!isDocumentLoading ? (
                         <Loader size="large" />
                     ) : (
-                        <span>
+                        <Typography.Text>
                             Ce document n&apos;existe pas. Il a peut-être été
                             supprimé.
-                        </span>
+                        </Typography.Text>
                     )}
                 </Flex>
             )}

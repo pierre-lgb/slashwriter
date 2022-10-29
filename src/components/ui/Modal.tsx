@@ -39,7 +39,6 @@ export default function Modal(props: ModalProps) {
 
     function handleOpenChange(open: boolean) {
         if (visible !== undefined && !open) {
-            console.log("test", visible)
             onCancel?.()
         } else {
             setOpen(open)

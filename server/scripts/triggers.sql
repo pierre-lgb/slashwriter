@@ -92,7 +92,7 @@ create trigger on_temp_delete_folder
 -- +------------------------------------------+
 -- |                  SHARES                  |
 -- +------------------------------------------+
--- Trigger on share settings inserted or (un)applied to subdocuments
+-- Trigger on share settings inserted or updated
 create or replace function public.handle_upsert_share()
 returns trigger
 language plpgsql
@@ -102,7 +102,7 @@ begin
   if new.include_subdocuments = true then
     update documents
     set share_settings = new.id
-    where id = new.document_id or path like ('%' || new.document_id::text || '%');
+    where id = new.document_id or path like ('%' || new.document_id::text || '%') and share_settings is null;
   else
     update documents
     set share_settings = new.id
@@ -123,7 +123,7 @@ create trigger on_insert_share
 
 drop trigger if exists on_update_share on shares;
 create trigger on_update_share
-  after update of include_subdocuments on shares
+  after update of document_id, include_subdocuments on shares
   for each row execute procedure public.handle_upsert_share();
 
 
@@ -174,6 +174,35 @@ drop trigger if exists on_insert_document on documents;
 create trigger on_insert_document
   before insert on documents
   for each row execute procedure public.handle_insert_document();
+
+  -- Trigger on document share_settings updated
+create or replace function public.handle_update_document_share_settings()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if (
+    new.share_settings is not null and 
+    (SELECT at.include_subdocuments FROM shares at WHERE at.id = new.share_settings) is not null
+  ) then
+    update documents
+    set share_settings = new.share_settings
+    where path like ('%' || new.id::text || '%') and share_settings = old.share_settings;
+  else
+    update documents
+    set share_settings = null
+    where path like ('%' || new.id::text || '%') and share_settings = old.share_settings;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_update_document_share_settings on documents;
+create trigger on_update_document_share_settings
+  before update of share_settings on documents
+  for each row when (pg_trigger_depth() < 1)
+  execute procedure public.handle_update_document_share_settings();
 
 
 

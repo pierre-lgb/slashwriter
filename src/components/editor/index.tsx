@@ -168,12 +168,6 @@ export default function SlashwriterEditor(props: {
 
     return (
         <Container>
-            {status !== "connected" && (
-                <Flex align="center" justify="center">
-                    {/* <span>Hors ligne</span> */}
-                </Flex>
-            )}
-
             <EditorTitle
                 editor={titleEditor}
                 onKeyDown={handleTitleEditorKeyDown}

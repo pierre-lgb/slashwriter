@@ -256,11 +256,11 @@ function Folder() {
                         </>
                     )}
                     {!folder && !isFolderLoading && (
-                        <span>
+                        <Typography.Text>
                             Désolé, ce dossier n&apos;existe pas. S&apos;il
                             existait avant, cela signifie qu&apos;il a été
                             supprimé.
-                        </span>
+                        </Typography.Text>
                     )}
                 </Content>
             </Container>

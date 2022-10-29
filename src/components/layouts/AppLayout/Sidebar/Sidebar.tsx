@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
 import Loader from "src/components/ui/Loader"
+import Typography from "src/components/ui/Typography"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
@@ -78,7 +79,9 @@ export default function Sidebar() {
                 <Section gap={5} auto>
                     {(isLoadingFolders || isLoadingDocuments) && <Loader />}
                     {(foldersError || documentsError) && (
-                        <span>Une erreur est survenue. Voir la console.</span>
+                        <Typography.Text type="danger">
+                            Une erreur est survenue. Voir la console.
+                        </Typography.Text>
                     )}
                     {folders && documents && (
                         <Outliner folders={folders} documents={documents} />

@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import { useEffect, useLayoutEffect, useMemo, useState } from "react"
 import Flex from "src/components/Flex"
 import TransitionOpacity from "src/components/TransitionOpacity"
+import Typography from "src/components/ui/Typography"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useAppDispatch } from "src/store"
 import { setActiveDocument } from "src/store/navigation"
@@ -64,9 +65,11 @@ function Shared() {
                         user_id: user?.id || null
                     }
 
-                    if (document) {
-                        setPermission("read")
+                    if (!document) {
+                        return
                     }
+
+                    setPermission("read")
 
                     await supabaseClient
                         .rpc("canedit", params)
@@ -105,14 +108,14 @@ function Shared() {
                     style={{ width: "100%", height: "100%" }}
                 >
                     {loadingPermission ? (
-                        <span>Chargement...</span>
+                        <Typography.Text>Chargement...</Typography.Text>
                     ) : cacheDocument ? (
-                        <span>Redirection...</span>
+                        <Typography.Text>Redirection...</Typography.Text>
                     ) : (
-                        <span>
+                        <Typography.Text>
                             Vous n&apos;avez pas accès à ce document. Il a
                             peut-être été supprimé.
-                        </span>
+                        </Typography.Text>
                     )}
                 </Flex>
             )}

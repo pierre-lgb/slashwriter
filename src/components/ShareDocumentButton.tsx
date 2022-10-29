@@ -17,10 +17,81 @@ interface ShareDocumentButtonProps {
     children?: ReactNode
 }
 
+// async function getDocumentShareSettings({ documentId }) {
+//     const { data, error } = await supabaseClient
+//         .from("documents")
+//         .select("share_settings(*)")
+//         .eq("id", documentId)
+//         .single()
+
+//     return data ? { data: data.share_settings } : { error }
+// }
+
+// function createShareSettings({ documentId }) {
+//     return supabaseClient
+//         .from("shares")
+//         .insert({
+//             document_id: documentId
+//         })
+//         .single()
+// }
+
+// function deleteShareSettings({ id }) {
+//     return supabaseClient.from("shares").delete().match({ id }).single()
+// }
+
+// function updateShareSettings({ id, ...updates }) {
+//     return supabaseClient.from("shares").update(updates).match({ id }).single()
+// }
+
 export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
     const { documentId, children } = props
 
+    const [modalVisible, setModalVisible] = useState(false)
+    const [existingShareSettings, setExistingShareSettings] = useState(null)
+    const [inherited, setInherited] = useState(false)
     const [anyonePermission, setAnyonePermission] = useState("none")
+
+    useEffect(() => {
+        if (modalVisible) {
+            // Fetch the share settings when the modal is opened
+            supabaseClient
+                .from("documents")
+                .select("share_settings(*)")
+                .eq("id", documentId)
+                .single()
+                .then(({ data, error }) => {
+                    const { share_settings } = data
+                    if (share_settings) {
+                        setExistingShareSettings(share_settings)
+                        setAnyonePermission(
+                            (share_settings.anyone_can_edit && "edit") ||
+                                (share_settings.anyone_can_read && "read") ||
+                                "none"
+                        )
+                    }
+                })
+        }
+    }, [modalVisible])
+
+    async function handleSubmit() {
+        const settings = {
+            anyone_can_read:
+                anyonePermission === "read" || anyonePermission === "edit",
+            anyone_can_edit: anyonePermission === "edit"
+        }
+
+        if (existingShareSettings) {
+            await supabaseClient
+                .from("shares")
+                .update(settings)
+                .match({ id: existingShareSettings.id })
+        } else {
+            await supabaseClient
+                .from("shares")
+                .insert({ document_id: documentId, ...settings })
+        }
+    }
 
     return (
         <Modal
@@ -31,10 +102,17 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                     size="medium"
                     appearance="secondary"
                     icon={<IosShareOutlined />}
+                    onClick={() => setModalVisible(true)}
                 >
                     {children}
                 </Button>
             }
+            visible={modalVisible}
+            onConfirm={() => {
+                handleSubmit()
+                setModalVisible(false)
+            }}
+            onCancel={() => setModalVisible(false)}
             closeButton
         >
             <ModalContent column gap={20}>

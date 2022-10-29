@@ -164,6 +164,7 @@ const SelectTrigger = styled(SelectPrimitive.SelectTrigger)<{
         borderless ? "1px solid transparent" : "1px solid var(--color-n400)"};
     color: var(--color-n800);
     cursor: pointer;
+    outline: none;
 
     &:focus {
         box-shadow: 0 0 0 2px rgba(150, 150, 150, 0.1);

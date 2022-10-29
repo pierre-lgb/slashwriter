@@ -87,23 +87,25 @@ language plpgsql
 as
 $$
 declare
-  can_read boolean;
   share_settings shares%rowtype;
 begin
 select * into share_settings from shares where id=share_id;
-if not found then
-  can_read := false;
+if (
+  share_settings.anyone_can_read or
+  user_id = any(share_settings.users_can_read) or
+  share_settings.anyone_can_edit or
+  user_id = any(share_settings.users_can_edit)
+) then
+  return true;
+elsif not found then
+  raise exception 'NOT_FOUND';
+  return false;
 else
-  if share_settings.anyone_can_read then
-    can_read := true;
-  elsif user_id = any(share_settings.users_can_read) then
-    can_read := true;
-  else
-    can_read := false;
-  end if;
+  raise exception 'ACCESS_DENIED';
+  return false;
 end if;
-return can_read;
 end; $$;
+
 
 create or replace function canEdit(user_id uuid, share_id uuid) returns boolean
 language plpgsql
@@ -114,32 +116,33 @@ declare
   share_settings shares%rowtype;
 begin
 select * into share_settings from shares where id=share_id;
-if not found then
-  can_edit := false;
+if (
+  share_settings.anyone_can_edit or
+  user_id = any(share_settings.users_can_edit)
+) then
+  return true;
+elsif not found then
+  raise exception 'NOT_FOUND';
+  return false;
 else
-  if share_settings.anyone_can_edit then
-    can_edit := true;
-  elsif user_id = any(share_settings.users_can_edit) then
-    can_edit := true;
-  else
-    can_edit := false;
-  end if;
+  raise exception 'ACCESS_DENIED';
+  return false;
 end if;
-return can_edit;
 end; $$;
 
 drop policy if exists "Other users may read a shared document" on documents;
 create policy "Other users may read a shared document" on documents
   for select using (
     share_settings is not null and
-    (canRead(auth.uid(), share_settings) 
-      or canEdit(auth.uid(), share_settings))
+    deleted is not true and
+    canRead(auth.uid(), share_settings)
   );
 
 drop policy if exists "Other users may edit a shared document" on documents;
 create policy "Other users may edit a shared document" on documents
   for update using (
     share_settings is not null and 
+    deleted is not true and
     canEdit(auth.uid(), share_settings)
   ); 
 
