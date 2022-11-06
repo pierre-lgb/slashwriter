@@ -53,6 +53,7 @@ const Container = styled.div<{
 }>`
     font-size: 0.9rem;
     line-height: 1.25rem;
+    width: 100%;
 
     ${({ flex }) =>
         flex

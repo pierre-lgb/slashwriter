@@ -11,7 +11,7 @@ const suggestionConfig = {
     items: ({ query }) => {
         return [
             {
-                title: "H1",
+                title: "Titre principal",
                 command: ({ editor, range }) => {
                     editor
                         .chain()
@@ -22,7 +22,7 @@ const suggestionConfig = {
                 }
             },
             {
-                title: "H2",
+                title: "Titre secondaire",
                 command: ({ editor, range }) => {
                     editor
                         .chain()
@@ -33,7 +33,7 @@ const suggestionConfig = {
                 }
             },
             {
-                title: "H3",
+                title: "Sous-titre",
                 command: ({ editor, range }) => {
                     editor
                         .chain()
@@ -44,7 +44,7 @@ const suggestionConfig = {
                 }
             },
             {
-                title: "Blockquote",
+                title: "Citation",
                 command: ({ editor, range }) => {
                     editor
                         .chain()
@@ -62,7 +62,7 @@ const suggestionConfig = {
                 }
             },
             {
-                title: "Divider",
+                title: "Séparateur",
                 command: ({ editor, range }) => {
                     editor
                         .chain()
@@ -73,13 +73,13 @@ const suggestionConfig = {
                 }
             },
             {
-                title: "Bold",
+                title: "Gras",
                 command: ({ editor, range }) => {
                     editor.chain().focus().deleteRange(range).toggleBold().run()
                 }
             },
             {
-                title: "Italic",
+                title: "Italique",
                 command: ({ editor, range }) => {
                     editor
                         .chain()
@@ -90,7 +90,7 @@ const suggestionConfig = {
                 }
             },
             {
-                title: "Strike",
+                title: "Barré",
                 command: ({ editor, range }) => {
                     editor
                         .chain()
@@ -101,18 +101,7 @@ const suggestionConfig = {
                 }
             },
             {
-                title: "Highlight",
-                command: ({ editor, range }) => {
-                    editor
-                        .chain()
-                        .focus()
-                        .deleteRange(range)
-                        .toggleHighlight()
-                        .run()
-                }
-            },
-            {
-                title: "Subdocument",
+                title: "Page intégrée",
                 command: async ({ editor, range }) => {
                     const navigationStore = store.getState().navigation
                     console.log(navigationStore.activeDocument)
@@ -166,7 +155,7 @@ const suggestionConfig = {
                     content: component.element,
                     showOnCreate: true,
                     interactive: true,
-                    theme: "light-border",
+                    theme: "light-border no-padding",
                     animation: "shift-away",
                     trigger: "manual",
                     placement: "bottom-start",

@@ -73,6 +73,10 @@ a {
         "Noto Color Emoji";
 }
 
+.tippy-box[data-theme~='no-padding'] .tippy-content {
+  padding: 0;
+}
+
 /*
 * TEMPORARY
 */

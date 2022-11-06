@@ -5,12 +5,16 @@ import Button from "src/components/ui/Button"
 import Input from "src/components/ui/Input"
 import Modal from "src/components/ui/Modal"
 import Select from "src/components/ui/Select"
+import { useGetDocumentsQuery } from "src/services/documents"
 import { supabaseClient } from "src/utils/supabase"
 import styled from "styled-components"
 
 import IosShareOutlined from "@mui/icons-material/IosShareOutlined"
 import LinkOutlined from "@mui/icons-material/LinkOutlined"
 import { Input as SupabaseInput } from "@supabase/ui"
+
+import Loader from "./ui/Loader"
+import Typography from "./ui/Typography"
 
 interface ShareDocumentButtonProps {
     documentId: string
@@ -51,6 +55,16 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
     const [existingShareSettings, setExistingShareSettings] = useState(null)
     const [inherited, setInherited] = useState(false)
     const [anyonePermission, setAnyonePermission] = useState("none")
+    const [loading, setLoading] = useState(false)
+
+    const { documentInheritedFrom } = useGetDocumentsQuery(null, {
+        selectFromResult: ({ data }) => ({
+            documentInheritedFrom: data?.find(
+                (d) => d.id === existingShareSettings.document_id
+            )
+        }),
+        skip: !existingShareSettings || !inherited
+    })
 
     useEffect(() => {
         if (modalVisible) {
@@ -64,12 +78,16 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                     const { share_settings } = data
                     if (share_settings) {
                         setExistingShareSettings(share_settings)
+                        setInherited(documentId !== share_settings.document_id)
                         setAnyonePermission(
                             (share_settings.anyone_can_edit && "edit") ||
                                 (share_settings.anyone_can_read && "read") ||
                                 "none"
                         )
                     }
+                })
+                .then(() => {
+                    // setLoading(false)
                 })
         }
     }, [modalVisible])
@@ -81,7 +99,10 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             anyone_can_edit: anyonePermission === "edit"
         }
 
-        if (existingShareSettings) {
+        const disabledInheritance =
+            (existingShareSettings.document_id === documentId) === inherited
+
+        if (existingShareSettings && !disabledInheritance) {
             await supabaseClient
                 .from("shares")
                 .update(settings)
@@ -115,27 +136,63 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             onCancel={() => setModalVisible(false)}
             closeButton
         >
-            <ModalContent column gap={20}>
-                <Input
-                    placeholder="Entrez une valeur"
-                    label="Lien de partage"
-                    icon={<LinkOutlined />}
-                    value={window.location.href.replace("doc", "shared")}
-                    readOnly
-                    copy
-                />
-                <Select
-                    label="Toute personne disposant du lien"
-                    layout="horizontal"
-                    value={anyonePermission}
-                    onValueChange={(value) => setAnyonePermission(value)}
-                >
-                    <Select.Option value="none">
-                        Aucune permission
-                    </Select.Option>
-                    <Select.Option value="read">Peut lire</Select.Option>
-                    <Select.Option value="edit">Peut modifier</Select.Option>
-                </Select>
+            <ModalContent column align="center" gap={20}>
+                {loading ? (
+                    <Loader />
+                ) : inherited ? (
+                    <>
+                        <Typography.Text>
+                            Les paramètres de partage de ce document sont
+                            hérités du document{" "}
+                            <Typography.Link
+                                href={`/doc/${existingShareSettings?.document_id}`}
+                            >
+                                {documentInheritedFrom?.title || "Sans titre"}
+                            </Typography.Link>
+                            .{" "}
+                            <Button
+                                danger
+                                appearance="secondary"
+                                size="small"
+                                onClick={() => setInherited(false)}
+                            >
+                                Dissocier
+                            </Button>
+                        </Typography.Text>
+                    </>
+                ) : (
+                    <>
+                        <Input
+                            placeholder="Entrez une valeur"
+                            label="Lien de partage"
+                            icon={<LinkOutlined />}
+                            value={window.location.href.replace(
+                                "doc",
+                                "shared"
+                            )}
+                            readOnly
+                            copy
+                        />
+                        <Select
+                            label="Toute personne disposant du lien"
+                            layout="horizontal"
+                            value={anyonePermission}
+                            onValueChange={(value) =>
+                                setAnyonePermission(value)
+                            }
+                        >
+                            <Select.Option value="none">
+                                Aucune permission
+                            </Select.Option>
+                            <Select.Option value="read">
+                                Peut lire
+                            </Select.Option>
+                            <Select.Option value="edit">
+                                Peut modifier
+                            </Select.Option>
+                        </Select>
+                    </>
+                )}
             </ModalContent>
             {/* <SupabaseInput
                 label="Test"
