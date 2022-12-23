@@ -12,7 +12,6 @@
     "@emotion/styled": "^11.10.0",
     "@hocuspocus/provider": "^1.0.0-alpha.39",
     "@hocuspocus/server": "^1.0.0-alpha.104",
-    "@hocuspocus/transformer": "^1.0.0-beta.2",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.10.11",
     "@radix-ui/react-dialog": "^1.0.2",
@@ -56,6 +55,7 @@
     "uuid": "^8.3.2",
     "ws": "^8.8.1",
     "y-indexeddb": "^9.0.9",
+    "y-protocols": "^1.0.5",
     "yjs": "^13.5.41",
     "yup": "^0.32.11"
   },

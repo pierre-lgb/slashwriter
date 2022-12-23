@@ -100,7 +100,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
         }
 
         const disabledInheritance =
-            (existingShareSettings.document_id === documentId) === inherited
+            (existingShareSettings?.document_id === documentId) === inherited
 
         if (existingShareSettings && !disabledInheritance) {
             await supabaseClient
