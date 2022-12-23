@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
 import Flex from "src/components/Flex"

@@ -9,6 +9,7 @@ import Separator from "src/components/Separator"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Button from "src/components/ui/Button"
 import Loader from "src/components/ui/Loader"
+import Select from "src/components/ui/Select"
 import Typography from "src/components/ui/Typography"
 import { useDeleteDocumentMutation, useGetDocumentsQuery } from "src/services/documents"
 import {
@@ -23,7 +24,6 @@ import styled from "styled-components"
 
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined"
 import DriveFileRenameOutlineOutlined from "@mui/icons-material/DriveFileRenameOutlineOutlined"
-import { Select } from "@supabase/ui"
 import Tippy from "@tippyjs/react"
 
 function DeleteFolderButton({ folderId }) {
@@ -142,13 +142,12 @@ function Folder() {
                                     align="center"
                                     justify="space-between"
                                     gap={10}
-                                    style={{ flexWrap: "wrap" }}
                                 >
                                     <Select
-                                        onChange={(e) => {
-                                            setSortOrder(e.target.value)
+                                        value={sortOrder}
+                                        onValueChange={(value) => {
+                                            setSortOrder(value)
                                         }}
-                                        style={{ minWidth: 150 }}
                                     >
                                         <Select.Option value="a-z">
                                             De A à Z
@@ -158,9 +157,6 @@ function Folder() {
                                         </Select.Option>
                                         <Select.Option value="recent">
                                             Récents
-                                        </Select.Option>
-                                        <Select.Option value="old">
-                                            Anciens
                                         </Select.Option>
                                     </Select>
 
@@ -205,11 +201,7 @@ function Folder() {
                                         }
                                     })
                                     .map((doc, index) => (
-                                        <Link
-                                            href={`/doc/${doc.id}`}
-                                            key={index}
-                                            passHref
-                                        >
+                                        <Link href={`/doc/${doc.id}`} key={index} passHref legacyBehavior>
                                             <DocumentListItem
                                                 key={doc.id}
                                                 gap={10}
@@ -265,7 +257,7 @@ function Folder() {
                 </Content>
             </Container>
         </TransitionOpacity>
-    )
+    );
 }
 
 Folder.Layout = AppLayout

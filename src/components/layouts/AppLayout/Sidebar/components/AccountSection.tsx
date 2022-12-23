@@ -1,10 +1,10 @@
-import Image from 'next/image'
-import Flex from 'src/components/Flex'
-import AccountMenu from 'src/components/menus/AccountMenu'
-import styled from 'styled-components'
+import Image from "next/legacy/image"
+import Flex from "src/components/Flex"
+import AccountMenu from "src/components/menus/AccountMenu"
+import styled from "styled-components"
 
-import ExpandMoreOutlined from '@mui/icons-material/ExpandMoreOutlined'
-import { User } from '@supabase/supabase-js'
+import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined"
+import { User } from "@supabase/supabase-js"
 
 interface AccountSectionProps {
     user: User

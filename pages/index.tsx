@@ -1,9 +1,8 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import Link from 'next/link'
-import Flex from 'src/components/Flex'
-import { withoutPageAuth } from 'src/utils/supabase'
-import styled from 'styled-components'
+import Head from "next/head"
+import Link from "next/link"
+import Flex from "src/components/Flex"
+import { withoutPageAuth } from "src/utils/supabase"
+import styled from "styled-components"
 
 function Home() {
     return (

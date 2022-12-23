@@ -52,7 +52,7 @@ export default function Subdocument(props) {
             <Link
                 href={`${router.asPath.split(/\/[^/]*$/)[0]}/${docId}`}
                 passHref
-            >
+                legacyBehavior>
                 <StyledLink as="a" align="center" gap={5}>
                     <DocumentIcon />
                     <div>
@@ -61,7 +61,7 @@ export default function Subdocument(props) {
                 </StyledLink>
             </Link>
         </NodeViewWrapper>
-    )
+    );
 }
 
 const StyledLink = styled(Flex)`

@@ -11,7 +11,6 @@ import styled from "styled-components"
 
 import IosShareOutlined from "@mui/icons-material/IosShareOutlined"
 import LinkOutlined from "@mui/icons-material/LinkOutlined"
-import { Input as SupabaseInput } from "@supabase/ui"
 
 import Loader from "./ui/Loader"
 import Typography from "./ui/Typography"
@@ -20,33 +19,6 @@ interface ShareDocumentButtonProps {
     documentId: string
     children?: ReactNode
 }
-
-// async function getDocumentShareSettings({ documentId }) {
-//     const { data, error } = await supabaseClient
-//         .from("documents")
-//         .select("share_settings(*)")
-//         .eq("id", documentId)
-//         .single()
-
-//     return data ? { data: data.share_settings } : { error }
-// }
-
-// function createShareSettings({ documentId }) {
-//     return supabaseClient
-//         .from("shares")
-//         .insert({
-//             document_id: documentId
-//         })
-//         .single()
-// }
-
-// function deleteShareSettings({ id }) {
-//     return supabaseClient.from("shares").delete().match({ id }).single()
-// }
-
-// function updateShareSettings({ id, ...updates }) {
-//     return supabaseClient.from("shares").update(updates).match({ id }).single()
-// }
 
 export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
     const { documentId, children } = props
@@ -85,9 +57,6 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                                 "none"
                         )
                     }
-                })
-                .then(() => {
-                    // setLoading(false)
                 })
         }
     }, [modalVisible])
@@ -194,13 +163,6 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                     </>
                 )}
             </ModalContent>
-            {/* <SupabaseInput
-                label="Test"
-                disabled
-                layout="horizontal"
-                value="http://localhost:3000/shared/81cd702b-fe5f-4b26-bf14-c5f59fc86e9c"
-                descriptionText="Lorem ipsum"
-            /> */}
         </Modal>
     )
 }

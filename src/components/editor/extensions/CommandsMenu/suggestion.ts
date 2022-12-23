@@ -131,7 +131,7 @@ const suggestionConfig = {
             }
         ].filter((item) =>
             item.title.toLowerCase().startsWith(query.toLowerCase())
-        )
+        );
     },
 
     render: () => {

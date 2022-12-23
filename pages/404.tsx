@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from "next/legacy/image"
 import Link from "next/link"
 import Flex from "src/components/Flex"
 import Typography from "src/components/ui/Typography"
@@ -17,6 +17,7 @@ function Error404() {
 }
 
 const Container = styled(Flex)`
+    height: 100vh;
     h2 {
         font-size: 1.5em;
     }

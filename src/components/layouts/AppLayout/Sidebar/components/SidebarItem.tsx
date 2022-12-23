@@ -29,13 +29,12 @@ export function SidebarButton(props: SidebarButtonProps) {
 export function SidebarLink(props: SidebarLinkProps) {
     const router = useRouter()
     return (
-        <Link href={props.href} passHref>
+        <Link href={props.href} passHref legacyBehavior>
             <Container
                 gap={10}
                 align="center"
                 active={props.active ?? router.asPath === props.href}
                 as="a"
-                href={props.href}
             >
                 <IconContainer>{props.icon}</IconContainer>
                 <Title>{props.title}</Title>
