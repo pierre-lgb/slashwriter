@@ -11,7 +11,7 @@ import { NodeViewWrapper } from "@tiptap/react"
 
 export default function Subdocument(props) {
     const { docId } = props.node.attrs
-    const { user } = useUser()
+    const user = useUser()
     const [documentTitle, setDocumentTitle] = useState("")
 
     // Try to get the title from query cache
@@ -52,7 +52,8 @@ export default function Subdocument(props) {
             <Link
                 href={`${router.asPath.split(/\/[^/]*$/)[0]}/${docId}`}
                 passHref
-                legacyBehavior>
+                legacyBehavior
+            >
                 <StyledLink as="a" align="center" gap={5}>
                     <DocumentIcon />
                     <div>
@@ -61,7 +62,7 @@ export default function Subdocument(props) {
                 </StyledLink>
             </Link>
         </NodeViewWrapper>
-    );
+    )
 }
 
 const StyledLink = styled(Flex)`

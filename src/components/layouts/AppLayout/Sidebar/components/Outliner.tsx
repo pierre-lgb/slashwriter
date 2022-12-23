@@ -24,7 +24,7 @@ export default function Outliner(props: OutlinerProps) {
                 <Title>Dossiers</Title>
                 <Badge>{props.folders.length}</Badge>
             </Flex>
-            {props.folders.map(({ id, color, name }) => (
+            {props.folders.map(({ id, name }) => (
                 <SidebarItem.Link
                     key={id}
                     href={`/folder/${id}`}

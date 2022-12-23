@@ -7,7 +7,6 @@ interface ButtonProps {
     children?: ReactNode
     disabled?: boolean
     loading?: boolean
-    loadingCentered?: boolean
     onClick?: MouseEventHandler<HTMLButtonElement>
     icon?: ReactNode
     iconRight?: ReactNode
@@ -15,7 +14,6 @@ interface ButtonProps {
     size?: "small" | "medium" | "large"
     block?: boolean
     danger?: boolean
-    textAlign?: "left" | "center" | "right"
     ariaSelected?: boolean
     ariaControls?: boolean
     tabIndex?: number
@@ -29,7 +27,6 @@ export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(
         children,
         disabled = false,
         loading = false,
-        loadingCentered = false,
         onClick,
         icon,
         iconRight,
@@ -37,7 +34,6 @@ export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(
         size = "medium",
         block = false,
         danger,
-        textAlign = "center",
         ariaSelected,
         ariaControls,
         tabIndex,

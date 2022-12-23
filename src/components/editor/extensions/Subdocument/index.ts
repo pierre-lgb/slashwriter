@@ -1,4 +1,3 @@
-import { Fragment, Slice } from "prosemirror-model"
 import { Plugin, PluginKey } from "prosemirror-state"
 import { documentsApi } from "src/services/documents"
 import store from "src/store"
@@ -43,7 +42,7 @@ export default Node.create({
 
     addCommands() {
         return {
-            insertSubdocument: (docId) => (props) => {
+            insertSubdocument: (docId: string) => (props) => {
                 return props.commands.insertContent({
                     type: "subdocument",
                     attrs: {
@@ -102,21 +101,17 @@ export default Node.create({
                     replaceSteps.forEach((index) => {
                         const map = tr.mapping.maps[index]
                         map.forEach((oldStart, oldEnd) => {
-                            state.doc.nodesBetween(
-                                oldStart,
-                                oldEnd,
-                                (node, pos) => {
-                                    if (node.type.name === "subdocument") {
-                                        store.dispatch(
-                                            documentsApi.endpoints.deleteDocument.initiate(
-                                                {
-                                                    id: node.attrs.docId
-                                                }
-                                            )
+                            state.doc.nodesBetween(oldStart, oldEnd, (node) => {
+                                if (node.type.name === "subdocument") {
+                                    store.dispatch(
+                                        documentsApi.endpoints.deleteDocument.initiate(
+                                            {
+                                                id: node.attrs.docId
+                                            }
                                         )
-                                    }
+                                    )
                                 }
-                            )
+                            })
                         })
                     })
 

@@ -1,6 +1,6 @@
-import { supabaseClient } from 'src/utils/supabase'
+import { supabaseClient } from "src/utils/supabase"
 
-import baseApi from './'
+import baseApi from "./"
 
 function updateFoldersCacheOnEvent(event, payload, draft) {
     switch (event) {
@@ -59,22 +59,34 @@ export const foldersApi = baseApi.injectEndpoints({
             ) => {
                 await cacheDataLoaded
 
+                const session = await supabaseClient.auth.getSession()
+                const user = session.data.session.user
+
                 const subscription = supabaseClient
-                    .from("folders")
-                    .on("*", (payload) => {
-                        updateCachedData((draft) => {
-                            updateFoldersCacheOnEvent(
-                                payload.eventType,
-                                payload,
-                                draft
-                            )
-                        })
-                    })
+                    .channel("folder_updates")
+                    .on(
+                        "postgres_changes",
+                        {
+                            event: "*",
+                            schema: "public",
+                            table: "folders",
+                            filter: `user_id=eq.${user.id}`
+                        },
+                        (payload) => {
+                            updateCachedData((draft) => {
+                                updateFoldersCacheOnEvent(
+                                    payload.eventType,
+                                    payload,
+                                    draft
+                                )
+                            })
+                        }
+                    )
                     .subscribe()
 
                 await cacheEntryRemoved
 
-                supabaseClient.removeSubscription(subscription)
+                subscription.unsubscribe()
             }
         }),
 
@@ -82,7 +94,7 @@ export const foldersApi = baseApi.injectEndpoints({
             queryFn: async ({ name, color }) => {
                 const { data, error } = await supabaseClient
                     .from("folders")
-                    .insert({ name })
+                    .insert({ name, color })
 
                 return data ? { data } : { error }
             }

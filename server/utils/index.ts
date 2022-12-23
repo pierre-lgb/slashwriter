@@ -1,2 +1,2 @@
-export { default as supabaseServerClient } from "./supabaseServerClient"
+export * from "./supabase"
 export { default as editorSchema } from "./editorSchema"

@@ -1,13 +1,13 @@
-import { Extension } from '@tiptap/core'
+import { Extension } from "@tiptap/core"
 
-import DragHandle from './plugins/DragHandle'
+import DragHandle from "./plugins/DragHandle"
 
 export interface DragAndDropOptions {}
 
 export default Extension.create<DragAndDropOptions>({
     name: "drag-and-drop",
 
-    addProseMirrorPlugins(this) {
+    addProseMirrorPlugins() {
         return [
             DragHandle({
                 dragHandleWidth: 24

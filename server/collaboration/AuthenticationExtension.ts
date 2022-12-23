@@ -1,9 +1,8 @@
 import * as cookie from "cookie"
 
 import { Extension, onAuthenticatePayload } from "@hocuspocus/server"
-import { supabaseClient } from "@supabase/auth-helpers-nextjs"
 
-import { supabaseServerClient } from "../utils"
+import { parseSupabaseCookie, supabaseClientWithAuth } from "../utils"
 
 export default class AuthenticationExtension implements Extension {
     async onAuthenticate({
@@ -12,22 +11,18 @@ export default class AuthenticationExtension implements Extension {
         requestHeaders
     }: onAuthenticatePayload) {
         const cookies = cookie.parse(requestHeaders.cookie || "")
-        const accessToken = cookies["sb-access-token"]
-
-        const { user } = await supabaseClient.auth.api.getUser(accessToken)
+        const session = parseSupabaseCookie(cookies["supabase-auth-token"])
+        const user = session?.user
 
         const documentId = documentName.split(".").pop()
-        const { data: document, error } = await supabaseServerClient(
-            accessToken
-        )
+        const { data: document, error } = await supabaseClientWithAuth(session)
             .from("documents")
             .select("user_id, share_settings(*)")
             .eq("id", documentId)
             .single()
 
         if (error) {
-            console.log(user)
-            console.log("accessToken", accessToken)
+            console.log("session", session)
             console.log(error)
             throw new Error("An error occured.")
         }
@@ -45,8 +40,8 @@ export default class AuthenticationExtension implements Extension {
         }
 
         return {
+            session,
             user: {
-                accessToken: accessToken || "",
                 ...user
             }
         }

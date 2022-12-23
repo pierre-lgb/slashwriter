@@ -110,6 +110,7 @@ const suggestionConfig = {
                         .insert({
                             parent: navigationStore.activeDocument
                         })
+                        .select()
 
                     if (data) {
                         const docId = data[0].id
@@ -131,7 +132,7 @@ const suggestionConfig = {
             }
         ].filter((item) =>
             item.title.toLowerCase().startsWith(query.toLowerCase())
-        );
+        )
     },
 
     render: () => {

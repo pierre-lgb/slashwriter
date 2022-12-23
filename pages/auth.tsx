@@ -6,17 +6,17 @@ import Typography from "src/components/ui/Typography"
 import { supabaseClient, useUser, withoutPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
-import { Auth as AuthComponent } from "@supabase/ui"
+import { Auth as AuthComponent, ThemeSupa } from "@supabase/auth-ui-react"
 
 function Auth() {
-    const { user, error } = useUser()
+    const user = useUser()
     const router = useRouter()
 
     useEffect(() => {
         if (user) {
             router.push("/home")
         }
-    }, [user])
+    }, [user, router])
 
     return (
         <Container column>
@@ -33,8 +33,57 @@ function Auth() {
                     <AuthComponent
                         supabaseClient={supabaseClient}
                         socialLayout="vertical"
-                        providers={["google", "discord", "github"]}
-                        style={{ width: 400 }}
+                        // providers={["google", "github", "discord"]}
+                        appearance={{
+                            theme: ThemeSupa,
+                            style: {
+                                container: { width: 350 }
+                            },
+                            variables: {
+                                default: {
+                                    fonts: {
+                                        bodyFontFamily: "inherit",
+                                        labelFontFamily: "inherit",
+                                        buttonFontFamily: "inherit",
+                                        inputFontFamily: "inherit"
+                                    },
+                                    fontSizes: {
+                                        baseBodySize: "inherit",
+                                        baseLabelSize: "inherit",
+                                        baseButtonSize: "inherit",
+                                        baseInputSize: "inherit"
+                                    }
+                                }
+                            }
+                        }}
+                        localization={{
+                            variables: {
+                                sign_in: {
+                                    email_label: "Adresse email",
+                                    email_input_placeholder:
+                                        "Entrez votre adresse email",
+                                    password_label: "Mot de passe",
+                                    password_input_placeholder:
+                                        "Entrez votre mot de passe",
+                                    button_label: "Connexion",
+                                    link_text: "Déjà enregistré ? Se connecter"
+                                },
+                                sign_up: {
+                                    email_label: "Adresse email",
+                                    email_input_placeholder:
+                                        "Entrez votre adresse email",
+                                    password_label: "Mot de passe",
+                                    password_input_placeholder:
+                                        "Entrez votre mot de passe",
+                                    button_label: "Inscription",
+                                    link_text:
+                                        "Pas encore de compte ? S'inscrire"
+                                },
+                                forgotten_password: {
+                                    link_text: "Mot de passe oublié ?"
+                                }
+                            }
+                        }}
                     />
                 </FormContainer>
             )}

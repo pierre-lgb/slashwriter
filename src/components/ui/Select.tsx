@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, ReactNode, Ref } from "react"
+import { InputHTMLAttributes, ReactNode } from "react"
 import styled from "styled-components"
 
 import Check from "@mui/icons-material/Check"
@@ -14,7 +14,7 @@ interface OptionProps {
 }
 
 function Option(props: OptionProps) {
-    const { value, children, selected = false } = props
+    const { value, children } = props
     return (
         <SelectItem value={value}>
             <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
@@ -19,7 +19,7 @@ const DocumentEditor = dynamic(() => import("src/components/editor"), {
 function Document() {
     const router = useRouter()
     const { docId } = router.query as { docId: string }
-    const { user } = useUser()
+    const user = useUser()
 
     const { document, isDocumentLoading } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data, isLoading, isUninitialized }) => ({
@@ -46,15 +46,17 @@ function Document() {
             dispatch(setActiveDocument(null))
             dispatch(setActiveFolder(null))
         }
-    }, [document, folder])
+    }, [document, folder, dispatch])
 
     return (
         <TransitionOpacity>
             {!!document && !!user ? (
-                <DocumentEditor
-                    documentId={docId}
-                    user={{ email: user.email }}
-                />
+                <>
+                    <DocumentEditor
+                        documentId={docId}
+                        user={{ email: user.email }}
+                    />
+                </>
             ) : (
                 <Flex
                     align="center"

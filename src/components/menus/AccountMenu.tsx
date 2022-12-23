@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import Flex from "src/components/Flex"
 import Menu from "src/components/ui/navigation/Menu"
-import { signOut } from "src/utils/supabase"
+import { supabaseClient } from "src/utils/supabase"
 import styled from "styled-components"
 
 import KeyboardCommandKeyOutlined from "@mui/icons-material/KeyboardCommandKeyOutlined"
@@ -38,7 +38,7 @@ function AccountMenu({ children }) {
                     <Menu.Item
                         icon={<LogoutOutlined />}
                         title="Déconnexion"
-                        onClick={() => signOut()}
+                        onClick={() => supabaseClient.auth.signOut()}
                         menu={instance}
                     />
                 </Container>

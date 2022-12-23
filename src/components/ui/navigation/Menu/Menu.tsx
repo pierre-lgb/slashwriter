@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from "react"
+import { ReactElement, useState } from "react"
 import styled from "styled-components"
 import { Instance } from "tippy.js"
 
@@ -9,7 +9,7 @@ import MenuSeparator from "./MenuSeparator"
 
 interface MenuProps {
     children: ReactElement
-    content: (instance: Instance) => ReactNode
+    content: Function
     [key: string]: any
 }
 

@@ -24,7 +24,7 @@ import SidebarItem from "./components/SidebarItem"
 
 export default function Sidebar() {
     const router = useRouter()
-    const { user } = useUser()
+    const user = useUser()
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
         (store) => store.ui
     )
@@ -44,7 +44,7 @@ export default function Sidebar() {
 
     useEffect(() => {
         dispatch(hideMobileSidebar())
-    }, [router.asPath])
+    }, [router.asPath, dispatch])
 
     return (
         <>

@@ -9,14 +9,14 @@ import Header from "./Header"
 import Sidebar from "./Sidebar"
 
 function AppLayout(props) {
-    const { user, isLoading } = useUser()
+    const user = useUser()
     const router = useRouter()
 
     useEffect(() => {
-        if (!isLoading && !user) {
+        if (!user) {
             router.push("/auth")
         }
-    }, [user, isLoading])
+    }, [user, router])
 
     return (
         <>

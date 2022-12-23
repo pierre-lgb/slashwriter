@@ -45,9 +45,8 @@ export const documentsApi = baseApi.injectEndpoints({
         getDocuments: build.query<any, void>({
             queryFn: async () => {
                 console.log("Fetching documents")
-                const { user } = await supabaseClient.auth.api.getUser(
-                    supabaseClient.auth.session().access_token
-                )
+                const session = await supabaseClient.auth.getSession()
+                const user = session.data.session.user
 
                 const { data, error } = await supabaseClient
                     .from("documents")
@@ -63,28 +62,49 @@ export const documentsApi = baseApi.injectEndpoints({
             ) => {
                 await cacheDataLoaded
 
-                const { user } = await supabaseClient.auth.api.getUser(
-                    supabaseClient.auth.session().access_token
-                )
+                const session = await supabaseClient.auth.getSession()
+                const user = session.data.session.user
+
+                // const subscription = supabaseClient
+                //     // .from("documents")
+                //     .from(`documents:user_id=eq.${user.id}`)
+                //     .on("*", (payload) => {
+                //         updateCachedData((draft) => {
+                //             updateDocumentsCacheOnEvent(
+                //                 payload.eventType,
+                //                 payload,
+                //                 draft
+                //             )
+                //         })
+                //     })
+
+                //     .subscribe()
 
                 const subscription = supabaseClient
-                    // .from("documents")
-                    .from(`documents:user_id=eq.${user.id}`)
-                    .on("*", (payload) => {
-                        updateCachedData((draft) => {
-                            updateDocumentsCacheOnEvent(
-                                payload.eventType,
-                                payload,
-                                draft
-                            )
-                        })
-                    })
-
+                    .channel("document_updates")
+                    .on(
+                        "postgres_changes",
+                        {
+                            event: "*",
+                            schema: "public",
+                            table: "documents",
+                            filter: `user_id=eq.${user.id}`
+                        },
+                        (payload) => {
+                            updateCachedData((draft) => {
+                                updateDocumentsCacheOnEvent(
+                                    payload.eventType,
+                                    payload,
+                                    draft
+                                )
+                            })
+                        }
+                    )
                     .subscribe()
 
                 await cacheEntryRemoved
 
-                supabaseClient.removeSubscription(subscription)
+                subscription.unsubscribe()
             }
         }),
         addDocument: build.mutation<any, { folderId: string; parent?: string }>(

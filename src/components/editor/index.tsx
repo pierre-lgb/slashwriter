@@ -1,5 +1,4 @@
 import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
-import Flex from "src/components/Flex"
 import styled from "styled-components"
 import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
@@ -40,25 +39,23 @@ export default function SlashwriterEditor(props: {
 
     const [status, setStatus] = useState("connecting")
 
-    const websocketProvider = useMemo(
-        () =>
-            new HocuspocusProvider({
-                name: `document.${documentId}`,
-                url: process.env.NEXT_PUBLIC_COLLABORATION_URL,
-                document: ydoc,
-                // We start the connection inside useLayoutEffect()
-                // so that a single connection is started (not two)
-                connect: false,
-                // The token is retrieved from the cookies server-side,
-                // we only set a value for `token` here so that the
-                // onAuthenticate hook does not log a warning message.
-                token: "token",
-                onStatus({ status }) {
-                    setStatus(status)
-                }
-            }),
-        [documentId, ydoc]
-    )
+    const websocketProvider = useMemo(() => {
+        return new HocuspocusProvider({
+            name: `document.${documentId}`,
+            url: process.env.NEXT_PUBLIC_COLLABORATION_URL,
+            document: ydoc,
+            // We start the connection inside useLayoutEffect()
+            // so that a single connection is started (not two)
+            connect: false,
+            // The token is retrieved from the cookies server-side,
+            // we only set a value for `token` here so that the
+            // onAuthenticate hook does not log a warning message.
+            token: "token",
+            onStatus({ status }) {
+                setStatus(status)
+            }
+        })
+    }, [documentId, ydoc])
 
     const localProvider = useMemo(
         () => new IndexeddbPersistence(`document.${documentId}`, ydoc),
@@ -164,7 +161,7 @@ export default function SlashwriterEditor(props: {
             contentEditor?.destroy()
             setContentEditor(null)
         }
-    }, [documentId])
+    }, [documentId, editable, getCollaborationExtensions])
 
     return (
         <Container>

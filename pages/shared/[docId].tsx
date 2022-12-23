@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
-import { useEffect, useLayoutEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import Flex from "src/components/Flex"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"
@@ -21,7 +21,7 @@ function getRandomName() {
 function Shared() {
     const router = useRouter()
     const { docId } = router.query as { docId: string }
-    const { user, isLoading: authLoading } = useUser()
+    const user = useUser()
     const [isAnonymous, setAnonymous] = useState<boolean>(false)
     const [permission, setPermission] = useState<string>("none")
     const [loadingPermission, setLoadingPermission] = useState<boolean>(true)
@@ -40,7 +40,7 @@ function Shared() {
         if (cacheDocument) {
             router.push(router.asPath.replace("shared", "doc"))
         }
-    }, [docId, cacheDocument])
+    }, [docId, cacheDocument, router])
 
     const dispatch = useAppDispatch()
 
@@ -50,10 +50,10 @@ function Shared() {
         return () => {
             dispatch(setActiveDocument(null))
         }
-    }, [docId])
+    }, [docId, dispatch])
 
     useEffect(() => {
-        if ((user || isAnonymous) && loadingPermission) {
+        if ((user || isAnonymous) && loadingPermission && docId) {
             supabaseClient
                 .from("documents")
                 .select("share_settings")
@@ -83,13 +83,13 @@ function Shared() {
                     setLoadingPermission(false)
                 })
         }
-    }, [docId, user, isAnonymous])
+    }, [docId, user, isAnonymous, loadingPermission])
 
     useEffect(() => {
-        if (!user && !authLoading) {
+        if (!user) {
             setAnonymous(true)
         }
-    }, [user, authLoading])
+    }, [user])
 
     return (
         <TransitionOpacity>

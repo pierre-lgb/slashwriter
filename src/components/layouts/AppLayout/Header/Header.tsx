@@ -23,7 +23,7 @@ interface HeaderProps {
 }
 
 export default function Header({ pageTitle, pageIcon }: HeaderProps) {
-    const { user } = useUser()
+    const user = useUser()
     const dispatch = useAppDispatch()
 
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
@@ -169,22 +169,6 @@ const Container = styled.div`
         .breadcrumbs {
             display: none;
         }
-    }
-`
-
-const HeaderContent = styled(Flex)`
-    display: flex;
-
-    @media (max-width: 768px) {
-        display: none;
-    }
-`
-
-const MobileHeaderContent = styled(Flex)`
-    display: none;
-
-    @media (max-width: 768px) {
-        display: flex;
     }
 `
 

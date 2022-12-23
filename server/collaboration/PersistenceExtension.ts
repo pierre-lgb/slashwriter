@@ -3,9 +3,8 @@ import { yDocToProsemirrorJSON } from "y-prosemirror"
 import * as Y from "yjs"
 
 import { Extension, onLoadDocumentPayload, onStoreDocumentPayload } from "@hocuspocus/server"
-import { supabaseClient } from "@supabase/auth-helpers-nextjs"
 
-import { editorSchema, supabaseServerClient } from "../utils"
+import { editorSchema, supabaseClientWithAuth } from "../utils"
 
 export default class PersistenceExtension implements Extension {
     async onLoadDocument({
@@ -14,7 +13,7 @@ export default class PersistenceExtension implements Extension {
         document: ydoc
     }: onLoadDocumentPayload) {
         const documentId = documentName.split(".").pop()
-        const { user } = context
+        const { user, session } = context
         console.log(
             `Loading document ${documentId} for user ${user.email} (${user.id})`
         )
@@ -23,9 +22,7 @@ export default class PersistenceExtension implements Extension {
             return
         }
 
-        const { data: document, error } = await supabaseServerClient(
-            user.accessToken
-        )
+        const { data: document, error } = await supabaseClientWithAuth(session)
             .from("documents")
             .select("text, state")
             .eq("id", documentId)
@@ -54,9 +51,10 @@ export default class PersistenceExtension implements Extension {
     async onStoreDocument({
         documentName,
         document: ydoc,
-        context: { user }
+        context
     }: onStoreDocumentPayload) {
         const documentId = documentName.split(".").pop()
+        const { user, session } = context
         console.log(
             `Persisting document ${documentId} for user ${user.email} (${user.id})`
         )
@@ -68,15 +66,13 @@ export default class PersistenceExtension implements Extension {
 
         const state = Y.encodeStateAsUpdate(ydoc)
 
-        const { data, error } = await supabaseClient
+        const { error } = await supabaseClientWithAuth(session)
             .from("documents")
             .update({ title, state })
             .eq("id", documentId)
 
         if (error) {
             console.error(error)
-        } else if (!data.length) {
-            console.error("Couldn't update document", documentId)
         }
     }
 }

@@ -1,9 +1,10 @@
 import Head from "next/head"
-import { useEffect } from "react"
 import { Provider as StoreProvider } from "react-redux"
 import GlobalStyle from "src/components/GlobalStyle"
 import store from "src/store"
-import { supabaseClient, UserProvider } from "src/utils/supabase"
+import { supabaseClient } from "src/utils/supabase"
+
+import { SessionContextProvider } from "@supabase/auth-helpers-react"
 
 function App({ Component, pageProps }) {
     const Layout = Component.Layout || (({ children }) => <>{children}</>)
@@ -21,13 +22,16 @@ function App({ Component, pageProps }) {
                 />
             </Head>
             <GlobalStyle />
-            <UserProvider supabaseClient={supabaseClient}>
+            <SessionContextProvider
+                supabaseClient={supabaseClient}
+                initialSession={pageProps.initialSession}
+            >
                 <StoreProvider store={store}>
                     <Layout title={Component.Title} icon={Component.Icon}>
                         <Component {...pageProps} />
                     </Layout>
                 </StoreProvider>
-            </UserProvider>
+            </SessionContextProvider>
         </>
     )
 }

@@ -8,7 +8,6 @@ import AppLayout from "src/components/layouts/AppLayout"
 import Separator from "src/components/Separator"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Button from "src/components/ui/Button"
-import Loader from "src/components/ui/Loader"
 import Select from "src/components/ui/Select"
 import Typography from "src/components/ui/Typography"
 import { useDeleteDocumentMutation, useGetDocumentsQuery } from "src/services/documents"
@@ -93,7 +92,7 @@ function DeleteDocumentButton({ documentId }) {
 
 function Folder() {
     const [sortOrder, setSortOrder] = useState("a-z")
-    const { user } = useUser()
+    const user = useUser()
     const router = useRouter()
     const { folderId } = router.query as { folderId: string }
     const dispatch = useAppDispatch()
@@ -119,7 +118,7 @@ function Folder() {
         return () => {
             dispatch(setActiveFolder(null))
         }
-    }, [folder])
+    }, [folder, dispatch])
 
     return (
         <TransitionOpacity>
@@ -201,7 +200,12 @@ function Folder() {
                                         }
                                     })
                                     .map((doc, index) => (
-                                        <Link href={`/doc/${doc.id}`} key={index} passHref legacyBehavior>
+                                        <Link
+                                            href={`/doc/${doc.id}`}
+                                            key={index}
+                                            passHref
+                                            legacyBehavior
+                                        >
                                             <DocumentListItem
                                                 key={doc.id}
                                                 gap={10}
@@ -257,7 +261,7 @@ function Folder() {
                 </Content>
             </Container>
         </TransitionOpacity>
-    );
+    )
 }
 
 Folder.Layout = AppLayout

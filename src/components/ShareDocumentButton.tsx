@@ -1,4 +1,3 @@
-import { useRouter } from "next/router"
 import { ReactNode, useEffect, useState } from "react"
 import Flex from "src/components/Flex"
 import Button from "src/components/ui/Button"
@@ -12,7 +11,6 @@ import styled from "styled-components"
 import IosShareOutlined from "@mui/icons-material/IosShareOutlined"
 import LinkOutlined from "@mui/icons-material/LinkOutlined"
 
-import Loader from "./ui/Loader"
 import Typography from "./ui/Typography"
 
 interface ShareDocumentButtonProps {
@@ -27,7 +25,6 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
     const [existingShareSettings, setExistingShareSettings] = useState(null)
     const [inherited, setInherited] = useState(false)
     const [anyonePermission, setAnyonePermission] = useState("none")
-    const [loading, setLoading] = useState(false)
 
     const { documentInheritedFrom } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data }) => ({
@@ -46,7 +43,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                 .select("share_settings(*)")
                 .eq("id", documentId)
                 .single()
-                .then(({ data, error }) => {
+                .then(({ data }) => {
                     const { share_settings } = data
                     if (share_settings) {
                         setExistingShareSettings(share_settings)
@@ -59,7 +56,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                     }
                 })
         }
-    }, [modalVisible])
+    }, [modalVisible, documentId])
 
     async function handleSubmit() {
         const settings = {
@@ -106,9 +103,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             closeButton
         >
             <ModalContent column align="center" gap={20}>
-                {loading ? (
-                    <Loader />
-                ) : inherited ? (
+                {inherited ? (
                     <>
                         <Typography.Text>
                             Les paramètres de partage de ce document sont
