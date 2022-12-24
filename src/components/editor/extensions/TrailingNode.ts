@@ -2,11 +2,10 @@
  * SOURCE : https://tiptap.dev/experiments/trailing-node/
  */
 
-import { Plugin, PluginKey } from 'prosemirror-state'
+import { Plugin, PluginKey } from "prosemirror-state"
 
-import { Extension } from '@tiptap/core'
+import { Extension } from "@tiptap/core"
 
-// @ts-ignore
 function nodeEqualsType({ types, node }) {
     return (
         (Array.isArray(types) && types.includes(node.type)) ||
