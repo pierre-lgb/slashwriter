@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from "react"
+import { MdOutlineIosShare as ShareIcon, MdOutlineLink as LinkIcon } from "react-icons/md"
 import Flex from "src/components/Flex"
 import Button from "src/components/ui/Button"
 import Input from "src/components/ui/Input"
@@ -7,9 +8,6 @@ import Select from "src/components/ui/Select"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { supabaseClient } from "src/utils/supabase"
 import styled from "styled-components"
-
-import IosShareOutlined from "@mui/icons-material/IosShareOutlined"
-import LinkOutlined from "@mui/icons-material/LinkOutlined"
 
 import Typography from "./ui/Typography"
 
@@ -88,7 +86,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                 <Button
                     size="medium"
                     appearance="secondary"
-                    icon={<IosShareOutlined />}
+                    icon={<ShareIcon />}
                     onClick={() => setModalVisible(true)}
                 >
                     {children}
@@ -129,7 +127,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                         <Input
                             placeholder="Entrez une valeur"
                             label="Lien de partage"
-                            icon={<LinkOutlined />}
+                            icon={<LinkIcon />}
                             value={window.location.href.replace(
                                 "doc",
                                 "shared"

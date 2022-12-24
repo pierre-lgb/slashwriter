@@ -1,9 +1,9 @@
 import Image from "next/legacy/image"
+import { MdOutlineExpandMore as ExpandIcon } from "react-icons/md"
 import Flex from "src/components/Flex"
 import AccountMenu from "src/components/menus/AccountMenu"
 import styled from "styled-components"
 
-import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined"
 import { User } from "@supabase/supabase-js"
 
 interface AccountSectionProps {
@@ -20,7 +20,7 @@ export default function AccountSection({ user }: AccountSectionProps) {
                     height={25}
                 />
                 <StyledEmail>{user?.email}</StyledEmail>
-                <ExpandIcon />
+                <ExpandIcon color="var(--color-n700)" fontSize="1.2rem" />
             </Container>
         </AccountMenu>
     )
@@ -47,9 +47,4 @@ const StyledEmail = styled.span`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-`
-
-const ExpandIcon = styled(ExpandMoreOutlined)`
-    color: var(--color-n700);
-    font-size: 1.2em;
 `

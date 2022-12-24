@@ -1,10 +1,9 @@
+import { MdOutlineStarBorder as StarIcon } from "react-icons/md"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"
 import { withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
-
-import StarBorderOutlined from "@mui/icons-material/StarBorderOutlined"
 
 function Favorites() {
     return (
@@ -20,7 +19,7 @@ function Favorites() {
 
 Favorites.Layout = AppLayout
 Favorites.Title = "Favoris"
-Favorites.Icon = <StarBorderOutlined />
+Favorites.Icon = <StarIcon />
 
 const Container = styled.div`
     padding: 100px 25px;

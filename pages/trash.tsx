@@ -1,10 +1,9 @@
+import { MdOutlineDelete as TrashIcon } from "react-icons/md"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"
 import { withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
-
-import DeleteOutlined from "@mui/icons-material/DeleteOutlined"
 
 function Trash() {
     return (
@@ -20,7 +19,7 @@ function Trash() {
 
 Trash.Layout = AppLayout
 Trash.Title = "Corbeille"
-Trash.Icon = <DeleteOutlined />
+Trash.Icon = <TrashIcon />
 
 const Container = styled.div`
     padding: 100px 25px;

@@ -1,10 +1,9 @@
+import { MdOutlineHelpOutline as HelpIcon } from "react-icons/md"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"
 import { withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
-
-import HelpOutlineOutlined from "@mui/icons-material/HelpOutlineOutlined"
 
 function Help() {
     return (
@@ -20,7 +19,7 @@ function Help() {
 
 Help.Layout = AppLayout
 Help.Title = "Aide"
-Help.Icon = <HelpOutlineOutlined />
+Help.Icon = <HelpIcon />
 
 const Container = styled.div`
     padding: 100px 25px;

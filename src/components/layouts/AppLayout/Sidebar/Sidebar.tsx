@@ -1,5 +1,12 @@
 import { useRouter } from "next/router"
 import { useEffect } from "react"
+import {
+    MdOutlineDelete as TrashIcon,
+    MdOutlineHelpOutline as HelpIcon,
+    MdOutlineHome as HomeIcon,
+    MdOutlineStarBorder as StarIcon,
+    MdOutlineTune as SettingsIcon
+} from "react-icons/md"
 import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
 import Loader from "src/components/ui/Loader"
@@ -10,12 +17,6 @@ import { useAppDispatch, useAppSelector } from "src/store"
 import { hideMobileSidebar } from "src/store/ui"
 import { useUser } from "src/utils/supabase"
 import styled, { css } from "styled-components"
-
-import DeleteOutlined from "@mui/icons-material/DeleteOutlined"
-import HelpOutlineOutlined from "@mui/icons-material/HelpOutlineOutlined"
-import HomeOutlined from "@mui/icons-material/HomeOutlined"
-import StarBorderOutlined from "@mui/icons-material/StarBorderOutlined"
-import TuneOutlined from "@mui/icons-material/TuneOutlined"
 
 import AccountSection from "./components/AccountSection"
 import AddFolderButton from "./components/AddFolderButton"
@@ -60,17 +61,17 @@ export default function Sidebar() {
                 <AccountSection user={user} />
                 <Section gap={5}>
                     <SidebarItem.Link
-                        icon={<HomeOutlined />}
+                        icon={<HomeIcon />}
                         title="Accueil"
                         href="/home"
                     />
                     <SidebarItem.Link
-                        icon={<StarBorderOutlined />}
+                        icon={<StarIcon />}
                         title="Favoris"
                         href="/favorites"
                     />
                     <SidebarItem.Link
-                        icon={<TuneOutlined />}
+                        icon={<SettingsIcon />}
                         title="Paramètres"
                         href="/settings"
                     />
@@ -91,12 +92,12 @@ export default function Sidebar() {
                 <Separator />
                 <Section gap={5}>
                     <SidebarItem.Link
-                        icon={<DeleteOutlined />}
+                        icon={<TrashIcon />}
                         title="Corbeille"
                         href="/trash"
                     />
                     <SidebarItem.Link
-                        icon={<HelpOutlineOutlined />}
+                        icon={<HelpIcon />}
                         title="Aide"
                         href="/help"
                     />

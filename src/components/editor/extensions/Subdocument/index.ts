@@ -9,6 +9,7 @@ import { ReactNodeViewRenderer } from "@tiptap/react"
 import Component from "./Component"
 
 declare module "@tiptap/core" {
+    /* eslint-disable unused-imports/no-unused-vars */
     interface Commands<ReturnType> {
         subdocument: {
             /**

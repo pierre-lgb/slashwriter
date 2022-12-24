@@ -1,5 +1,11 @@
 import Link from "next/link"
 import { ReactNode } from "react"
+import {
+    MdOutlineFolderOpen as FolderIcon,
+    MdOutlineMenu as MenuIcon,
+    MdOutlineMenuOpen as MenuOpenIcon,
+    MdOutlineMoreHoriz as MoreIcon
+} from "react-icons/md"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import Flex from "src/components/Flex"
 import ShareDocumentButton from "src/components/ShareDocumentButton"
@@ -11,11 +17,6 @@ import { useAppDispatch, useAppSelector } from "src/store"
 import { toggleMobileSidebar, toggleSidebar } from "src/store/ui"
 import { useUser } from "src/utils/supabase"
 import styled from "styled-components"
-
-import FolderOpenOutlined from "@mui/icons-material/FolderOpenOutlined"
-import MenuOpenOutlined from "@mui/icons-material/MenuOpenOutlined"
-import MenuOutlined from "@mui/icons-material/MenuOutlined"
-import MoreHorizOutlined from "@mui/icons-material/MoreHorizOutlined"
 
 interface HeaderProps {
     pageTitle: string
@@ -53,28 +54,25 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
         <Container>
             <Flex auto align="center" gap={20}>
                 <ToggleSidebarButtonContainer>
-                    <ToggleSidebarButton
-                        as="button"
+                    <Button
                         onClick={() => {
                             dispatch(toggleSidebar())
                         }}
-                    >
-                        {sidebarOpen ? <MenuOpenOutlined /> : <MenuOutlined />}
-                    </ToggleSidebarButton>
+                        appearance="text"
+                        icon={sidebarOpen ? <MenuOpenIcon /> : <MenuIcon />}
+                        size="large"
+                    />
                 </ToggleSidebarButtonContainer>
                 <MobileToggleSidebarButtonContainer>
-                    <ToggleSidebarButton
-                        as="button"
+                    <Button
                         onClick={() => {
                             dispatch(toggleMobileSidebar())
                         }}
-                    >
-                        {mobileSidebarOpen ? (
-                            <MenuOpenOutlined />
-                        ) : (
-                            <MenuOutlined />
-                        )}
-                    </ToggleSidebarButton>
+                        appearance="secondary"
+                        icon={
+                            mobileSidebarOpen ? <MenuOpenIcon /> : <MenuIcon />
+                        }
+                    />
                 </MobileToggleSidebarButtonContainer>
 
                 <Breadcrumbs
@@ -85,7 +83,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                     {activeFolder && (
                         <Link href={`/folder/${activeFolder}`} legacyBehavior>
                             <Flex as="a" align="center" gap={10}>
-                                <FolderOpenOutlined />
+                                <FolderIcon />
                                 <span>{folderName || "Dossier"}</span>
                             </Flex>
                         </Link>
@@ -126,10 +124,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                 {(!!activeDocument || !!activeFolder) && (
                     <>
                         <VerticalSeparator />
-                        <Button
-                            appearance="text"
-                            icon={<MoreHorizOutlined />}
-                        />
+                        <Button appearance="text" icon={<MoreIcon />} />
                     </>
                 )}
             </Flex>
@@ -169,20 +164,6 @@ const Container = styled.div`
         .breadcrumbs {
             display: none;
         }
-    }
-`
-
-const ToggleSidebarButton = styled(Flex)`
-    background: none;
-    border: none;
-    color: var(--color-n600);
-    padding: 5px;
-    border-radius: 4px;
-    outline-color: var(--color-n200);
-    cursor: pointer;
-
-    &:hover {
-        background-color: var(--color-n75);
     }
 `
 

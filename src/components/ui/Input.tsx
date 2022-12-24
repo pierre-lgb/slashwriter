@@ -1,12 +1,13 @@
 import { InputHTMLAttributes, ReactNode, Ref, useState } from "react"
+import {
+    MdCheck as CheckedIcon,
+    MdContentCopy as CopyIcon,
+    MdErrorOutline as ErrorIcon
+} from "react-icons/md"
 import Flex from "src/components/Flex"
 import Button from "src/components/ui/Button"
 import FormLayout from "src/components/ui/FormLayout"
 import styled, { css } from "styled-components"
-
-import Check from "@mui/icons-material/Check"
-import ContentCopy from "@mui/icons-material/ContentCopy"
-import ErrorOutline from "@mui/icons-material/ErrorOutline"
 
 interface InputProps
     extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -98,7 +99,7 @@ export default function Input(props: InputProps) {
                         {copy && !(reveal && hidden) && (
                             <Button
                                 appearance="secondary"
-                                icon={copied ? <Check /> : <ContentCopy />}
+                                icon={copied ? <CheckedIcon /> : <CopyIcon />}
                                 onClick={() => onCopy(`${value}`)}
                             >
                                 {copied ? "Copié !" : "Copier"}
@@ -113,7 +114,7 @@ export default function Input(props: InputProps) {
                                 Dévoiler
                             </Button>
                         )}
-                        {error && <InputErrorIcon />}
+                        {error && <ErrorIcon />}
                     </InputActionsContainer>
                 )}
             </InputContainer>
@@ -210,10 +211,4 @@ const InputActionsContainer = styled(Flex)`
     inset: 0 0 0 auto;
     align-items: center;
     gap: 0.2rem;
-`
-
-const InputErrorIcon = styled(ErrorOutline)`
-    color: var(--color-red);
-    font-size: 1.1rem;
-    margin-right: 0.5rem;
 `

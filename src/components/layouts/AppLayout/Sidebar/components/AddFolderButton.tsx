@@ -1,8 +1,7 @@
-import { useAddFolderMutation } from 'src/services/folders'
+import { MdOutlineAdd as AddIcon } from "react-icons/md"
+import { useAddFolderMutation } from "src/services/folders"
 
-import AddOutlined from '@mui/icons-material/AddOutlined'
-
-import SidebarItem from './SidebarItem'
+import SidebarItem from "./SidebarItem"
 
 export default function AddFolderButton() {
     const [addFolder] = useAddFolderMutation()
@@ -10,7 +9,7 @@ export default function AddFolderButton() {
     return (
         <SidebarItem.Button
             title="Nouveau dossier"
-            icon={<AddOutlined />}
+            icon={<AddIcon />}
             onClick={() => {
                 const folderName = prompt("Nom du dossier :")
                 if (!folderName) return

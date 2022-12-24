@@ -1,8 +1,7 @@
 import { useRouter } from "next/router"
 import { ReactNode } from "react"
+import { MdOutlineAdd as AddIcon } from "react-icons/md"
 import { useAddDocumentMutation } from "src/services/documents"
-
-import AddOutlined from "@mui/icons-material/AddOutlined"
 
 import Button from "./ui/Button"
 
@@ -22,7 +21,7 @@ export default function AddDocumentButton(props: AddDocumentButtonProps) {
 
     return (
         <Button
-            icon={<AddOutlined />}
+            icon={<AddIcon />}
             appearance="secondary"
             onClick={() => {
                 addDocument({

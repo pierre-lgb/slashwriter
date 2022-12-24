@@ -1,8 +1,7 @@
 import { InputHTMLAttributes, ReactNode } from "react"
+import { MdCheck as CheckedIcon, MdOutlineExpandMore as ExpandIcon } from "react-icons/md"
 import styled from "styled-components"
 
-import Check from "@mui/icons-material/Check"
-import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined"
 import * as SelectPrimitive from "@radix-ui/react-select"
 
 import FormLayout from "./FormLayout"
@@ -19,7 +18,7 @@ function Option(props: OptionProps) {
         <SelectItem value={value}>
             <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
             <SelectItemIndicator>
-                <Check sx={{ fontSize: "1rem" }} />
+                <CheckedIcon fontSize="1rem" />
             </SelectItemIndicator>
         </SelectItem>
     )
@@ -111,27 +110,14 @@ export default function Select(props: SelectProps) {
                 <SelectTrigger size={size} borderless={borderless}>
                     <SelectPrimitive.Value aria-label={value} />
                     <SelectPrimitive.SelectIcon>
-                        <ExpandMoreOutlined
-                            sx={{
-                                color: "var(--color-n700)",
-                                fontSize: "1rem"
-                            }}
-                        />
+                        <ExpandIcon color="var(--color-n700)" fontSize="1rem" />
                     </SelectPrimitive.SelectIcon>
                 </SelectTrigger>
                 <SelectPrimitive.Portal>
                     <SelectContent borderless={borderless}>
-                        {/* <SelectScrollUpButton>
-                        <ChevronUpIcon />
-                    </SelectScrollUpButton> */}
-
                         <SelectPrimitive.Viewport style={{ padding: 5 }}>
                             {children}
                         </SelectPrimitive.Viewport>
-
-                        {/* <SelectScrollDownButton>
-                        <ChevronDownIcon />
-                    </SelectScrollDownButton> */}
                     </SelectContent>
                 </SelectPrimitive.Portal>
             </SelectPrimitive.Root>

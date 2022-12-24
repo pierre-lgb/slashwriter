@@ -1,12 +1,12 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import { MdOutlineInsertDriveFile as DocumentIcon } from "react-icons/md"
 import Flex from "src/components/Flex"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { supabaseClient, useUser } from "src/utils/supabase"
 import styled from "styled-components"
 
-import InsertDriveFileOutlined from "@mui/icons-material/InsertDriveFileOutlined"
 import { NodeViewWrapper } from "@tiptap/react"
 
 export default function Subdocument(props) {
@@ -55,7 +55,7 @@ export default function Subdocument(props) {
                 legacyBehavior
             >
                 <StyledLink as="a" align="center" gap={5}>
-                    <DocumentIcon />
+                    <DocumentIcon color="var(--color-n600)" fontSize="1.2rem" />
                     <div>
                         <DocumentTitle>{documentTitle}</DocumentTitle>
                     </div>
@@ -72,11 +72,6 @@ const StyledLink = styled(Flex)`
         cursor: pointer;
         background-color: var(--color-n75);
     }
-`
-
-const DocumentIcon = styled(InsertDriveFileOutlined)`
-    color: var(--color-n600);
-    font-size: 1.2em;
 `
 
 const DocumentTitle = styled.span`

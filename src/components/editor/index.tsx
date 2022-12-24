@@ -35,9 +35,8 @@ export default function SlashwriterEditor(props: {
     const { documentId, user, editable = true } = props
     const [contentEditor, setContentEditor] = useState<Editor | null>(null)
     const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
-    const ydoc = useMemo(() => new Y.Doc(), [documentId])
-
-    const [status, setStatus] = useState("connecting")
+    const ydoc = useMemo(() => new Y.Doc(), [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
+    const [_, setStatus] = useState("connecting")
 
     const websocketProvider = useMemo(() => {
         return new HocuspocusProvider({
@@ -161,7 +160,7 @@ export default function SlashwriterEditor(props: {
             contentEditor?.destroy()
             setContentEditor(null)
         }
-    }, [documentId, editable, getCollaborationExtensions])
+    }, [documentId, editable]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Container>

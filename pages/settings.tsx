@@ -1,10 +1,9 @@
+import { MdOutlineTune as SettingsIcon } from "react-icons/md"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"
 import { withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
-
-import TuneOutlined from "@mui/icons-material/TuneOutlined"
 
 function Settings() {
     return (
@@ -20,7 +19,7 @@ function Settings() {
 
 Settings.Layout = AppLayout
 Settings.Title = "Paramètres"
-Settings.Icon = <TuneOutlined />
+Settings.Icon = <SettingsIcon />
 
 const Container = styled.div`
     padding: 100px 25px;

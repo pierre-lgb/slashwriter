@@ -2,6 +2,10 @@ import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import {
+    MdOutlineDelete as DeleteIcon,
+    MdOutlineDriveFileRenameOutline as RenameIcon
+} from "react-icons/md"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
@@ -21,8 +25,6 @@ import { setActiveFolder } from "src/store/navigation"
 import { useUser, withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
-import DeleteOutlined from "@mui/icons-material/DeleteOutlined"
-import DriveFileRenameOutlineOutlined from "@mui/icons-material/DriveFileRenameOutlineOutlined"
 import Tippy from "@tippyjs/react"
 
 function DeleteFolderButton({ folderId }) {
@@ -42,7 +44,7 @@ function DeleteFolderButton({ folderId }) {
                         id: folderId
                     })
                 }}
-                icon={<DeleteOutlined />}
+                icon={<DeleteIcon />}
                 tabIndex={-1}
             />
         </Tippy>
@@ -63,7 +65,7 @@ function RenameFolderButton({ folderId }) {
                         update: { name: folderName }
                     })
                 }}
-                icon={<DriveFileRenameOutlineOutlined />}
+                icon={<RenameIcon />}
                 tabIndex={-1}
             />
         </Tippy>
@@ -83,7 +85,7 @@ function DeleteDocumentButton({ documentId }) {
                     !confirm("Voulez-vous supprimer ce document ?") ||
                         deleteDocument({ id: documentId })
                 }}
-                icon={<DeleteOutlined />}
+                icon={<DeleteIcon />}
                 tabIndex={-1}
             />
         </Tippy>

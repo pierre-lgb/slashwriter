@@ -1,9 +1,9 @@
 import { motion } from "framer-motion"
 import { ReactNode, useEffect, useState } from "react"
+import { MdOutlineClose as CloseIcon } from "react-icons/md"
 import Button from "src/components/ui/Button"
 import styled from "styled-components"
 
-import CloseOutlined from "@mui/icons-material/CloseOutlined"
 import * as Dialog from "@radix-ui/react-dialog"
 
 interface ModalProps {
@@ -132,7 +132,7 @@ export default function Modal(props: ModalProps) {
                                             onCancel?.()
                                         }}
                                         appearance="text"
-                                        icon={<CloseOutlined />}
+                                        icon={<CloseIcon />}
                                     />
                                 </CloseButtonContainer>
                             )}
