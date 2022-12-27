@@ -20,6 +20,7 @@ interface TextProps {
     underline?: boolean
     strikethrough?: boolean
     small?: boolean
+    align?: "left" | "center" | "right" | "justify"
 }
 
 interface LinkProps {
@@ -65,7 +66,8 @@ function Text(props: TextProps) {
         disabled = false,
         underline = false,
         strikethrough = false,
-        small = false
+        small = false,
+        align = "left"
     } = props
 
     const tag =
@@ -82,6 +84,7 @@ function Text(props: TextProps) {
             underline={underline}
             strikethrough={strikethrough}
             small={small}
+            align={align}
         >
             {children}
         </StyledText>
@@ -144,9 +147,11 @@ const StyledText = styled.div<{
     underline: boolean
     strikethrough: boolean
     small: boolean
+    align: "left" | "center" | "right" | "justify"
 }>`
     font-size: 1rem;
     line-height: 1.6rem;
+    text-align: ${({ align }) => align};
 
     color: ${({ type }) =>
         ({

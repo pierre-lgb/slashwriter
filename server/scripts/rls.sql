@@ -47,10 +47,6 @@ drop policy if exists "Users can create shares" on shares;
 create policy "Users can create shares" on shares
   for insert with check (auth.uid() = user_id);
 
-drop policy if exists "Anyone can view any share" on shares;
-create policy "Anyone can view any share" on shares
-  for select using (true);
-
 drop policy if exists "Users can update their own shares" on shares;
 create policy "Users can update their own shares" on shares
   for update using (auth.uid() = user_id);
@@ -69,104 +65,17 @@ drop policy if exists "Users can create documents" on documents;
 create policy "Users can create documents" on documents
   for insert with check (auth.uid() = user_id);
 
-drop policy if exists "Users can view their own documents" on documents;
-create policy "Users can view their own documents" on documents
-  for select using (auth.uid() = user_id);
-
-drop policy if exists "Users can update their own documents" on documents;
-create policy "Users can update their own documents" on documents
-  for update using (auth.uid() = user_id);
-
 drop policy if exists "Users can delete their own documents" on documents;
 create policy "Users can delete their own documents" on documents
   for delete using (auth.uid() = user_id);
 
+drop policy if exists "Document read permission policy" on documents;
+create policy "Document read permission policy" on documents
+  for select using (canReadDocument(auth.uid(), documents.id, documents));
 
-create or replace function canRead(user_id uuid, share_id uuid) returns boolean
-language plpgsql
-as
-$$
-declare
-  share_settings shares%rowtype;
-begin
-select * into share_settings from shares where id=share_id;
-if (
-  share_settings.anyone_can_read or
-  user_id = any(share_settings.users_can_read) or
-  share_settings.anyone_can_edit or
-  user_id = any(share_settings.users_can_edit)
-) then
-  return true;
-elsif not found then
-  raise exception 'NOT_FOUND';
-  return false;
-else
-  raise exception 'ACCESS_DENIED';
-  return false;
-end if;
-end; $$;
-
-
-create or replace function canEdit(user_id uuid, share_id uuid) returns boolean
-language plpgsql
-as
-$$
-declare
-  can_edit boolean;
-  share_settings shares%rowtype;
-begin
-select * into share_settings from shares where id=share_id;
-if (
-  share_settings.anyone_can_edit or
-  user_id = any(share_settings.users_can_edit)
-) then
-  return true;
-elsif not found then
-  raise exception 'NOT_FOUND';
-  return false;
-else
-  raise exception 'ACCESS_DENIED';
-  return false;
-end if;
-end; $$;
-
-drop policy if exists "Other users may read a shared document" on documents;
-create policy "Other users may read a shared document" on documents
-  for select using (
-    share_settings is not null and
-    deleted is not true and
-    canRead(auth.uid(), share_settings)
-  );
-
-drop policy if exists "Other users may edit a shared document" on documents;
-create policy "Other users may edit a shared document" on documents
-  for update using (
-    share_settings is not null and 
-    deleted is not true and
-    canEdit(auth.uid(), share_settings)
-  ); 
-
-create or replace function canInsertSubdocument(user_id uuid, parent_document_id uuid) returns boolean
-language plpgsql
-as
-$$
-declare
-  can_insert_subdocument boolean;
-  parent_document documents%rowtype;
-  parent_share_settings shares%rowtype;
-begin
-select * into parent_document from documents where id=parent_document_id;
-if not found then
-  can_insert_subdocument := false;
-else
-  if (select include_subdocuments from shares where id=parent_document.share_settings) is true and canEdit(user_id, parent_document.share_settings) then
-    can_insert_subdocument := true;
-  else
-    can_insert_subdocument := false;
-  end if;
-end if;
-return can_insert_subdocument;
-end; $$;
+drop policy if exists "Document edit permission policy" on documents;
+create policy "Document edit permission policy" on documents
+  for select using (canEditDocument(auth.uid(), documents.id, documents));
 
 drop policy if exists "Other users may insert subdocuments in a shared document" on documents;
 create policy "Other users may insert subdocuments in a shared document" on documents
@@ -174,3 +83,26 @@ create policy "Other users may insert subdocuments in a shared document" on docu
     parent is not null and
     canInsertSubdocument(auth.uid(), parent)
   ); 
+
+
+
+
+
+-- +------------------------------------------+
+-- |                  STORAGE                 |
+-- +------------------------------------------+
+
+drop policy if exists "Users can access the files of the documents they have access to." on storage.objects;
+create policy "Users can access the files of the documents they have access to."
+  on storage.objects for select
+  using (
+    bucket_id = 'documents_uploads' and
+    canReadDocument(auth.uid(), (storage.foldername(name))[1]::uuid)
+  );
+
+drop policy if exists "Users can upload files." on storage.objects;
+create policy "Users can upload files."
+  on storage.objects for insert
+  with check ( 
+    bucket_id = 'documents_uploads'
+  );

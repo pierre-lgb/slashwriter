@@ -34,10 +34,12 @@ function Auth() {
                         supabaseClient={supabaseClient}
                         socialLayout="vertical"
                         // providers={["google", "github", "discord"]}
+                        theme="light"
                         appearance={{
                             theme: ThemeSupa,
                             style: {
-                                container: { width: 350 }
+                                container: { width: 350 },
+                                input: { letterSpacing: "0px" }
                             },
                             variables: {
                                 default: {

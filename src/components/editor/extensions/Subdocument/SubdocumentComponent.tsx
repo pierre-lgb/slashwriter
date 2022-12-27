@@ -7,9 +7,9 @@ import { useGetDocumentsQuery } from "src/services/documents"
 import { supabaseClient, useUser } from "src/utils/supabase"
 import styled from "styled-components"
 
-import { NodeViewWrapper } from "@tiptap/react"
+import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
-export default function Subdocument(props) {
+export default function Subdocument(props: NodeViewProps) {
     const { docId } = props.node.attrs
     const user = useUser()
     const [documentTitle, setDocumentTitle] = useState("")

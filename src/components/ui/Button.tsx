@@ -14,6 +14,7 @@ interface ButtonProps {
     size?: "small" | "medium" | "large"
     block?: boolean
     danger?: boolean
+    active?: boolean
     ariaSelected?: boolean
     ariaControls?: boolean
     tabIndex?: number
@@ -34,6 +35,7 @@ export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(
         size = "medium",
         block = false,
         danger,
+        active,
         ariaSelected,
         ariaControls,
         tabIndex,
@@ -53,6 +55,7 @@ export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(
             appearance={appearance}
             iconOnly={!children && !iconRight}
             danger={danger}
+            active={active}
             {...otherProps}
         >
             {loading ? (
@@ -74,6 +77,7 @@ const ButtonComponent = styled.button<{
     size: "small" | "medium" | "large"
     appearance: "primary" | "secondary" | "text"
     danger: boolean
+    active: boolean
     iconOnly: boolean
 }>`
     font-family: inherit;
@@ -95,7 +99,11 @@ const ButtonComponent = styled.button<{
     color: ${({ appearance }) =>
         appearance === "primary" ? "var(--color-white)" : "var(--color-n800)"};
     background: ${({ appearance }) =>
-        appearance === "primary" ? "var(--color-black)" : "var(--color-white)"};
+        appearance === "primary"
+            ? "var(--color-black)"
+            : appearance === "secondary"
+            ? "var(--color-white)"
+            : "transparent"};
     border: ${({ appearance }) =>
         appearance === "secondary"
             ? "1px solid var(--color-n400)"
@@ -122,6 +130,14 @@ const ButtonComponent = styled.button<{
         css`
             opacity: 0.75;
             cursor: not-allowed;
+        `}
+
+    ${({ active, appearance }) =>
+        active &&
+        css`
+            background: ${appearance === "primary"
+                ? "var(--color-n800)"
+                : "var(--color-n200)"};
         `}
 
     ${({ danger, appearance }) =>

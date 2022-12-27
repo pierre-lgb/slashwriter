@@ -3,8 +3,8 @@
 -- +------------------------------------------+
 create table if not exists profiles (
   id uuid references auth.users not null,
-  username citext unique not null,
-  email citext unique not null,
+  username text unique not null,
+  email text unique not null,
   avatar_url text,
 
   primary key (id),
@@ -19,17 +19,16 @@ create table if not exists profiles (
 create table if not exists folders (
   id uuid default uuid_generate_v4() not null,
   user_id uuid references auth.users default uid() not null,
-  name citext not null,
-  color citext default '#8F95B2' not null,
-  created_at timestamp with timezone default timezone('utc'::text, now()) not null,
-  deleted_at timestamp with timezone,
+  name text default 'Folder' not null,
+  color text default '#8F95B2' not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  deleted_at timestamp with time zone,
   deleted boolean default false not null,
 
   primary key (id),
   constraint name_length check (char_length(name) >= 3),
   constraint color_hex_format check (color ~ '^#[a-zA-Z0-9]{6}$')
 );
-
 
 -- +------------------------------------------+
 -- |                  SHARES                  |
@@ -55,17 +54,18 @@ create table if not exists documents (
   id uuid default uuid_generate_v4() not null,
   user_id uuid references auth.users default uid() not null,
   folder uuid references folders not null,
-  path citext default '/'not null,
+  path text default '/'not null,
   parent uuid references documents,
-  title citext,
-  previous_titles citext[],
-  text citext,
+  title text,
+  previous_titles text[],
+  text text,
   state bytea,
   share_settings uuid references shares,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
   deleted_at timestamp with time zone,
   deleted boolean default false not null,
+  starred boolean default false not null,
 
   primary key (id),
   constraint path_of_uuid check (path ~ '^\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/)*$')

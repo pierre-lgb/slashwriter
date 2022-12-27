@@ -13,12 +13,13 @@ import Placeholder from "@tiptap/extension-placeholder"
 import TaskItem from "@tiptap/extension-task-item"
 import TaskList from "@tiptap/extension-task-list"
 import Text from "@tiptap/extension-text"
-import { Editor, EditorContent as TiptapEditorContent } from "@tiptap/react"
+import { Editor, EditorContent as TiptapEditorContent, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 
 import CommandsMenu from "./extensions/CommandsMenu"
 import suggestion from "./extensions/CommandsMenu/suggestion"
 import DragAndDrop from "./extensions/DragAndDrop"
+import Image from "./extensions/Image"
 import Subdocument from "./extensions/Subdocument"
 import TrailingNode from "./extensions/TrailingNode"
 
@@ -118,6 +119,7 @@ export default function SlashwriterEditor(props: {
                 }),
                 ...getCollaborationExtensions("title")
             ],
+            autofocus: "start",
             onCreate({ editor }) {
                 // Autofocus
                 editor.commands.focus()
@@ -129,7 +131,8 @@ export default function SlashwriterEditor(props: {
             extensions: [
                 StarterKit.configure({
                     history: false,
-                    heading: false
+                    heading: false,
+                    gapcursor: false
                 }),
                 Heading.configure({
                     levels: [1, 2, 3]
@@ -137,6 +140,7 @@ export default function SlashwriterEditor(props: {
                 Highlight,
                 TaskItem,
                 TaskList,
+                Image,
                 Subdocument,
                 TrailingNode,
                 DragAndDrop,
@@ -146,6 +150,7 @@ export default function SlashwriterEditor(props: {
                 Placeholder.configure({
                     placeholder: "Commencez à écrire ici..."
                 }),
+
                 ...getCollaborationExtensions("default")
             ],
             editable
@@ -156,20 +161,24 @@ export default function SlashwriterEditor(props: {
 
         return () => {
             titleEditor?.destroy()
-            setTitleEditor(null)
             contentEditor?.destroy()
+            setTitleEditor(null)
             setContentEditor(null)
         }
-    }, [documentId, editable]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Container>
-            <EditorTitle
-                editor={titleEditor}
-                onKeyDown={handleTitleEditorKeyDown}
-                spellCheck="false"
-            />
-            <EditorContent editor={contentEditor} spellCheck="false" />
+            {titleEditor && !titleEditor.isDestroyed && (
+                <EditorTitle
+                    editor={titleEditor}
+                    onKeyDown={handleTitleEditorKeyDown}
+                    spellCheck="false"
+                />
+            )}
+            {contentEditor && !contentEditor.isDestroyed && (
+                <EditorContent editor={contentEditor} spellCheck="false" />
+            )}
         </Container>
     )
 }

@@ -1,6 +1,6 @@
-import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
+import DocumentEditor from "src/components/editor"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
@@ -11,10 +11,6 @@ import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch } from "src/store"
 import { setActiveDocument, setActiveFolder } from "src/store/navigation"
 import { useUser, withPageAuth } from "src/utils/supabase"
-
-const DocumentEditor = dynamic(() => import("src/components/editor"), {
-    ssr: false
-})
 
 function Document() {
     const router = useRouter()
@@ -51,12 +47,10 @@ function Document() {
     return (
         <TransitionOpacity>
             {!!document && !!user ? (
-                <>
-                    <DocumentEditor
-                        documentId={docId}
-                        user={{ email: user.email }}
-                    />
-                </>
+                <DocumentEditor
+                    documentId={docId}
+                    user={{ email: user.email }}
+                />
             ) : (
                 <Flex
                     align="center"

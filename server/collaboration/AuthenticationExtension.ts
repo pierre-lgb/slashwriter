@@ -2,7 +2,7 @@ import * as cookie from "cookie"
 
 import { Extension, onAuthenticatePayload } from "@hocuspocus/server"
 
-import { parseSupabaseCookie, supabaseClientWithAuth } from "../utils"
+import { parseSupabaseCookie, supabaseClient, supabaseClientWithAuth } from "../utils"
 
 export default class AuthenticationExtension implements Extension {
     async onAuthenticate({
@@ -15,27 +15,28 @@ export default class AuthenticationExtension implements Extension {
         const user = session?.user
 
         const documentId = documentName.split(".").pop()
-        const { data: document, error } = await supabaseClientWithAuth(session)
-            .from("documents")
-            .select("user_id, share_settings(*)")
-            .eq("id", documentId)
-            .single()
+        const { error: canReadError } = await supabaseClient.rpc(
+            "canreaddocument",
+            {
+                user_id: user?.id || null,
+                document_id: documentId
+            }
+        )
 
-        if (error) {
-            console.log("session", session)
-            console.log(error)
-            throw new Error("An error occured.")
+        if (canReadError) {
+            console.error(canReadError)
+            throw new Error("Not allowed.")
         }
 
-        if (
-            !(document.user_id === user?.id) &&
-            !(
-                document.share_settings?.anyone_can_edit ||
-                document.share_settings?.users_can_edit?.includes(user?.id)
-            ) &&
-            (document.share_settings?.anyone_can_read ||
-                document.share_settings?.users_can_read?.includes(user?.id))
-        ) {
+        const { error: canEditError } = await supabaseClient.rpc(
+            "caneditdocument",
+            {
+                user_id: user?.id || null,
+                document_id: documentId
+            }
+        )
+
+        if (!!canEditError) {
             connection.readOnly = true
         }
 

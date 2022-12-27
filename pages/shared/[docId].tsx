@@ -1,17 +1,14 @@
-import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import DocumentEditor from "src/components/editor"
 import Flex from "src/components/Flex"
 import TransitionOpacity from "src/components/TransitionOpacity"
+import Loader from "src/components/ui/Loader"
 import Typography from "src/components/ui/Typography"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useAppDispatch } from "src/store"
 import { setActiveDocument } from "src/store/navigation"
 import { supabaseClient, useUser } from "src/utils/supabase"
-
-const DocumentEditor = dynamic(() => import("src/components/editor"), {
-    ssr: false
-})
 
 function getRandomName() {
     const NAMES = ["Anonymous", "Toad", "Yoshi", "Luma", "Boo"]
@@ -22,7 +19,6 @@ function Shared() {
     const router = useRouter()
     const { docId } = router.query as { docId: string }
     const user = useUser()
-    const [isAnonymous, setAnonymous] = useState<boolean>(false)
     const [permission, setPermission] = useState<string>("none")
     const [loadingPermission, setLoadingPermission] = useState<boolean>(true)
 
@@ -52,44 +48,52 @@ function Shared() {
         }
     }, [docId, dispatch])
 
-    useEffect(() => {
-        if ((user || isAnonymous) && loadingPermission && docId) {
-            supabaseClient
-                .from("documents")
-                .select("share_settings")
-                .match({ id: docId })
-                .single()
-                .then(async ({ data: document }) => {
-                    const params = {
-                        share_id: document?.share_settings,
-                        user_id: user?.id || null
-                    }
+    async function getPermission() {
+        let permission = "none"
 
-                    if (!document) {
-                        return
-                    }
+        const { error: canReadError } = await supabaseClient.rpc(
+            "canreaddocument",
+            {
+                user_id: user?.id || null,
+                document_id: docId
+            }
+        )
 
-                    setPermission("read")
-
-                    await supabaseClient
-                        .rpc("canedit", params)
-                        .then(({ data: canEdit }) => {
-                            if (canEdit) {
-                                setPermission("read|edit")
-                            }
-                        })
-                })
-                .then(() => {
-                    setLoadingPermission(false)
-                })
+        if (canReadError) {
+            return permission
         }
-    }, [docId, user, isAnonymous, loadingPermission])
+
+        permission = "read"
+
+        const { error: canEditError } = await supabaseClient.rpc(
+            "caneditdocument",
+            {
+                user_id: user?.id || null,
+                document_id: docId
+            }
+        )
+
+        if (canEditError) {
+            return permission
+        }
+
+        permission = "read|edit"
+        return permission
+    }
 
     useEffect(() => {
-        if (!user) {
-            setAnonymous(true)
+        if (docId) {
+            getPermission().then((permission) => {
+                setPermission(permission)
+                setLoadingPermission(false)
+            })
         }
-    }, [user])
+
+        return () => {
+            setPermission("none")
+            setLoadingPermission(true)
+        }
+    }, [docId])
 
     return (
         <TransitionOpacity>
@@ -97,7 +101,7 @@ function Shared() {
                 <DocumentEditor
                     documentId={docId}
                     user={{
-                        email: isAnonymous ? getRandomName() : user.email
+                        email: user?.email || getRandomName()
                     }}
                     editable={!!permission.includes("edit")}
                 />
@@ -105,14 +109,12 @@ function Shared() {
                 <Flex
                     align="center"
                     justify="center"
-                    style={{ width: "100%", height: "100%" }}
+                    style={{ height: "100vh" }}
                 >
-                    {loadingPermission ? (
-                        <Typography.Text>Chargement...</Typography.Text>
-                    ) : cacheDocument ? (
-                        <Typography.Text>Redirection...</Typography.Text>
+                    {loadingPermission || cacheDocument ? (
+                        <Loader />
                     ) : (
-                        <Typography.Text>
+                        <Typography.Text align="center">
                             Vous n&apos;avez pas accès à ce document. Il a
                             peut-être été supprimé.
                         </Typography.Text>

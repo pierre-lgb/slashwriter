@@ -166,12 +166,12 @@ const items = {
             description: "Une image",
             aliases: ["picture", "img"],
             command: ({ editor, range }) => {
-                // editor
-                //     .chain()
-                //     .focus()
-                //     .deleteRange(range)
-                //
-                //     .run()
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .insertImagePlaceholder()
+                    .run()
             },
             icon: <ImageIcon />
         },
@@ -201,24 +201,22 @@ const items = {
                     .insert({
                         parent: navigationStore.activeDocument
                     })
-                    .select()
+                    .select("id")
 
-                if (data) {
-                    const docId = data[0].id
-                    editor
-                        .chain()
-                        .focus()
-                        .deleteRange(range)
-                        .insertSubdocument(docId)
-                        .run()
-
-                    Router.push(
-                        `${Router.asPath.split(/\/[^/]*$/)[0]}/${docId}`
-                    )
-                } else {
+                if (error) {
                     console.error(error)
                     return alert("Impossible de créer la page intégrée")
                 }
+
+                const docId = data[0].id
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .insertSubdocument(docId)
+                    .run()
+
+                Router.push(`${Router.asPath.split(/\/[^/]*$/)[0]}/${docId}`)
             },
             icon: <PageIcon />
         }
@@ -274,8 +272,10 @@ function filterItems(items, query) {
         filteredItems[category] = items[category].filter((item) => {
             // Check if the item's name or any of its aliases start with the query
             return (
-                item.name.startsWith(query) ||
-                item.aliases.some((alias) => alias.startsWith(query))
+                item.name.toLowerCase().startsWith(query.toLowerCase()) ||
+                item.aliases.some((alias) =>
+                    alias.toLowerCase().startsWith(query.toLowerCase())
+                )
             )
         })
     }
@@ -356,8 +356,12 @@ const suggestionConfig: Partial<SuggestionOptions> = {
             },
 
             onExit: () => {
-                popup[0].destroy()
-                component.destroy()
+                if (!popup[0].state.isDestroyed) {
+                    popup[0].destroy()
+                }
+                if (component.ref !== null) {
+                    component.destroy()
+                }
             }
         }
     }

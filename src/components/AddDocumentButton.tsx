@@ -23,14 +23,18 @@ export default function AddDocumentButton(props: AddDocumentButtonProps) {
         <Button
             icon={<AddIcon />}
             appearance="secondary"
-            onClick={() => {
-                addDocument({
-                    folderId: folderId
-                }).then((res) => {
-                    // Redirecting
-                    const { data } = res as { data?: any; error?: any }
-                    if (data[0]) router.push(`/doc/${data[0].id}`)
-                })
+            onClick={async () => {
+                const { data, error }: { data?: any; error?: any } =
+                    await addDocument({
+                        folderId: folderId
+                    })
+
+                if (data) {
+                    router.push(`/doc/${data[0].id}`)
+                } else {
+                    alert("Une erreur est survenue.")
+                    console.error(error)
+                }
             }}
             {...rest}
         >

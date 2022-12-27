@@ -113,6 +113,7 @@ export const documentsApi = baseApi.injectEndpoints({
                     const { data, error } = await supabaseClient
                         .from("documents")
                         .insert({ title: "", folder: folderId, parent })
+                        .select("id")
 
                     return data ? { data } : { error }
                 }
