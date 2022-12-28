@@ -2,7 +2,7 @@ import Router from "next/router"
 import {
     RiBold as BoldIcon,
     RiDoubleQuotesR as QuoteIcon,
-    RiFileLine as PageIcon,
+    RiFileLine as DocumentIcon,
     RiFunctions as EquationIcon,
     RiH1 as Heading1Icon,
     RiH2 as Heading2Icon,
@@ -31,7 +31,7 @@ const items = {
         {
             name: "Titre principal",
             description: "Un titre de grande taille",
-            aliases: ["one", "heading", "h1", "#"],
+            aliases: ["one", "heading", "h1", "#", "titre1"],
             command: ({ editor, range }) => {
                 editor
                     .chain()
@@ -45,7 +45,7 @@ const items = {
         {
             name: "Titre secondaire",
             description: "Un titre de taille moyenne",
-            aliases: ["two", "second", "heading", "h2", "##"],
+            aliases: ["two", "second", "heading", "h2", "##", "titre2"],
             command: ({ editor, range }) => {
                 editor
                     .chain()
@@ -59,7 +59,17 @@ const items = {
         {
             name: "Sous-titre",
             description: "Un titre de petite taille",
-            aliases: ["three", "third", "heading", "h3", "###", "subtitle"],
+            aliases: [
+                "three",
+                "third",
+                "heading",
+                "h3",
+                "###",
+                "subtitle",
+                "titre",
+                "soustitre",
+                "titre3"
+            ],
             command: ({ editor, range }) => {
                 editor
                     .chain()
@@ -190,8 +200,8 @@ const items = {
             icon: <EquationIcon />
         },
         {
-            name: "Page intégrée",
-            description: "Une page intégrée dans cette page",
+            name: "Document",
+            description: "Un document intégré",
             aliases: ["subpage", "embeddedpage", "subdocument", "document"],
             command: async ({ editor, range }) => {
                 const navigationStore = store.getState().navigation
@@ -218,7 +228,7 @@ const items = {
 
                 Router.push(`${Router.asPath.split(/\/[^/]*$/)[0]}/${docId}`)
             },
-            icon: <PageIcon />
+            icon: <DocumentIcon />
         }
     ],
     Format: [

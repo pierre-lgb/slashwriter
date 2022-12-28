@@ -57,7 +57,9 @@ export default function ImageComponent(props: NodeViewProps) {
 
     return (
         <ImageNodeViewWrapper
-            className={props.selected ? "ProseMirror-selectednode" : ""}
+            className={
+                props.selected ? "ProseMirror-selectednode image" : "image"
+            }
             style={{ width: node.attrs.width }}
             align={node.attrs.align}
         >

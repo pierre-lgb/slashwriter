@@ -1,1 +1,5 @@
-This project is under active development.
+# Slashwriter
+
+---
+
+![Cover](assets/slashwriter-cover.png)

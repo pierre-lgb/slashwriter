@@ -7,18 +7,21 @@ import { HocuspocusProvider } from "@hocuspocus/provider"
 import Collaboration from "@tiptap/extension-collaboration"
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor"
 import Document from "@tiptap/extension-document"
+import Dropcursor from "@tiptap/extension-dropcursor"
 import Heading from "@tiptap/extension-heading"
 import Highlight from "@tiptap/extension-highlight"
+import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
 import TaskItem from "@tiptap/extension-task-item"
 import TaskList from "@tiptap/extension-task-list"
 import Text from "@tiptap/extension-text"
-import { Editor, EditorContent as TiptapEditorContent, useEditor } from "@tiptap/react"
+import { Editor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 
 import CommandsMenu from "./extensions/CommandsMenu"
 import suggestion from "./extensions/CommandsMenu/suggestion"
 import DragAndDrop from "./extensions/DragAndDrop"
+import { HorizontalRule } from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
 import Subdocument from "./extensions/Subdocument"
 import TrailingNode from "./extensions/TrailingNode"
@@ -132,25 +135,32 @@ export default function SlashwriterEditor(props: {
                 StarterKit.configure({
                     history: false,
                     heading: false,
-                    gapcursor: false
+                    gapcursor: false,
+                    horizontalRule: false,
+                    dropcursor: false
                 }),
                 Heading.configure({
                     levels: [1, 2, 3]
                 }),
                 Highlight,
+                HorizontalRule,
                 TaskItem,
                 TaskList,
                 Image,
                 Subdocument,
                 TrailingNode,
                 DragAndDrop,
+                Link,
+                Dropcursor.configure({
+                    width: 3,
+                    color: "#BFE5F4"
+                }),
                 CommandsMenu.configure({
                     suggestion
                 }),
                 Placeholder.configure({
                     placeholder: "Commencez à écrire ici..."
                 }),
-
                 ...getCollaborationExtensions("default")
             ],
             editable
@@ -177,13 +187,13 @@ export default function SlashwriterEditor(props: {
                 />
             )}
             {contentEditor && !contentEditor.isDestroyed && (
-                <EditorContent editor={contentEditor} spellCheck="false" />
+                <ContentEditor editor={contentEditor} spellCheck="false" />
             )}
         </Container>
     )
 }
 
-const EditorTitle = styled(TiptapEditorContent)`
+const EditorTitle = styled(EditorContent)`
     .ProseMirror {
         h1 {
             margin: 1rem 0;
@@ -193,15 +203,15 @@ const EditorTitle = styled(TiptapEditorContent)`
     }
 `
 
-const EditorContent = styled(TiptapEditorContent)`
+const ContentEditor = styled(EditorContent)`
     .ProseMirror {
         font-size: 1em;
-        line-height: 1.6em;
+        line-height: 1.6rem;
 
         /* Blocks styling */
         & > * {
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
         }
 
         p {
@@ -213,7 +223,8 @@ const EditorContent = styled(TiptapEditorContent)`
         h2,
         h3 {
             color: var(--color-n900);
-            font-weight: 600;
+            font-weight: 700;
+            line-height: 2rem;
         }
 
         h1 {
@@ -228,13 +239,71 @@ const EditorContent = styled(TiptapEditorContent)`
             font-size: 1.2em;
         }
 
+        li > p {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+
+        p strong {
+            font-weight: 600;
+        }
+
+        a {
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1.6rem;
+            color: var(--color-b400);
+            border-bottom: 1px solid var(--color-b200);
+
+            &:hover {
+                color: var(--color-b500);
+            }
+        }
+
+        blockquote {
+            border-left: 3px solid rgb(13, 13, 13);
+            padding-left: 1rem;
+            margin-left: 0;
+        }
+
+        code {
+            padding: 0.2rem 0.2rem 0.1rem;
+            background: hsla(0, 0%, 58.8%, 0.1);
+            border: 1px solid hsla(0, 0%, 39.2%, 0.2);
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .horizontal-rule {
+            line-height: 0;
+            padding: 0.25rem 0;
+            margin-top: 0;
+            margin-bottom: 0;
+
+            & > div {
+                border-bottom: 1px solid #dddddd;
+            }
+        }
+
+        *::selection {
+            background: rgba(150, 170, 220, 0.3);
+            color: inherit;
+        }
+
         /* Node selections */
         &:not(.dragging) {
             .ProseMirror-selectednode {
+                & .image {
+                    outline: none !important;
+                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px;
+                    transition: box-shadow ease-out 100ms;
+                    background-color: transparent;
+                }
+
                 border-radius: 0.2rem;
-                outline: none !important;
-                box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px;
-                transition: box-shadow ease-out 100ms;
+                background-color: rgba(150, 170, 220, 0.2);
+                transition: background-color ease-out 150ms;
+                box-shadow: none;
             }
         }
     }

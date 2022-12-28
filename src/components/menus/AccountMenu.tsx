@@ -7,7 +7,7 @@ import {
 import { RiCommandLine as CommandIcon } from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Menu from "src/components/ui/navigation/Menu"
-import { supabaseClient } from "src/utils/supabase"
+import { signOut } from "src/utils/supabase"
 import styled from "styled-components"
 
 function AccountMenu({ children }) {
@@ -39,7 +39,7 @@ function AccountMenu({ children }) {
                     <Menu.Item
                         icon={<LogoutIcon />}
                         title="Déconnexion"
-                        onClick={() => supabaseClient.auth.signOut()}
+                        onClick={() => signOut()}
                         menu={instance}
                     />
                 </Container>

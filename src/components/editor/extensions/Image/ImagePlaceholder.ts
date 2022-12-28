@@ -20,6 +20,8 @@ export default Node.create({
 
     atom: true,
 
+    selectable: false,
+
     parseHTML() {
         return [{ tag: "div" }]
     },

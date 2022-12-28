@@ -1,4 +1,6 @@
 import { GetServerSidePropsContext } from "next"
+import api from "src/services"
+import store from "src/store"
 
 import {
     createBrowserSupabaseClient,
@@ -58,38 +60,9 @@ export const withoutPageAuth =
     }
 
 export const supabaseClient = createBrowserSupabaseClient()
-
-// export const withPageAuth = ({ redirectTo = "/auth", ...props } = {}) =>
-//     _withPageAuth({
-//         authRequired: true,
-//         redirectTo,
-//         ...props
-//     })
-
-// export const withoutPageAuth = ({
-//     redirectTo = "/home",
-//     getServerSideProps = async (ctx) => {}
-// } = {}) =>
-//     _withPageAuth({
-//         authRequired: false,
-//         getServerSideProps: async (ctx) => {
-//             const res = await getUser(ctx)
-//             if (res.user) {
-//                 return {
-//                     redirect: {
-//                         destination: redirectTo,
-//                         permanent: false
-//                     }
-//                 }
-//             }
-
-//             return (await getServerSideProps(ctx)) as any
-//         }
-//     })
-
-// export const signOut = () => {
-//     supabaseClient.auth.signOut()
-//     store.dispatch(api.util.resetApiState())
-// }
+export const signOut = () => {
+    supabaseClient.auth.signOut()
+    store.dispatch(api.util.resetApiState())
+}
 
 export { useUser } from "@supabase/auth-helpers-react"

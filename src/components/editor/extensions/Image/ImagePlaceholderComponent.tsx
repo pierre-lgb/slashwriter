@@ -100,12 +100,13 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
                             <ImageIcon color="inherit" size={24} />
                             {isDragActive ? (
                                 <PlaceholderText>
-                                    Déposez l'image ici
+                                    {"Déposez l'image ici"}
                                 </PlaceholderText>
                             ) : (
                                 <PlaceholderText>
-                                    Glissez et déposez l'image ici, <br />
-                                    ou cliquez pour sélectionner
+                                    {"Glissez et déposez l'image ici, "}
+                                    <br />
+                                    {"ou cliquez pour sélectionner un fichier"}
                                 </PlaceholderText>
                             )}
                         </Flex>

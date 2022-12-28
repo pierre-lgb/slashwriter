@@ -75,7 +75,7 @@ create policy "Document read permission policy" on documents
 
 drop policy if exists "Document edit permission policy" on documents;
 create policy "Document edit permission policy" on documents
-  for select using (canEditDocument(auth.uid(), documents.id, documents));
+  for update using (canEditDocument(auth.uid(), documents.id, documents));
 
 drop policy if exists "Other users may insert subdocuments in a shared document" on documents;
 create policy "Other users may insert subdocuments in a shared document" on documents

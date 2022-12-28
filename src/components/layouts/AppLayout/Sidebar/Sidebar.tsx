@@ -26,6 +26,7 @@ import SidebarItem from "./components/SidebarItem"
 export default function Sidebar() {
     const router = useRouter()
     const user = useUser()
+
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
         (store) => store.ui
     )

@@ -146,10 +146,12 @@ export default function DragHandle(options: DragHandleOptions) {
 
                     const compStyle = window.getComputedStyle(node)
                     const lineHeight = parseInt(compStyle.lineHeight, 10)
+                    const paddingTop = parseInt(compStyle.paddingTop, 10)
 
                     const rect = absoluteRect(node)
 
                     rect.top += (lineHeight - 24) / 2
+                    rect.top += paddingTop
                     rect.width = options.dragHandleWidth
 
                     dragHandleElement.style.left = `${rect.left - rect.width}px`
