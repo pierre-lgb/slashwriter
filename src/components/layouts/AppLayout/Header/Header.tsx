@@ -51,7 +51,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     })
 
     return (
-        <Container>
+        <Container className="header">
             <Flex auto align="center" gap={20}>
                 <ToggleSidebarButtonContainer>
                     <Button

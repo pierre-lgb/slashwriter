@@ -57,6 +57,10 @@ div#__next {
 
 body {
     min-height: 100vh;
+
+    @media print {
+        zoom: 1.2;
+    }
 }
 
 a {

@@ -36,6 +36,16 @@ const Container = styled(Flex)`
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+
+    @media print {
+        .sidebar {
+            display: none;
+        }
+
+        .header {
+            display: none;
+        }
+    }
 `
 
 const Main = styled.main`
@@ -44,11 +54,20 @@ const Main = styled.main`
     max-height: 100vh;
     width: 100%;
     overflow: hidden;
+
+    @media print {
+        display: block;
+        max-height: unset;
+    }
 `
 
 const PageContent = styled.div`
     overflow-y: auto;
     width: 100%;
+
+    @media print {
+        overflow-y: hidden;
+    }
 `
 
 export default AppLayout

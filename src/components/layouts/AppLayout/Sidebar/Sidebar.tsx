@@ -58,6 +58,7 @@ export default function Sidebar() {
                 column
                 open={sidebarOpen}
                 mobileOpen={mobileSidebarOpen}
+                className="sidebar"
             >
                 <AccountSection user={user} />
                 <Section gap={5}>
