@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import DocumentEditor from "src/components/editor"
 import Flex from "src/components/Flex"
 import TransitionOpacity from "src/components/TransitionOpacity"
@@ -48,7 +48,7 @@ function Shared() {
         }
     }, [docId, dispatch])
 
-    async function getPermission() {
+    const getPermission = useCallback(async () => {
         let permission = "none"
 
         const { error: canReadError } = await supabaseClient.rpc(
@@ -79,7 +79,7 @@ function Shared() {
 
         permission = "read|edit"
         return permission
-    }
+    }, [docId, user?.id])
 
     useEffect(() => {
         if (docId) {
@@ -93,7 +93,7 @@ function Shared() {
             setPermission("none")
             setLoadingPermission(true)
         }
-    }, [docId])
+    }, [docId, getPermission])
 
     return (
         <TransitionOpacity>

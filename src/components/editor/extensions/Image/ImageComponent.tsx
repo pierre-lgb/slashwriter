@@ -53,7 +53,7 @@ export default function ImageComponent(props: NodeViewProps) {
             window.removeEventListener("mousemove", resize)
             window.removeEventListener("mouseup", endResize)
         }
-    }, [resizing, resizeInitialMouseX, resizeInitialWidth])
+    }, [resizing, resizeInitialMouseX, resizeInitialWidth]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <ImageNodeViewWrapper

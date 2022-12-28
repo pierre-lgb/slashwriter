@@ -4,20 +4,30 @@ import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
 
 import { HocuspocusProvider } from "@hocuspocus/provider"
+import Blockquote from "@tiptap/extension-blockquote"
+import Bold from "@tiptap/extension-bold"
+import BulletList from "@tiptap/extension-bullet-list"
+import Code from "@tiptap/extension-code"
 import Collaboration from "@tiptap/extension-collaboration"
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor"
 import Document from "@tiptap/extension-document"
 import Dropcursor from "@tiptap/extension-dropcursor"
 import Heading from "@tiptap/extension-heading"
 import Highlight from "@tiptap/extension-highlight"
+import Italic from "@tiptap/extension-italic"
 import Link from "@tiptap/extension-link"
+import ListItem from "@tiptap/extension-list-item"
+import OrderedList from "@tiptap/extension-ordered-list"
+import Paragraph from "@tiptap/extension-paragraph"
 import Placeholder from "@tiptap/extension-placeholder"
+import Strike from "@tiptap/extension-strike"
 import TaskItem from "@tiptap/extension-task-item"
 import TaskList from "@tiptap/extension-task-list"
 import Text from "@tiptap/extension-text"
+import Underline from "@tiptap/extension-underline"
 import { Editor, EditorContent } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
 
+import BubbleMenu from "./components/BubbleMenu"
 import CommandsMenu from "./extensions/CommandsMenu"
 import suggestion from "./extensions/CommandsMenu/suggestion"
 import DragAndDrop from "./extensions/DragAndDrop"
@@ -31,6 +41,12 @@ function getRandomColor() {
     return COLORS[Math.round(Math.random() * (COLORS.length - 1))]
 }
 
+function useForceUpdate() {
+    const [, setValue] = useState(0)
+
+    return () => setValue((value) => value + 1)
+}
+
 export default function SlashwriterEditor(props: {
     documentId: string
     user: { email: string }
@@ -40,7 +56,9 @@ export default function SlashwriterEditor(props: {
     const [contentEditor, setContentEditor] = useState<Editor | null>(null)
     const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
     const ydoc = useMemo(() => new Y.Doc(), [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
-    const [_, setStatus] = useState("connecting")
+    const [, setStatus] = useState("connecting")
+
+    const forceUpdate = useForceUpdate()
 
     const websocketProvider = useMemo(() => {
         return new HocuspocusProvider({
@@ -132,25 +150,35 @@ export default function SlashwriterEditor(props: {
 
         const contentEditor = new Editor({
             extensions: [
-                StarterKit.configure({
-                    history: false,
-                    heading: false,
-                    gapcursor: false,
-                    horizontalRule: false,
-                    dropcursor: false
-                }),
+                // Nodes
+                Document,
+                Text,
+                Paragraph,
+                Blockquote,
                 Heading.configure({
                     levels: [1, 2, 3]
                 }),
-                Highlight,
-                HorizontalRule,
-                TaskItem,
+                BulletList,
+                OrderedList,
+                ListItem,
                 TaskList,
+                TaskItem,
                 Image,
+                HorizontalRule,
                 Subdocument,
+
+                // Format
+                Bold,
+                Italic,
+                Strike,
+                Underline,
+                Highlight,
+                Link,
+                Code,
+
+                // Extensions
                 TrailingNode,
                 DragAndDrop,
-                Link,
                 Dropcursor.configure({
                     width: 3,
                     color: "#BFE5F4"
@@ -168,6 +196,13 @@ export default function SlashwriterEditor(props: {
 
         setTitleEditor(titleEditor)
         setContentEditor(contentEditor)
+        contentEditor.on("transaction", () => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    forceUpdate()
+                })
+            })
+        })
 
         return () => {
             titleEditor?.destroy()
@@ -179,16 +214,17 @@ export default function SlashwriterEditor(props: {
 
     return (
         <Container>
-            {titleEditor && !titleEditor.isDestroyed && (
+            {titleEditor && (
                 <EditorTitle
                     editor={titleEditor}
                     onKeyDown={handleTitleEditorKeyDown}
                     spellCheck="false"
                 />
             )}
-            {contentEditor && !contentEditor.isDestroyed && (
+            {contentEditor && (
                 <ContentEditor editor={contentEditor} spellCheck="false" />
             )}
+            {contentEditor && <BubbleMenu editor={contentEditor} />}
         </Container>
     )
 }
@@ -250,7 +286,6 @@ const ContentEditor = styled(EditorContent)`
 
         a {
             cursor: pointer;
-            font-size: 1rem;
             line-height: 1.6rem;
             color: var(--color-b400);
             border-bottom: 1px solid var(--color-b200);
@@ -272,7 +307,14 @@ const ContentEditor = styled(EditorContent)`
             background: hsla(0, 0%, 58.8%, 0.1);
             border: 1px solid hsla(0, 0%, 39.2%, 0.2);
             border-radius: 3px;
+        }
+
+        p code {
             font-weight: 500;
+        }
+
+        mark {
+            background-color: rgb(248, 231, 30);
         }
 
         .horizontal-rule {

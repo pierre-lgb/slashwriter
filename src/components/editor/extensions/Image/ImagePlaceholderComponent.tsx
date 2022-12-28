@@ -28,51 +28,64 @@ function isValidURL(url: string) {
 export default function ImagePlaceholderComponent(props: NodeViewProps) {
     const [uploading, setUploading] = useState(false)
     const urlInputRef = useRef<HTMLInputElement>()
+    const { deleteNode, getPos, editor } = props
 
-    function insertImage(attrs) {
-        // Insert image block
-        props.editor
-            .chain()
-            .focus()
-            .insertContentAt(props.getPos(), {
-                type: "image",
-                attrs
-            })
-            .run()
-    }
+    const insertImage = useCallback(
+        (attrs) => {
+            editor
+                .chain()
+                .focus()
+                .insertContentAt(getPos(), {
+                    type: "image",
+                    attrs
+                })
+                .run()
+        },
+        [editor, getPos]
+    )
 
-    const onDrop = useCallback(async (files) => {
-        const imageFile = files[0]
+    const onDrop = useCallback(
+        async (files) => {
+            const imageFile = files[0]
 
-        setUploading(true)
+            setUploading(true)
 
-        const documentId = store.getState().navigation.activeDocument
+            const documentId = store.getState().navigation.activeDocument
 
-        // Upload
-        const { data, error } = await supabaseClient.storage
-            .from("documents_uploads")
-            // TODO : upload to `/${documentId}/{...}.png` and add RLS
-            .upload(`${documentId}/${uuidv4()}-${imageFile.name}`, imageFile)
-        console.log(data, error)
-
-        if (data?.path) {
-            const {
-                data: { publicUrl }
-            } = supabaseClient.storage
+            // Upload
+            const { data, error } = await supabaseClient.storage
                 .from("documents_uploads")
-                .getPublicUrl(data.path)
+                // TODO : upload to `/${documentId}/{...}.png` and add RLS
+                .upload(
+                    `${documentId}/${uuidv4()}-${imageFile.name}`,
+                    imageFile
+                )
+            console.log(data, error)
 
-            insertImage({
-                src: publicUrl
-            })
-            props.deleteNode()
-        } else {
-            alert("Une erreur est survenue lors de l'envoi de l'image")
-            console.error(error)
-        }
+            if (data?.path) {
+                // Upload image to storage
+                const {
+                    data: { publicUrl }
+                } = supabaseClient.storage
+                    .from("documents_uploads")
+                    .getPublicUrl(data.path)
 
-        setUploading(false)
-    }, [])
+                // Insert image in the editor
+                insertImage({
+                    src: publicUrl
+                })
+
+                // Remove the placeholder
+                deleteNode()
+            } else {
+                alert("Une erreur est survenue lors de l'envoi de l'image")
+                console.error(error)
+            }
+
+            setUploading(false)
+        },
+        [deleteNode, insertImage]
+    )
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: {
@@ -124,10 +137,13 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
                                             return
                                         }
 
+                                        // Insert image in the editor
                                         insertImage({
                                             src: url
                                         })
-                                        props.deleteNode()
+
+                                        // Remove the placeholder
+                                        deleteNode()
                                     }}
                                 >
                                     Importer

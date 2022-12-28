@@ -3,8 +3,12 @@ import { yDocToProsemirrorJSON } from "y-prosemirror"
 import * as Y from "yjs"
 
 import { Extension, onLoadDocumentPayload, onStoreDocumentPayload } from "@hocuspocus/server"
+import { getSchema } from "@tiptap/core"
+import Document from "@tiptap/extension-document"
+import Heading from "@tiptap/extension-heading"
+import Text from "@tiptap/extension-text"
 
-import { editorSchema, supabaseClientWithAuth } from "../utils"
+import { supabaseClientWithAuth } from "../utils"
 
 export default class PersistenceExtension implements Extension {
     async onLoadDocument({
@@ -60,7 +64,7 @@ export default class PersistenceExtension implements Extension {
         )
 
         const title = Node.fromJSON(
-            editorSchema,
+            getSchema([Document, Text, Heading]),
             yDocToProsemirrorJSON(ydoc, "title")
         ).textContent
 

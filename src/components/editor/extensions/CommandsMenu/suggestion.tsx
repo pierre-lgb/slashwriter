@@ -1,6 +1,8 @@
 import Router from "next/router"
+import { MdOutlineFontDownload as HighlightIcon } from "react-icons/md"
 import {
     RiBold as BoldIcon,
+    RiCodeSLine as CodeIcon,
     RiDoubleQuotesR as QuoteIcon,
     RiFileLine as DocumentIcon,
     RiFunctions as EquationIcon,
@@ -272,6 +274,29 @@ const items = {
                 editor.chain().focus().deleteRange(range).toggleStrike().run()
             },
             icon: <StrikethroughIcon />
+        },
+        {
+            name: "Code",
+            description: "Code en ligne",
+            aliases: ["`"],
+            command: async ({ editor, range }) => {
+                editor.chain().focus().deleteRange(range).toggleCode().run()
+            },
+            icon: <CodeIcon />
+        },
+        {
+            name: "Surligné",
+            description: "Texte surligné",
+            aliases: ["==", "highlight"],
+            command: async ({ editor, range }) => {
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .toggleHighlight()
+                    .run()
+            },
+            icon: <HighlightIcon />
         }
     ]
 }
