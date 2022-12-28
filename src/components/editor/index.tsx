@@ -8,8 +8,6 @@ import Blockquote from "@tiptap/extension-blockquote"
 import Bold from "@tiptap/extension-bold"
 import BulletList from "@tiptap/extension-bullet-list"
 import Code from "@tiptap/extension-code"
-import Collaboration from "@tiptap/extension-collaboration"
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor"
 import Document from "@tiptap/extension-document"
 import Dropcursor from "@tiptap/extension-dropcursor"
 import HardBreak from "@tiptap/extension-hard-break"
@@ -30,10 +28,12 @@ import Youtube from "@tiptap/extension-youtube"
 import { Editor, EditorContent } from "@tiptap/react"
 
 import BubbleMenu from "./components/BubbleMenu"
+import Collaboration from "./extensions/Collaboration/Collaboration"
+import CollaborationCursor from "./extensions/Collaboration/CollaborationCursor"
 import CommandsMenu from "./extensions/CommandsMenu"
 import suggestion from "./extensions/CommandsMenu/suggestion"
 import DragAndDrop from "./extensions/DragAndDrop"
-import { HorizontalRule } from "./extensions/HorizontalRule"
+import HorizontalRule from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
 import Subdocument from "./extensions/Subdocument"
 import Details from "./extensions/tiptap-pro/Details/Details"
@@ -235,15 +235,6 @@ export default function SlashwriterEditor(props: {
                 <ContentEditor editor={contentEditor} spellCheck="false" />
             )}
             {contentEditor && <BubbleMenu editor={contentEditor} />}
-            {contentEditor && (
-                <button
-                    onClick={() => {
-                        contentEditor.commands.undo()
-                    }}
-                >
-                    Undo
-                </button>
-            )}
         </Container>
     )
 }
