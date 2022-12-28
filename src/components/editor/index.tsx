@@ -264,6 +264,7 @@ const ContentEditor = styled(EditorContent)`
             border-left: 3px solid rgb(13, 13, 13);
             padding-left: 1rem;
             margin-left: 0;
+            margin-right: 0;
         }
 
         code {
@@ -285,7 +286,7 @@ const ContentEditor = styled(EditorContent)`
             }
         }
 
-        *::selection {
+        &:not(.ProseMirror-hideselection) *::selection {
             background: rgba(150, 170, 220, 0.3);
             color: inherit;
         }
@@ -293,17 +294,21 @@ const ContentEditor = styled(EditorContent)`
         /* Node selections */
         &:not(.dragging) {
             .ProseMirror-selectednode {
-                & .image {
-                    outline: none !important;
-                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px;
-                    transition: box-shadow ease-out 100ms;
-                    background-color: transparent;
-                }
-
+                outline: none !important;
                 border-radius: 0.2rem;
                 background-color: rgba(150, 170, 220, 0.2);
                 transition: background-color ease-out 150ms;
                 box-shadow: none;
+
+                &.image {
+                    background-color: transparent !important;
+                    transition: box-shadow ease-out 100ms !important;
+                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px !important;
+
+                    *::selection {
+                        background: none;
+                    }
+                }
             }
         }
     }

@@ -1,16 +1,28 @@
 -- +------------------------------------------+
 -- |                 PROFILES                 |
 -- +------------------------------------------+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Trigger on auth user created
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
 security definer set search_path = public
 as $$
+declare
+  folder_id uuid;
 begin
-    insert into profiles (id, username, email)
+  insert into profiles (id, username, email)
     values (new.id, split_part(new.email, '@', 1), new.email);
-    return new;
+  
+  insert into folders (user_id, name)
+    values (new.id, 'Bienvenue');
+
+  select folders.id into folder_id from folders where user_id=new.id;
+  
+  insert into documents (user_id, folder, title, state)
+    values (new.id, folder_id, 'Bienvenue sur Slashwriter', getWelcomeDocumentState());
+  return new;
 end;
 $$;
 
@@ -27,6 +39,9 @@ security definer set search_path = public
 as $$
 begin
   delete from profiles where id = old.id;
+  delete from shares where user_id = old.id;
+  delete from documents where user_id = old.id;
+  delete from folders where user_id = old.id;
   return old;
 end;
 $$;
