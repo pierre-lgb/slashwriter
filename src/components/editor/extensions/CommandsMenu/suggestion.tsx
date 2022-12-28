@@ -14,6 +14,7 @@ import {
     RiListCheck2 as CheckListIcon,
     RiListOrdered as OrderedListIcon,
     RiListUnordered as UnorderedListIcon,
+    RiPlayList2Line as DetailsIcon,
     RiSeparator as DividerIcon,
     RiStickyNote2Line as NoteIcon,
     RiStrikethrough as StrikethroughIcon,
@@ -200,6 +201,15 @@ const items = {
                 //     .run()
             },
             icon: <EquationIcon />
+        },
+        {
+            name: "Dépliant",
+            description: "Un dépliant pour masquer du contenu",
+            aliases: ["details", "toggle", "collapse", "collapsible"],
+            command: ({ editor, range }) => {
+                editor.chain().focus().deleteRange(range).setDetails().run()
+            },
+            icon: <DetailsIcon />
         },
         {
             name: "Document",

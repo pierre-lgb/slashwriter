@@ -12,6 +12,7 @@ import Collaboration from "@tiptap/extension-collaboration"
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor"
 import Document from "@tiptap/extension-document"
 import Dropcursor from "@tiptap/extension-dropcursor"
+import HardBreak from "@tiptap/extension-hard-break"
 import Heading from "@tiptap/extension-heading"
 import Highlight from "@tiptap/extension-highlight"
 import Italic from "@tiptap/extension-italic"
@@ -25,6 +26,7 @@ import TaskItem from "@tiptap/extension-task-item"
 import TaskList from "@tiptap/extension-task-list"
 import Text from "@tiptap/extension-text"
 import Underline from "@tiptap/extension-underline"
+import Youtube from "@tiptap/extension-youtube"
 import { Editor, EditorContent } from "@tiptap/react"
 
 import BubbleMenu from "./components/BubbleMenu"
@@ -34,6 +36,9 @@ import DragAndDrop from "./extensions/DragAndDrop"
 import { HorizontalRule } from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
 import Subdocument from "./extensions/Subdocument"
+import Details from "./extensions/tiptap-pro/Details/Details"
+import DetailsContent from "./extensions/tiptap-pro/Details/DetailsContent"
+import DetailsSummary from "./extensions/tiptap-pro/Details/DetailsSummary"
 import TrailingNode from "./extensions/TrailingNode"
 
 function getRandomColor() {
@@ -166,6 +171,9 @@ export default function SlashwriterEditor(props: {
                 Image,
                 HorizontalRule,
                 Subdocument,
+                Details,
+                DetailsSummary,
+                DetailsContent,
 
                 // Format
                 Bold,
@@ -179,6 +187,8 @@ export default function SlashwriterEditor(props: {
                 // Extensions
                 TrailingNode,
                 DragAndDrop,
+                HardBreak,
+                Youtube,
                 Dropcursor.configure({
                     width: 3,
                     color: "#BFE5F4"
@@ -225,6 +235,15 @@ export default function SlashwriterEditor(props: {
                 <ContentEditor editor={contentEditor} spellCheck="false" />
             )}
             {contentEditor && <BubbleMenu editor={contentEditor} />}
+            {contentEditor && (
+                <button
+                    onClick={() => {
+                        contentEditor.commands.undo()
+                    }}
+                >
+                    Undo
+                </button>
+            )}
         </Container>
     )
 }
@@ -244,7 +263,6 @@ const ContentEditor = styled(EditorContent)`
         font-size: 1em;
         line-height: 1.6rem;
 
-        /* Blocks styling */
         & > * {
             margin-top: 0.5rem;
             margin-bottom: 0.5rem;
@@ -317,7 +335,7 @@ const ContentEditor = styled(EditorContent)`
             background-color: rgb(248, 231, 30);
         }
 
-        .horizontal-rule {
+        div[data-type="horizontalRule"] {
             line-height: 0;
             padding: 0.25rem 0;
             margin-top: 0;
@@ -333,6 +351,63 @@ const ContentEditor = styled(EditorContent)`
             color: inherit;
         }
 
+        .details {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0;
+
+            & > button {
+                display: flex;
+                flex-shrink: 0;
+                cursor: pointer;
+                background: transparent;
+                border: none;
+                border-radius: 0.25rem;
+                padding: 0;
+                width: 1.5rem;
+                padding: 0.4rem;
+                transition: background 0.1s;
+
+                &:hover {
+                    background: var(--color-n100);
+                }
+
+                & > svg {
+                    display: block;
+                    fill: inherit;
+                    flex-shrink: 0;
+                    backface-visibility: hidden;
+                    transition: transform 200ms ease-out 0s;
+                    transform: rotateZ(90deg);
+                    opacity: 1;
+                }
+            }
+
+            &.is-open > button > svg {
+                transform: rotateZ(180deg);
+            }
+
+            & > div {
+                flex: 1 1 auto;
+
+                & > div > * {
+                    margin-top: 0.5rem;
+                    margin-bottom: 0.5rem;
+                }
+            }
+
+            :last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        div[data-youtube-video] > iframe {
+            display: flex;
+            width: 100%;
+        }
+
         /* Node selections */
         &:not(.dragging) {
             .ProseMirror-selectednode {
@@ -342,7 +417,8 @@ const ContentEditor = styled(EditorContent)`
                 transition: background-color ease-out 150ms;
                 box-shadow: none;
 
-                &.image {
+                &.image,
+                &.imagePlaceholder {
                     background-color: transparent !important;
                     transition: box-shadow ease-out 100ms !important;
                     box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px !important;
@@ -355,6 +431,46 @@ const ContentEditor = styled(EditorContent)`
         }
     }
 `
+
+/*
+style="width: 0.6875em; height: 0.6875em; display: block; fill: inherit; flex-shrink: 0; backface-visibility: hidden; transition: transform 200ms ease-out 0s; transform: rotateZ(90deg); opacity: 1;"
+*/
+/* .details {
+            display: flex;
+            margin: 1rem 0;
+            border: 1px solid black;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+
+            & > button {
+                display: flex;
+                cursor: pointer;
+                background: transparent;
+                border: none;
+                padding: 0;
+
+                &::before {
+                    content: "\25B6";
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 1.5em;
+                    height: 1.5em;
+                }
+            }
+
+            &.is-open > button::before {
+                content: "\25BC";
+            }
+
+            & > div {
+                flex: 1 1 auto;
+            }
+
+            :last-child {
+                margin-bottom: 0;
+            }
+        } */
 
 const Container = styled.div`
     padding: 100px 25px;

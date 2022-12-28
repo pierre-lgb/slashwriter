@@ -1,3 +1,4 @@
+import { useRef } from "react"
 import { MdOutlineFontDownload as HighlightIcon } from "react-icons/md"
 import {
     RiBold as BoldIcon,
@@ -11,13 +12,14 @@ import {
 import Button from "src/components/ui/Button"
 import styled from "styled-components"
 
-import { BubbleMenu as TiptapBubbleMenu, Editor } from "@tiptap/react"
+import { BubbleMenu as TiptapBubbleMenu, Editor, isNodeSelection } from "@tiptap/react"
 
 interface BubbleMenuProps {
     editor: Editor
 }
 
 export default function BubbleMenu(props: BubbleMenuProps) {
+    const menuRef = useRef<HTMLDivElement>()
     return (
         <TiptapBubbleMenu
             editor={props.editor}
@@ -28,8 +30,25 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                 animation: "shift-away",
                 inertia: true
             }}
+            shouldShow={({ view, state, from, to, editor }) => {
+                const { selection } = state
+
+                const { empty } = selection
+                const hasEditorFocus = view.hasFocus()
+
+                if (
+                    !hasEditorFocus ||
+                    empty ||
+                    !editor.isEditable ||
+                    isNodeSelection(selection)
+                ) {
+                    return false
+                }
+
+                return true
+            }}
         >
-            <Container>
+            <Container ref={menuRef}>
                 {props.editor.can().chain().focus().toggleBold().run() && (
                     <Button
                         icon={<BoldIcon size={16} />}

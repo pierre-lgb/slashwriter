@@ -101,7 +101,11 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
 
     return (
         <NodeViewWrapper
-            className={props.selected ? "ProseMirror-selectednode" : ""}
+            className={
+                props.selected
+                    ? "ProseMirror-selectednode imagePlaceholder"
+                    : "imagePlaceholder"
+            }
         >
             <PlaceholderContainer>
                 {uploading ? (

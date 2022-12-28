@@ -14,16 +14,14 @@ declare module "@tiptap/core" {
 }
 
 export default Node.create({
-    name: "image-placeholder",
+    name: "imagePlaceholder",
 
     group: "block",
 
     atom: true,
 
-    selectable: false,
-
     parseHTML() {
-        return [{ tag: "div" }]
+        return [{ tag: `div[data-type="${this.name}"]` }]
     },
 
     renderHTML({ HTMLAttributes }) {
@@ -38,7 +36,7 @@ export default Node.create({
         return {
             insertImagePlaceholder: () => (props: CommandProps) => {
                 return props.commands.insertContent({
-                    type: "image-placeholder"
+                    type: "imagePlaceholder"
                 })
             }
         }

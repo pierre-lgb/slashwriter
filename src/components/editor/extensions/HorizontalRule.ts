@@ -39,8 +39,7 @@ export const HorizontalRule = Node.create<HorizontalRuleOptions>({
     parseHTML() {
         return [
             {
-                tag: "div",
-                class: "horizontal-rule"
+                tag: `div[data-type="${this.name}"]`
             }
         ]
     },
@@ -49,7 +48,7 @@ export const HorizontalRule = Node.create<HorizontalRuleOptions>({
         return [
             "div",
             mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-                class: "horizontal-rule"
+                "data-type": this.name
             }),
             ["div", {}]
         ]

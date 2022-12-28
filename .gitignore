@@ -30,12 +30,17 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+.npmrc
+
 # vercel
 .vercel
 
 /dist
 ~*
 package-lock.json
+yarn.lock
 .dockerignore
 Dockerfile
 fly.toml
+
+tiptap-pro/
