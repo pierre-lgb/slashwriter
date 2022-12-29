@@ -33,7 +33,7 @@ export const Subdocument = Node.create({
     group: "block",
 
     parseHTML() {
-        return [{ tag: "div", ignore: true }]
+        return [{ tag: `div[data-type="${this.name}"]`, ignore: true }]
     },
 
     renderHTML({ HTMLAttributes }) {

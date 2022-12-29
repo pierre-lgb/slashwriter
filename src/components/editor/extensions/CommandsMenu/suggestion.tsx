@@ -199,7 +199,7 @@ const items = {
         // },
         {
             name: "Dépliant",
-            description: "Un dépliant pour masquer du contenu",
+            description: "Un menu dépliant",
             aliases: ["details", "toggle", "collapse", "collapsible"],
             command: ({ editor, range }) => {
                 editor.chain().focus().deleteRange(range).setDetails().run()

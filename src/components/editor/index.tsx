@@ -20,8 +20,6 @@ import OrderedList from "@tiptap/extension-ordered-list"
 import Paragraph from "@tiptap/extension-paragraph"
 import Placeholder from "@tiptap/extension-placeholder"
 import Strike from "@tiptap/extension-strike"
-import TaskItem from "@tiptap/extension-task-item"
-import TaskList from "@tiptap/extension-task-list"
 import Text from "@tiptap/extension-text"
 import Underline from "@tiptap/extension-underline"
 import Youtube from "@tiptap/extension-youtube"
@@ -36,6 +34,8 @@ import DragAndDrop from "./extensions/DragAndDrop"
 import HorizontalRule from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
 import Subdocument from "./extensions/Subdocument"
+import TaskItem from "./extensions/TaskList/TaskItem"
+import TaskList from "./extensions/TaskList/TaskList"
 import Details from "./extensions/tiptap-pro/Details/Details"
 import DetailsContent from "./extensions/tiptap-pro/Details/DetailsContent"
 import DetailsSummary from "./extensions/tiptap-pro/Details/DetailsSummary"
@@ -223,19 +223,21 @@ export default function SlashwriterEditor(props: {
     }, [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <Container>
-            {titleEditor && (
-                <EditorTitle
-                    editor={titleEditor}
-                    onKeyDown={handleTitleEditorKeyDown}
-                    spellCheck="false"
-                />
-            )}
-            {contentEditor && (
-                <ContentEditor editor={contentEditor} spellCheck="false" />
-            )}
-            {contentEditor && <BubbleMenu editor={contentEditor} />}
-        </Container>
+        <>
+            <Container className="editorContainer">
+                {titleEditor && (
+                    <EditorTitle
+                        editor={titleEditor}
+                        onKeyDown={handleTitleEditorKeyDown}
+                        spellCheck="false"
+                    />
+                )}
+                {contentEditor && (
+                    <ContentEditor editor={contentEditor} spellCheck="false" />
+                )}
+                {contentEditor && <BubbleMenu editor={contentEditor} />}
+            </Container>
+        </>
     )
 }
 
@@ -254,7 +256,10 @@ const ContentEditor = styled(EditorContent)`
         font-size: 1em;
         line-height: 1.6rem;
 
-        & > * {
+        & > *,
+        li > *,
+        div[data-type="detailsContent"] > *,
+        ul[data-type="taskList"] > li > div > * {
             margin-top: 0.5rem;
             margin-bottom: 0.5rem;
         }
@@ -262,6 +267,37 @@ const ContentEditor = styled(EditorContent)`
         p {
             font-weight: 400;
             color: #111319;
+        }
+
+        p strong,
+        summary strong {
+            font-weight: 600;
+        }
+
+        p code {
+            font-weight: 500;
+        }
+
+        a {
+            cursor: pointer;
+            line-height: 1.6rem;
+            color: var(--color-b400);
+            border-bottom: 1px solid var(--color-b200);
+
+            &:hover {
+                color: var(--color-b500);
+            }
+        }
+
+        code {
+            padding: 0.2rem 0.2rem 0.1rem;
+            background: hsla(0, 0%, 58.8%, 0.1);
+            border: 1px solid hsla(0, 0%, 39.2%, 0.2);
+            border-radius: 3px;
+        }
+
+        mark {
+            background-color: rgb(248, 231, 30) !important;
         }
 
         h1,
@@ -284,23 +320,54 @@ const ContentEditor = styled(EditorContent)`
             font-size: 1.2em;
         }
 
-        li > p {
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
+        ul:not([data-type="taskList"]) {
+            padding-inline-start: 2rem;
+            & > li {
+                padding-left: 0.25rem;
+            }
         }
 
-        p strong {
-            font-weight: 600;
-        }
+        ul[data-type="taskList"] {
+            list-style: none;
+            padding: 0;
+            padding-inline-start: 0.15rem;
 
-        a {
-            cursor: pointer;
-            line-height: 1.6rem;
-            color: var(--color-b400);
-            border-bottom: 1px solid var(--color-b200);
+            li {
+                & > label {
+                    position: absolute;
+                    padding: 0;
+                    margin: 0;
 
-            &:hover {
-                color: var(--color-b500);
+                    input {
+                        font-size: inherit;
+                        font-family: inherit;
+                        appearance: none;
+                        width: 1.25rem;
+                        height: 1.25rem;
+                        cursor: pointer;
+                        display: inline-block;
+                        color: #2563eb;
+                        border: 1.5px solid #d0d0d2;
+                        border-radius: 4px;
+                        background-origin: border-box;
+                        background-color: #fff;
+                        transition: all 0.15s;
+
+                        &[checked] {
+                            border-color: transparent;
+                            background-size: 100% 100%;
+                            background-position: 50%;
+                            background-repeat: no-repeat;
+                            background-color: var(--color-black);
+                            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 16 16' fill='%23fff' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+                        }
+                    }
+                }
+
+                & > div {
+                    margin-left: 2.05rem;
+                    /* display: contents; */
+                }
             }
         }
 
@@ -309,21 +376,6 @@ const ContentEditor = styled(EditorContent)`
             padding-left: 1rem;
             margin-left: 0;
             margin-right: 0;
-        }
-
-        code {
-            padding: 0.2rem 0.2rem 0.1rem;
-            background: hsla(0, 0%, 58.8%, 0.1);
-            border: 1px solid hsla(0, 0%, 39.2%, 0.2);
-            border-radius: 3px;
-        }
-
-        p code {
-            font-weight: 500;
-        }
-
-        mark {
-            background-color: rgb(248, 231, 30);
         }
 
         div[data-type="horizontalRule"] {
@@ -347,7 +399,7 @@ const ContentEditor = styled(EditorContent)`
             align-items: flex-start;
             gap: 0.5rem;
             border-radius: 0.25rem;
-            padding: 0.25rem 0;
+            padding-left: 0.25rem;
 
             & > button {
                 display: flex;
@@ -382,14 +434,9 @@ const ContentEditor = styled(EditorContent)`
 
             & > div {
                 flex: 1 1 auto;
-
-                & > div > * {
-                    margin-top: 0.5rem;
-                    margin-bottom: 0.5rem;
-                }
             }
 
-            :last-child {
+            div[data-type="detailsContent"] > *:last-child {
                 margin-bottom: 0;
             }
         }
@@ -466,6 +513,10 @@ style="width: 0.6875em; height: 0.6875em; display: block; fill: inherit; flex-sh
 const Container = styled.div`
     padding: 100px 25px;
 
+    @media print {
+        padding: 50px;
+    }
+
     .ProseMirror {
         padding: 25px calc((100% - (700px)) / 2);
         outline: none;
@@ -522,6 +573,10 @@ const Container = styled.div`
             float: left;
             height: 0;
             pointer-events: none;
+        }
+
+        @media print {
+            padding: 0;
         }
     }
 `
