@@ -15,7 +15,6 @@ import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { toggleMobileSidebar, toggleSidebar } from "src/store/ui"
-import { useUser } from "src/utils/supabase"
 import styled from "styled-components"
 
 interface HeaderProps {
@@ -24,7 +23,6 @@ interface HeaderProps {
 }
 
 export default function Header({ pageTitle, pageIcon }: HeaderProps) {
-    const user = useUser()
     const dispatch = useAppDispatch()
 
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
@@ -37,8 +35,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     const { folderName } = useGetFoldersQuery(null, {
         selectFromResult: ({ data }) => ({
             folderName: data?.find((f) => f.id === activeFolder)?.name
-        }),
-        skip: !user
+        })
     })
 
     const { documentPath } = useGetDocumentsQuery(null, {
@@ -46,8 +43,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
             documentPath: activeDocument
                 ? getDocumentPath(activeDocument, data)
                 : []
-        }),
-        skip: !user
+        })
     })
 
     return (

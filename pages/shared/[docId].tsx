@@ -26,8 +26,7 @@ function Shared() {
     const { document: cacheDocument } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data }) => ({
             document: data?.find((d) => d.id === docId)
-        }),
-        skip: !user
+        })
     })
 
     useEffect(() => {

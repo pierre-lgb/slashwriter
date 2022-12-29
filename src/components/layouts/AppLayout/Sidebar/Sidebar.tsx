@@ -36,13 +36,13 @@ export default function Sidebar() {
         data: folders,
         error: foldersError,
         isLoading: isLoadingFolders
-    } = useGetFoldersQuery(null, { skip: !user })
+    } = useGetFoldersQuery(null)
 
     const {
         data: documents,
         error: documentsError,
         isLoading: isLoadingDocuments
-    } = useGetDocumentsQuery(null, { skip: !user })
+    } = useGetDocumentsQuery(null)
 
     useEffect(() => {
         dispatch(hideMobileSidebar())

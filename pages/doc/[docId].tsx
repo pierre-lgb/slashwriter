@@ -21,15 +21,13 @@ function Document() {
         selectFromResult: ({ data, isLoading, isUninitialized }) => ({
             document: data?.find((d) => d.id === docId),
             isDocumentLoading: isUninitialized || isLoading
-        }),
-        skip: !user
+        })
     })
 
     const { folder } = useGetFoldersQuery(null, {
         selectFromResult: ({ data }) => ({
             folder: data?.find((f) => f.id === document?.folder)
-        }),
-        skip: !user
+        })
     })
 
     const dispatch = useAppDispatch()

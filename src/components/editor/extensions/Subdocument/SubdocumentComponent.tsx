@@ -12,7 +12,6 @@ import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
 export default function Subdocument(props: NodeViewProps) {
     const { docId } = props.node.attrs
-    const user = useUser()
     const [document, setDocument] = useState<any>(null)
     const [loading, setLoading] = useState(true)
 
@@ -20,8 +19,7 @@ export default function Subdocument(props: NodeViewProps) {
     const { document: cacheDocument } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data }) => ({
             document: data?.find((d) => d.id === docId)
-        }),
-        skip: !user
+        })
     })
 
     useEffect(() => {

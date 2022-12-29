@@ -137,12 +137,12 @@ const items = {
             description: "Une liste à puces",
             aliases: ["ul", "unordered"],
             command: ({ editor, range }) => {
-                // editor
-                //     .chain()
-                //     .focus()
-                //     .deleteRange(range)
-                //
-                //     .run()
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .toggleBulletList()
+                    .run()
             },
             icon: <UnorderedListIcon />
         },
@@ -151,12 +151,12 @@ const items = {
             description: "Une liste numérotée",
             aliases: ["ol", "ordered"],
             command: ({ editor, range }) => {
-                // editor
-                //     .chain()
-                //     .focus()
-                //     .deleteRange(range)
-                //
-                //     .run()
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .toggleOrderedList()
+                    .run()
             },
             icon: <OrderedListIcon />
         },
@@ -165,12 +165,7 @@ const items = {
             description: "Une liste de cases à cocher",
             aliases: ["task", "checklist"],
             command: ({ editor, range }) => {
-                // editor
-                //     .chain()
-                //     .focus()
-                //     .deleteRange(range)
-                //     .setHorizontalRule()
-                //     .run()
+                editor.chain().focus().deleteRange(range).toggleTaskList().run()
             },
             icon: <CheckListIcon />
         },
@@ -188,20 +183,20 @@ const items = {
             },
             icon: <ImageIcon />
         },
-        {
-            name: "Équation",
-            description: "Une équation LaTeX",
-            aliases: ["equation", "tex", "math"],
-            command: ({ editor, range }) => {
-                // editor
-                //     .chain()
-                //     .focus()
-                //     .deleteRange(range)
-                //
-                //     .run()
-            },
-            icon: <EquationIcon />
-        },
+        // {
+        //     name: "Équation",
+        //     description: "Une équation LaTeX",
+        //     aliases: ["equation", "tex", "math"],
+        //     command: ({ editor, range }) => {
+        //         // editor
+        //         //     .chain()
+        //         //     .focus()
+        //         //     .deleteRange(range)
+        //         //
+        //         //     .run()
+        //     },
+        //     icon: <EquationIcon />
+        // },
         {
             name: "Dépliant",
             description: "Un dépliant pour masquer du contenu",

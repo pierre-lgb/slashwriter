@@ -94,7 +94,6 @@ function DeleteDocumentButton({ documentId }) {
 
 function Folder() {
     const [sortOrder, setSortOrder] = useState("a-z")
-    const user = useUser()
     const router = useRouter()
     const { folderId } = router.query as { folderId: string }
     const dispatch = useAppDispatch()
@@ -103,15 +102,13 @@ function Folder() {
         selectFromResult: ({ data, isUninitialized, isLoading }) => ({
             folder: data?.find((f) => f.id === folderId),
             isFolderLoading: isUninitialized || isLoading
-        }),
-        skip: !user
+        })
     })
 
     const { documents } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data }) => ({
             documents: data?.filter((d) => d.folder === folderId && !d.parent)
-        }),
-        skip: !user
+        })
     })
 
     useEffect(() => {
