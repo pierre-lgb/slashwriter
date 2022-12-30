@@ -26,6 +26,7 @@ import Underline from "@tiptap/extension-underline"
 import Youtube from "@tiptap/extension-youtube"
 import { Editor, EditorContent } from "@tiptap/react"
 
+import BlockMenu from "./components/BlockMenu"
 import BubbleMenu from "./components/BubbleMenu"
 import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
 import Callout from "./extensions/Callout"
@@ -240,7 +241,9 @@ export default function SlashwriterEditor(props: {
                     <ContentEditor editor={contentEditor} spellCheck="false" />
                 )}
                 {contentEditor && <BubbleMenu editor={contentEditor} />}
-                {contentEditor && <CalloutEmojiMenu editor={contentEditor} />}
+                {contentEditor && <BlockMenu editor={contentEditor} />}
+                {/* TODO: Performance EmojiMenu */}
+                {/* {contentEditor && <CalloutEmojiMenu editor={contentEditor} />} */}
             </Container>
         </>
     )
@@ -512,7 +515,7 @@ const ContentEditor = styled(EditorContent)`
                 outline: none !important;
                 border-radius: 0.2rem;
                 background-color: rgba(150, 170, 220, 0.2);
-                transition: background-color ease-out 150ms;
+                transition: background-color 0.2s;
                 box-shadow: none;
 
                 &.image,

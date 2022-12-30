@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import tippy, { Instance } from "tippy.js"
 
-// import { createPopup, PopupPickerController } from "@picmo/popup-picker"
-// import Tippy from "@tippyjs/react"
-import { Editor, ReactRenderer } from "@tiptap/react"
+import { Editor } from "@tiptap/react"
 
 import EmojiPicker from "./EmojiPicker"
 
@@ -52,13 +50,15 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
             emojiPickerRef.current.style.visibility = "visible"
         }
 
-        popup.current = tippy(props.editor.view.dom, {
+        popup.current = tippy(view.dom, {
             getReferenceClientRect: null,
             content: emojiPickerRef.current,
+            appendTo: view.dom.parentElement,
             trigger: "manual",
             interactive: true,
             arrow: false,
             placement: "right-start",
+            animation: "shift-away",
             theme: "light-border no-padding",
             maxWidth: 500,
             onShown: () => {

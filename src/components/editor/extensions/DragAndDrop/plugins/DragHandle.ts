@@ -108,6 +108,7 @@ export default function DragHandle(options: DragHandleOptions) {
         view: (view) => {
             dragHandleElement = document.createElement("div")
             dragHandleElement.draggable = true
+            dragHandleElement.dataset.dragHandle = ""
             dragHandleElement.classList.add("drag-handle")
             dragHandleElement.addEventListener("dragstart", (e) => {
                 handleDragStart(e, view)

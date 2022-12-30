@@ -89,9 +89,9 @@ export default function EmojiPicker(props: EmojiPickerProps) {
 }
 
 const Container = styled.div`
-    padding: 0.25rem;
+    padding: 0.5rem;
     max-height: 300px;
-    width: 400px;
+    max-width: 400px;
     overflow: auto;
     display: flex;
     flex-direction: column;
@@ -99,7 +99,7 @@ const Container = styled.div`
 `
 
 const Group = styled.div`
-    padding: 0.25rem 1rem;
+    padding: 0.25rem 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
