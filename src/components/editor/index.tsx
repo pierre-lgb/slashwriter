@@ -39,6 +39,7 @@ import suggestion from "./extensions/CommandsMenu/suggestion"
 import DragAndDrop from "./extensions/DragAndDrop"
 import HorizontalRule from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
+import Shortcuts from "./extensions/Shortcuts"
 import Subdocument from "./extensions/Subdocument"
 import TaskItem from "./extensions/TaskList/TaskItem"
 import TaskList from "./extensions/TaskList/TaskList"
@@ -180,6 +181,7 @@ export default function SlashwriterEditor(props: {
                 Details,
                 DetailsSummary,
                 DetailsContent,
+                Youtube,
                 Callout,
 
                 // Format
@@ -197,7 +199,7 @@ export default function SlashwriterEditor(props: {
                 TrailingNode,
                 DragAndDrop,
                 HardBreak,
-                Youtube,
+                Shortcuts,
                 Dropcursor.configure({
                     width: 3,
                     color: "#BFE5F4",
