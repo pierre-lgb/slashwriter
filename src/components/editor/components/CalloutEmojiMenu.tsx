@@ -13,9 +13,7 @@ interface CalloutEmojiMenuProps {
 export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
     const { editor } = props
     const { view } = editor
-    const emojiListRef = useRef<FixedSizeList>()
     const emojiPickerRef = useRef<EmojiPickerHandle>()
-    const emojiSearchInputRef = useRef<HTMLInputElement>()
 
     const popup = useRef<Instance>()
     const calloutPos = useRef(-1)

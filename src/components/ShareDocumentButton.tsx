@@ -38,7 +38,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             // Fetch the share settings when the modal is opened
             supabaseClient
                 .from("documents")
-                .select("share_settings(*)")
+                .select("share_settings (*)")
                 .eq("id", documentId)
                 .single()
                 .then(({ data }) => {

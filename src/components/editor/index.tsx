@@ -251,7 +251,9 @@ export default function SlashwriterEditor(props: {
                 {contentEditor && <BubbleMenu editor={contentEditor} />}
                 {contentEditor && <BlockMenu editor={contentEditor} />}
                 {/* TODO: Performance EmojiMenu */}
-                {contentEditor && <CalloutEmojiMenu editor={contentEditor} />}
+                {contentEditor && contentEditor.isEditable && (
+                    <CalloutEmojiMenu editor={contentEditor} />
+                )}
             </Container>
         </>
     )
