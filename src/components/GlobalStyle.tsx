@@ -84,6 +84,10 @@ a {
 * TEMPORARY
 */
 
+.drop-cursor {
+    transition: top 0.15s, left 0.15s, width 0.15s;
+}
+
 .drag-handle {
     position: fixed;
     opacity: 1;
@@ -108,6 +112,7 @@ a {
         transition: background-color ease-out 0.2s;
     }
 }
+
 `
 
 export default GlobalStyle

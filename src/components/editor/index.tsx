@@ -196,7 +196,8 @@ export default function SlashwriterEditor(props: {
                 Youtube,
                 Dropcursor.configure({
                     width: 3,
-                    color: "#BFE5F4"
+                    color: "#BFE5F4",
+                    class: "drop-cursor"
                 }),
                 CommandsMenu.configure({
                     suggestion
