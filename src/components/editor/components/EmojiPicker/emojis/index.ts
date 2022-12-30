@@ -3,7 +3,8 @@ import fr from "./fr"
 /**
  * Source : https://github.com/kevinfaveri/vue-twemoji-picker/tree/master/emoji-data
  */
-
-export default {
+const allDatasets = {
     fr
 }
+
+export default allDatasets

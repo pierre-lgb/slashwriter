@@ -138,10 +138,9 @@ const EmojiRow = ({ data, index, style }) => {
         >
             {row.map((emoji) => {
                 return (
-                    <EmojiButton>
+                    <EmojiButton key={emoji.unicode}>
                         <Emoji
                             emoji={emoji.unicode}
-                            key={emoji.unicode}
                             style={{
                                 width: `${100 / NB_EMOJIS_PER_ROW}%`
                             }}

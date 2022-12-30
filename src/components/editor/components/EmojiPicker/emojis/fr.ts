@@ -1,4 +1,4 @@
-export default {
+const datasetFR = {
     Personnes: [
         { unicode: "😀", tags: ["sourire"], shortcode: "grinning" },
         { unicode: "😃", tags: ["sourire"], shortcode: "smiley" },
@@ -7669,3 +7669,5 @@ export default {
         { unicode: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", tags: ["drapeau", "gbwls"], shortcode: "wales" }
     ]
 }
+
+export default datasetFR
