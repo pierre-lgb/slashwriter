@@ -10,7 +10,7 @@ import styled from "styled-components"
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
-export default function Subdocument(props: NodeViewProps) {
+export default function SubdocumentComponent(props: NodeViewProps) {
     const { docId } = props.node.attrs
     const [document, setDocument] = useState<any>(null)
     const [loading, setLoading] = useState(true)

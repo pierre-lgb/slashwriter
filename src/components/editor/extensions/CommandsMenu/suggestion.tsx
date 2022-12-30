@@ -14,9 +14,10 @@ import {
     RiListCheck2 as CheckListIcon,
     RiListOrdered as OrderedListIcon,
     RiListUnordered as UnorderedListIcon,
+    RiNotificationBadgeLine as CalloutWithIconIcon,
     RiPlayList2Line as DetailsIcon,
     RiSeparator as DividerIcon,
-    RiStickyNote2Line as NoteIcon,
+    RiStickyNote2Line as CalloutIcon,
     RiStrikethrough as StrikethroughIcon,
     RiUnderline as UnderlineIcon
 } from "react-icons/ri"
@@ -119,19 +120,31 @@ const items = {
             icon: <DividerIcon />
         },
         {
-            name: "Note",
-            description: "Une note importante",
-            aliases: ["callout", "important", "warning", "block"],
+            name: "Cadre avec icône",
+            description: "Un texte et une icône encadrés",
+            aliases: ["callout", "important", "warning", "block", "note"],
             command: ({ editor, range }) => {
-                // editor
-                //     .chain()
-                //     .focus()
-                //     .deleteRange(range)
-                //
-                //     .run()
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .toggleCallout({
+                        emoji: "💡"
+                    })
+                    .run()
             },
-            icon: <NoteIcon />
+            icon: <CalloutWithIconIcon />
         },
+        {
+            name: "Cadre",
+            description: "Un texte encadré",
+            aliases: ["callout", "important", "warning", "block", "note"],
+            command: ({ editor, range }) => {
+                editor.chain().focus().deleteRange(range).toggleCallout().run()
+            },
+            icon: <CalloutIcon />
+        },
+
         {
             name: "Liste à puces",
             description: "Une liste à puces",

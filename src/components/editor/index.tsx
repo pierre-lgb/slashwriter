@@ -1,4 +1,5 @@
 import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
+import Twemoji from "react-twemoji"
 import styled from "styled-components"
 import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
@@ -26,6 +27,8 @@ import Youtube from "@tiptap/extension-youtube"
 import { Editor, EditorContent } from "@tiptap/react"
 
 import BubbleMenu from "./components/BubbleMenu"
+import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
+import Callout from "./extensions/Callout"
 import Collaboration from "./extensions/Collaboration/Collaboration"
 import CollaborationCursor from "./extensions/Collaboration/CollaborationCursor"
 import CommandsMenu from "./extensions/CommandsMenu"
@@ -174,6 +177,7 @@ export default function SlashwriterEditor(props: {
                 Details,
                 DetailsSummary,
                 DetailsContent,
+                Callout,
 
                 // Format
                 Bold,
@@ -236,6 +240,7 @@ export default function SlashwriterEditor(props: {
                     <ContentEditor editor={contentEditor} spellCheck="false" />
                 )}
                 {contentEditor && <BubbleMenu editor={contentEditor} />}
+                {contentEditor && <CalloutEmojiMenu editor={contentEditor} />}
             </Container>
         </>
     )
@@ -256,14 +261,22 @@ const ContentEditor = styled(EditorContent)`
         font-size: 1em;
         line-height: 1.6rem;
 
+        /**
+        * Blocks spacing
+        */
+
         & > *,
         li > *,
         div[data-type="detailsContent"] > *,
-        ul[data-type="taskList"] > li > div > * {
+        ul[data-type="taskList"] > li > div > *,
+        div[data-type="callout"] > .content > * {
             margin-top: 0.5rem;
             margin-bottom: 0.5rem;
         }
 
+        /**
+        * Format
+        */
         p {
             font-weight: 400;
             color: #111319;
@@ -300,6 +313,9 @@ const ContentEditor = styled(EditorContent)`
             background-color: rgb(248, 231, 30) !important;
         }
 
+        /**
+        * Blocks
+        */
         h1,
         h2,
         h3 {
@@ -318,6 +334,13 @@ const ContentEditor = styled(EditorContent)`
 
         h3 {
             font-size: 1.2em;
+        }
+
+        blockquote {
+            border-left: 3px solid rgb(13, 13, 13);
+            padding-left: 1rem;
+            margin-left: 0;
+            margin-right: 0;
         }
 
         ul:not([data-type="taskList"]) {
@@ -366,16 +389,48 @@ const ContentEditor = styled(EditorContent)`
 
                 & > div {
                     margin-left: 2.05rem;
-                    /* display: contents; */
                 }
             }
         }
 
-        blockquote {
-            border-left: 3px solid rgb(13, 13, 13);
-            padding-left: 1rem;
-            margin-left: 0;
-            margin-right: 0;
+        div[data-type="callout"] {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            background-color: var(--color-n100);
+            border-radius: 0.25rem;
+
+            & > .emoji-wrapper {
+                padding-top: 0.25rem;
+                display: flex;
+                align-items: flex-start;
+                flex-shrink: 0;
+
+                & > span {
+                    text-align: center;
+                    width: 2rem;
+                    height: 2rem;
+                    margin: 0;
+                    padding: 0.25rem;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
+                    transition: background-color 0.1s;
+                    user-select: none;
+
+                    & > img {
+                        width: 100%;
+                        pointer-events: none;
+                    }
+
+                    &:hover {
+                        background-color: var(--color-n300);
+                    }
+                }
+            }
+
+            & > .content {
+                width: 100%;
+            }
         }
 
         div[data-type="horizontalRule"] {
@@ -387,11 +442,6 @@ const ContentEditor = styled(EditorContent)`
             & > div {
                 border-bottom: 1px solid #dddddd;
             }
-        }
-
-        &:not(.ProseMirror-hideselection) *::selection {
-            background: rgba(150, 170, 220, 0.3);
-            color: inherit;
         }
 
         .details {
@@ -446,7 +496,17 @@ const ContentEditor = styled(EditorContent)`
             width: 100%;
         }
 
-        /* Node selections */
+        /**
+        * Selections
+        */
+
+        // Text selection
+        &:not(.ProseMirror-hideselection) *::selection {
+            background: rgba(150, 170, 220, 0.3);
+            color: inherit;
+        }
+
+        // Node selection
         &:not(.dragging) {
             .ProseMirror-selectednode {
                 outline: none !important;

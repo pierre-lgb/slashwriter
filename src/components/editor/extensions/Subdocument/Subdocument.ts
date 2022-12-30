@@ -37,7 +37,10 @@ export const Subdocument = Node.create({
     },
 
     renderHTML({ HTMLAttributes }) {
-        return ["div", mergeAttributes(HTMLAttributes)]
+        return [
+            "div",
+            mergeAttributes(HTMLAttributes, { "data-type": this.name })
+        ]
     },
 
     addNodeView() {

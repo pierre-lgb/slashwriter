@@ -55,7 +55,6 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
             // Upload
             const { data, error } = await supabaseClient.storage
                 .from("documents_uploads")
-                // TODO : upload to `/${documentId}/{...}.png` and add RLS
                 .upload(
                     `${documentId}/${uuidv4()}-${imageFile.name}`,
                     imageFile

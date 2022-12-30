@@ -60,7 +60,9 @@ export const foldersApi = baseApi.injectEndpoints({
                 await cacheDataLoaded
 
                 const session = await supabaseClient.auth.getSession()
-                const user = session.data.session.user
+                const user = session.data.session?.user
+
+                if (!user) return
 
                 const subscription = supabaseClient
                     .channel("folder_updates")

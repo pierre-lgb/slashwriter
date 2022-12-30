@@ -46,7 +46,9 @@ export const documentsApi = baseApi.injectEndpoints({
             queryFn: async () => {
                 console.log("Fetching documents")
                 const session = await supabaseClient.auth.getSession()
-                const user = session.data.session.user
+                const user = session.data.session?.user
+
+                if (!user) return { error: "Not logged in" }
 
                 const { data, error } = await supabaseClient
                     .from("documents")
@@ -63,22 +65,9 @@ export const documentsApi = baseApi.injectEndpoints({
                 await cacheDataLoaded
 
                 const session = await supabaseClient.auth.getSession()
-                const user = session.data.session.user
+                const user = session.data.session?.user
 
-                // const subscription = supabaseClient
-                //     // .from("documents")
-                //     .from(`documents:user_id=eq.${user.id}`)
-                //     .on("*", (payload) => {
-                //         updateCachedData((draft) => {
-                //             updateDocumentsCacheOnEvent(
-                //                 payload.eventType,
-                //                 payload,
-                //                 draft
-                //             )
-                //         })
-                //     })
-
-                //     .subscribe()
+                if (!user) return
 
                 const subscription = supabaseClient
                     .channel("document_updates")
