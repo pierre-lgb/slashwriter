@@ -1,5 +1,4 @@
 import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
-import Twemoji from "react-twemoji"
 import styled from "styled-components"
 import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
@@ -30,7 +29,7 @@ import { Editor, EditorContent } from "@tiptap/react"
 
 import BlockMenu from "./components/BlockMenu"
 import BubbleMenu from "./components/BubbleMenu"
-// import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
+import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
 import Callout from "./extensions/Callout"
 import Collaboration from "./extensions/Collaboration/Collaboration"
 import CollaborationCursor from "./extensions/Collaboration/CollaborationCursor"
@@ -250,7 +249,7 @@ export default function SlashwriterEditor(props: {
                 {contentEditor && <BubbleMenu editor={contentEditor} />}
                 {contentEditor && <BlockMenu editor={contentEditor} />}
                 {/* TODO: Performance EmojiMenu */}
-                {/* {contentEditor && <CalloutEmojiMenu editor={contentEditor} />} */}
+                {contentEditor && <CalloutEmojiMenu editor={contentEditor} />}
             </Container>
         </>
     )

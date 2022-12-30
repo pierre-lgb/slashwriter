@@ -1,12 +1,15 @@
-import { Ref, useState } from "react"
+import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { RiSearchLine as SearchIcon } from "react-icons/ri"
-import Twemoji from "react-twemoji"
+import { FixedSizeList } from "react-window"
+import Flex from "src/components/Flex"
 import Input from "src/components/ui/Input"
 import styled from "styled-components"
 
-import emojis, { unicode_to_shortcode } from "./emojis"
+import Emoji from "./Emoji"
+import emojis from "./emojis"
+import { filterEmojis, formatEmojis, HEIGHT, NB_EMOJIS_PER_ROW, ROW_HEIGHT, WIDTH } from "./utils"
 
-interface EmojiPickerProps {
+export interface EmojiPickerProps {
     /**
      * Called when an emoji is selected
      *
@@ -14,113 +17,161 @@ interface EmojiPickerProps {
      * @returns
      */
     onSelectEmoji?: (emoji: string) => any
+
     /**
-     * Reference of the emoji search input
+     * Whether the emoji picker has a search input or not
      */
-    searchInputRef?: Ref<HTMLInputElement>
-
-    [x: string]: any
+    searchInput?: boolean
 }
 
-type Emojis = {
-    [x: string]: {
-        unicode: string
-        tags: string[]
-        [x: string]: any
-    }[]
+export interface EmojiPickerHandle {
+    /**
+     * Update the search input query value
+     *
+     * @param value
+     */
+    setQuery(value?: string): void
+
+    /**
+     * Scroll the emoji list to the given offset
+     *
+     * @param offset
+     */
+    scrollTo(offset?: number): void
+
+    /**
+     * Picker's container dom element
+     */
+    containerElement: HTMLDivElement
+
+    /**
+     * Search input dom element
+     */
+    searchInputElement: HTMLInputElement
 }
 
-function filterEmojis(emojis: Emojis, query: string) {
-    const filteredEmojis: Emojis = {}
+export default forwardRef<EmojiPickerHandle, EmojiPickerProps>(
+    function EmojiPicker(props, ref) {
+        const { onSelectEmoji = () => {}, searchInput = true } = props
 
-    Object.entries(emojis).forEach(([groupName, groupEmojis]) => {
-        filteredEmojis[groupName] = groupEmojis.filter(
-            (emoji) =>
-                query.includes(emoji.unicode) ||
-                emoji.tags.some((tag: string) =>
-                    tag.startsWith(query.toLowerCase())
-                ) ||
-                emoji.shortcode.startsWith(query.toLowerCase()) ||
-                emoji.shortcode
-                    .replace("_", " ")
-                    .startsWith(query.toLowerCase())
+        const containerRef = useRef<HTMLDivElement>()
+        const searchInputRef = useRef<HTMLInputElement>()
+        const listRef = useRef<FixedSizeList>()
+
+        const [query, setQuery] = useState("")
+
+        const filteredEmojis = useMemo(
+            () => filterEmojis(emojis["fr"], query),
+            [query]
         )
-    })
-    return filteredEmojis
-}
+        const rows = useMemo(
+            () => formatEmojis(filteredEmojis),
+            [filteredEmojis]
+        )
 
-export default function EmojiPicker(props: EmojiPickerProps) {
-    const { onSelectEmoji, searchInputRef, pickerRef, ...otherProps } = props
-    const [query, setQuery] = useState("")
+        useImperativeHandle(ref, () => {
+            return {
+                setQuery: (value?: string) => {
+                    setQuery(value ?? "")
+                },
+                scrollTo: (offset?: number) => {
+                    listRef.current.scrollTo(offset ?? 0)
+                },
+                containerElement: containerRef.current,
+                searchInputElement: searchInputRef.current
+            }
+        })
+
+        return (
+            <div ref={containerRef}>
+                {searchInput && (
+                    <SearchInputContainer>
+                        <Input
+                            inputRef={searchInputRef}
+                            icon={<SearchIcon />}
+                            placeholder="Rechercher..."
+                            value={query}
+                            onChange={(event) => setQuery(event.target.value)}
+                        />
+                    </SearchInputContainer>
+                )}
+                <ListContainer>
+                    <FixedSizeList
+                        height={HEIGHT}
+                        overscanCount={3}
+                        itemCount={rows.length}
+                        itemData={{
+                            rows,
+                            onSelectEmoji
+                        }}
+                        itemSize={ROW_HEIGHT}
+                        width={WIDTH}
+                        ref={listRef}
+                    >
+                        {EmojiRow}
+                    </FixedSizeList>
+                </ListContainer>
+            </div>
+        )
+    }
+)
+
+const EmojiRow = ({ data, index, style }) => {
+    const { rows, onSelectEmoji } = data
+    const row = rows[index]
+
+    // Category
+    if (typeof row[0] === "string") {
+        return (
+            <CategoryTitle style={style} key={index}>
+                {row[0]}
+            </CategoryTitle>
+        )
+    }
 
     return (
-        <Container ref={pickerRef} {...otherProps}>
-            <Input
-                inputRef={searchInputRef}
-                icon={<SearchIcon />}
-                placeholder="Rechercher..."
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-            />
-            <Twemoji options={{ className: "emoji" }}>
-                {Object.entries(filterEmojis(emojis["fr"], query)).map(
-                    ([groupName, groupEmojis], index) =>
-                        groupEmojis.length ? (
-                            <Group key={index}>
-                                <GroupTitle>{groupName}</GroupTitle>
-                                <GroupContent>
-                                    {groupEmojis.map((emoji, index) => (
-                                        <EmojiButton
-                                            onClick={() => {
-                                                onSelectEmoji?.(emoji.unicode)
-                                            }}
-                                            key={index}
-                                        >
-                                            {emoji.unicode}
-                                        </EmojiButton>
-                                    ))}
-                                </GroupContent>
-                            </Group>
-                        ) : null
-                )}
-            </Twemoji>
-        </Container>
+        <Flex
+            style={{
+                ...style,
+                padding: "0 0.5rem"
+            }}
+        >
+            {row.map((emoji) => {
+                return (
+                    <EmojiButton>
+                        <Emoji
+                            emoji={emoji.unicode}
+                            key={emoji.unicode}
+                            style={{
+                                width: `${100 / NB_EMOJIS_PER_ROW}%`
+                            }}
+                            onClick={() => {
+                                onSelectEmoji(emoji.unicode)
+                            }}
+                        />
+                    </EmojiButton>
+                )
+            })}
+        </Flex>
     )
 }
 
-const Container = styled.div`
+const SearchInputContainer = styled.div`
+    padding: 0.25rem;
+`
+
+const ListContainer = styled.div`
+    padding-bottom: 0.5rem;
+    max-height: 400px;
+`
+
+const CategoryTitle = styled.div`
+    text-transform: uppdercase;
     padding: 0.5rem;
-    max-height: 300px;
-    max-width: 400px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-`
-
-const Group = styled.div`
-    padding: 0.25rem 0.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    &:last-child {
-        margin-bottom: 1rem;
-    }
-`
-
-const GroupTitle = styled.div`
-    padding: 0.4rem 0;
     text-transform: uppercase;
     color: var(--color-n600);
     font-size: 0.8rem;
-`
-
-const GroupContent = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    row-gap: 0.15rem;
+    width: 100%;
 `
 
 const EmojiButton = styled.button`

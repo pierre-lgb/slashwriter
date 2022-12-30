@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { FixedSizeList } from "react-window"
 import tippy, { Instance } from "tippy.js"
 
 import { Editor } from "@tiptap/react"
 
-import EmojiPicker from "./EmojiPicker"
+import EmojiPicker, { EmojiPickerHandle } from "./EmojiPicker"
 
 interface CalloutEmojiMenuProps {
     editor: Editor
@@ -12,8 +13,10 @@ interface CalloutEmojiMenuProps {
 export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
     const { editor } = props
     const { view } = editor
-    const emojiPickerRef = useRef<HTMLDivElement>()
+    const emojiListRef = useRef<FixedSizeList>()
+    const emojiPickerRef = useRef<EmojiPickerHandle>()
     const emojiSearchInputRef = useRef<HTMLInputElement>()
+
     const popup = useRef<Instance>()
     const calloutPos = useRef(-1)
 
@@ -46,13 +49,14 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
 
     useEffect(() => {
         if (emojiPickerRef.current) {
-            emojiPickerRef.current.remove()
-            emojiPickerRef.current.style.visibility = "visible"
+            const { containerElement } = emojiPickerRef.current
+            containerElement.remove()
+            containerElement.style.visibility = "visible"
         }
 
         popup.current = tippy(view.dom, {
             getReferenceClientRect: null,
-            content: emojiPickerRef.current,
+            content: emojiPickerRef.current.containerElement,
             appendTo: view.dom.parentElement,
             trigger: "manual",
             interactive: true,
@@ -62,7 +66,11 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
             theme: "light-border no-padding",
             maxWidth: 500,
             onShown: () => {
-                emojiSearchInputRef.current?.focus()
+                emojiPickerRef.current?.searchInputElement?.focus()
+            },
+            onHidden: () => {
+                emojiPickerRef.current?.scrollTo(0)
+                emojiPickerRef.current?.setQuery("")
             }
         })
 
@@ -80,11 +88,6 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
     }, [handleClickEmoji])
 
     return (
-        <EmojiPicker
-            searchInputRef={emojiSearchInputRef}
-            pickerRef={emojiPickerRef}
-            onSelectEmoji={handleSelectEmoji}
-            style={{ visibility: "hidden" }}
-        />
+        <EmojiPicker ref={emojiPickerRef} onSelectEmoji={handleSelectEmoji} />
     )
 }
