@@ -5,8 +5,8 @@ import Flex from "src/components/Flex"
 import Input from "src/components/ui/Input"
 import styled from "styled-components"
 
-import Emoji from "./Emoji"
-import emojis from "./emojis"
+import Emoji from "../../../Emoji"
+import emojis from "../../assets/emojis"
 import { filterEmojis, formatEmojis, HEIGHT, NB_EMOJIS_PER_ROW, ROW_HEIGHT, WIDTH } from "./utils"
 
 export interface EmojiPickerProps {

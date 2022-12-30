@@ -1,6 +1,6 @@
 import { Extension } from "@tiptap/core"
 
-import DragHandle from "./plugins/DragHandle"
+import DragHandle from "./DragHandle"
 
 export interface DragAndDropOptions {}
 

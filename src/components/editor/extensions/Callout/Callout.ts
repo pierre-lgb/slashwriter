@@ -130,7 +130,7 @@ export const Callout = Node.create<CalloutOptions>({
     },
 
     addNodeView() {
-        return ({ editor, getPos, node, HTMLAttributes }) => {
+        return ({ editor, getPos, node }) => {
             const dom = document.createElement("div")
             dom.setAttribute("data-type", this.name)
 

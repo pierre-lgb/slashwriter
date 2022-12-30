@@ -45,6 +45,7 @@ import TaskList from "./extensions/TaskList/TaskList"
 import Details from "./extensions/tiptap-pro/Details/Details"
 import DetailsContent from "./extensions/tiptap-pro/Details/DetailsContent"
 import DetailsSummary from "./extensions/tiptap-pro/Details/DetailsSummary"
+import Emoji from "./extensions/tiptap-pro/Emoji/Emoji"
 import TrailingNode from "./extensions/TrailingNode"
 
 function getRandomColor() {
@@ -182,6 +183,7 @@ export default function SlashwriterEditor(props: {
                 DetailsContent,
                 Youtube,
                 Callout,
+                Emoji,
 
                 // Format
                 Bold,
@@ -506,6 +508,36 @@ const ContentEditor = styled(EditorContent)`
         }
 
         /**
+        * Inline
+        */
+        span[data-type="emoji"] {
+            display: inline;
+            padding: 0.1rem;
+
+            & > img.emoji {
+                height: 1.2rem;
+                width: 1.2rem;
+                margin: 0 0.05em 0 0.1em;
+                vertical-align: -0.2em;
+            }
+        }
+
+        h1 span[data-type="emoji"] > img.emoji {
+            height: 1.8rem;
+            width: 1.8rem;
+        }
+
+        h2 span[data-type="emoji"] > img.emoji {
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+
+        h3 span[data-type="emoji"] > img.emoji {
+            height: 1.2rem;
+            width: 1.2rem;
+        }
+
+        /**
         * Selections
         */
 
@@ -538,46 +570,6 @@ const ContentEditor = styled(EditorContent)`
         }
     }
 `
-
-/*
-style="width: 0.6875em; height: 0.6875em; display: block; fill: inherit; flex-shrink: 0; backface-visibility: hidden; transition: transform 200ms ease-out 0s; transform: rotateZ(90deg); opacity: 1;"
-*/
-/* .details {
-            display: flex;
-            margin: 1rem 0;
-            border: 1px solid black;
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-
-            & > button {
-                display: flex;
-                cursor: pointer;
-                background: transparent;
-                border: none;
-                padding: 0;
-
-                &::before {
-                    content: "\25B6";
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    width: 1.5em;
-                    height: 1.5em;
-                }
-            }
-
-            &.is-open > button::before {
-                content: "\25BC";
-            }
-
-            & > div {
-                flex: 1 1 auto;
-            }
-
-            :last-child {
-                margin-bottom: 0;
-            }
-        } */
 
 const Container = styled.div`
     padding: 100px 25px;

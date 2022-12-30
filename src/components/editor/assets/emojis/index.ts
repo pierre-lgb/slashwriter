@@ -3,8 +3,10 @@ import fr from "./fr"
 /**
  * Source : https://github.com/kevinfaveri/vue-twemoji-picker/tree/master/emoji-data
  */
-const allDatasets = {
+
+// Combine all datasets
+const emojis = {
     fr
 }
 
-export default allDatasets
+export default emojis

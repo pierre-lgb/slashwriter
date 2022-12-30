@@ -48,6 +48,7 @@
     "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
+    "emoji-regex": "^10.2.1",
     "emojibase": "^6.1.0",
     "express": "^4.18.1",
     "framer-motion": "^8.0.2",
