@@ -21,6 +21,8 @@ import OrderedList from "@tiptap/extension-ordered-list"
 import Paragraph from "@tiptap/extension-paragraph"
 import Placeholder from "@tiptap/extension-placeholder"
 import Strike from "@tiptap/extension-strike"
+import Subscript from "@tiptap/extension-subscript"
+import Superscript from "@tiptap/extension-superscript"
 import Text from "@tiptap/extension-text"
 import Underline from "@tiptap/extension-underline"
 import Youtube from "@tiptap/extension-youtube"
@@ -28,7 +30,7 @@ import { Editor, EditorContent } from "@tiptap/react"
 
 import BlockMenu from "./components/BlockMenu"
 import BubbleMenu from "./components/BubbleMenu"
-import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
+// import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
 import Callout from "./extensions/Callout"
 import Collaboration from "./extensions/Collaboration/Collaboration"
 import CollaborationCursor from "./extensions/Collaboration/CollaborationCursor"
@@ -188,6 +190,8 @@ export default function SlashwriterEditor(props: {
                 Highlight,
                 Link,
                 Code,
+                Subscript,
+                Superscript,
 
                 // Extensions
                 TrailingNode,

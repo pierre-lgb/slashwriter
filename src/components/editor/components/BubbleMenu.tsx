@@ -7,6 +7,8 @@ import {
     RiLink as LinkIcon,
     RiLinkUnlink as UnlinkIcon,
     RiStrikethrough as StrikethroughIcon,
+    RiSubscript as SubscriptIcon,
+    RiSuperscript as SuperscriptIcon,
     RiUnderline as UnderlineIcon
 } from "react-icons/ri"
 import Button from "src/components/ui/Button"
@@ -113,6 +115,37 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                             props.editor.chain().focus().toggleHighlight().run()
                         }}
                         active={props.editor.isActive("highlight")}
+                    />
+                )}
+                {props.editor.can().chain().focus().toggleSubscript().run() && (
+                    <Button
+                        icon={<SubscriptIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            props.editor.chain().focus().toggleSubscript().run()
+                        }}
+                        active={props.editor.isActive("subscript")}
+                    />
+                )}
+                {props.editor
+                    .can()
+                    .chain()
+                    .focus()
+                    .toggleSuperscript()
+                    .run() && (
+                    <Button
+                        icon={<SuperscriptIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            props.editor
+                                .chain()
+                                .focus()
+                                .toggleSuperscript()
+                                .run()
+                        }}
+                        active={props.editor.isActive("superscript")}
                     />
                 )}
                 {props.editor

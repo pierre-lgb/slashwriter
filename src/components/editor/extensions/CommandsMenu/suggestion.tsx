@@ -19,6 +19,8 @@ import {
     RiSeparator as DividerIcon,
     RiStickyNote2Line as CalloutIcon,
     RiStrikethrough as StrikethroughIcon,
+    RiSubscript as SubscriptIcon,
+    RiSuperscript as SuperscriptIcon,
     RiUnderline as UnderlineIcon
 } from "react-icons/ri"
 import store from "src/store"
@@ -315,6 +317,34 @@ const items = {
                     .run()
             },
             icon: <HighlightIcon />
+        },
+        {
+            name: "Indice",
+            description: "Texte en indice",
+            aliases: ["_", "subscript"],
+            command: async ({ editor, range }) => {
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .toggleSubscript()
+                    .run()
+            },
+            icon: <SubscriptIcon />
+        },
+        {
+            name: "Exposant",
+            description: "Texte en exposant",
+            aliases: ["^", "superscript"],
+            command: async ({ editor, range }) => {
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .toggleSuperscript()
+                    .run()
+            },
+            icon: <SuperscriptIcon />
         }
     ]
 }
