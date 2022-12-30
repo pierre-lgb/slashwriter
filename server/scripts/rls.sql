@@ -47,6 +47,10 @@ drop policy if exists "Users can create shares" on shares;
 create policy "Users can create shares" on shares
   for insert with check (auth.uid() = user_id);
 
+drop policy if exists "Users can read their own shares" on shares;
+create policy "Users can read their own shares" on shares
+  for select using (auth.uid() = user_id);
+
 drop policy if exists "Users can update their own shares" on shares;
 create policy "Users can update their own shares" on shares
   for update using (auth.uid() = user_id);
