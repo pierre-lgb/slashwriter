@@ -2,6 +2,7 @@ import Router from "next/router"
 import { MdOutlineFontDownload as HighlightIcon } from "react-icons/md"
 import {
     RiBold as BoldIcon,
+    RiCodeBoxLine as CodeBlockIcon,
     RiCodeSLine as CodeIcon,
     RiDoubleQuotesR as QuoteIcon,
     RiFileLine as DocumentIcon,
@@ -197,6 +198,20 @@ const items = {
                     .run()
             },
             icon: <ImageIcon />
+        },
+        {
+            name: "Bloc de code",
+            description: "Un extrait de code",
+            aliases: ["pre", "codeblock", "snippet"],
+            command: ({ editor, range }) => {
+                editor
+                    .chain()
+                    .focus()
+                    .deleteRange(range)
+                    .toggleCodeBlock()
+                    .run()
+            },
+            icon: <CodeBlockIcon />
         },
         // {
         //     name: "Équation",

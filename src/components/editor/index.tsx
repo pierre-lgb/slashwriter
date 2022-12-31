@@ -31,6 +31,7 @@ import BlockMenu from "./components/BlockMenu"
 import BubbleMenu from "./components/BubbleMenu"
 import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
 import Callout from "./extensions/Callout"
+import CodeBlock from "./extensions/CodeBlock"
 import Collaboration from "./extensions/Collaboration/Collaboration"
 import CollaborationCursor from "./extensions/Collaboration/CollaborationCursor"
 import CommandsMenu from "./extensions/CommandsMenu"
@@ -183,6 +184,7 @@ export default function SlashwriterEditor(props: {
                 DetailsContent,
                 Youtube,
                 Callout,
+                CodeBlock,
                 Emoji,
 
                 // Format
@@ -304,6 +306,13 @@ const ContentEditor = styled(EditorContent)`
             font-weight: 500;
         }
 
+        code {
+            padding: 0.2rem 0.2rem 0.1rem;
+            background: hsla(0, 0%, 58.8%, 0.1);
+            border: 1px solid hsla(0, 0%, 39.2%, 0.2);
+            border-radius: 3px;
+        }
+
         a {
             cursor: pointer;
             line-height: 1.6rem;
@@ -313,13 +322,6 @@ const ContentEditor = styled(EditorContent)`
             &:hover {
                 color: var(--color-b500);
             }
-        }
-
-        code {
-            padding: 0.2rem 0.2rem 0.1rem;
-            background: hsla(0, 0%, 58.8%, 0.1);
-            border: 1px solid hsla(0, 0%, 39.2%, 0.2);
-            border-radius: 3px;
         }
 
         mark {
@@ -354,6 +356,22 @@ const ContentEditor = styled(EditorContent)`
             padding-left: 1rem;
             margin-left: 0;
             margin-right: 0;
+        }
+
+        pre {
+            background: var(--color-n100);
+            border-radius: 0.25rem;
+            color: #000;
+            padding: 0.75rem 1.5rem;
+
+            code {
+                border: none;
+                background: none;
+                color: inherit;
+                font-size: 0.9rem;
+                padding: 0;
+                font-family: "JetBrains Mono", monospace;
+            }
         }
 
         ul:not([data-type="taskList"]),
@@ -570,6 +588,91 @@ const ContentEditor = styled(EditorContent)`
                     }
                 }
             }
+        }
+
+        pre code span {
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        code.hljs {
+            padding: 3px 5px;
+        }
+        .hljs {
+            background: #f3f3f3;
+            color: #444;
+        }
+
+        .hljs-comment {
+            color: #697070;
+            font-style: italic;
+        }
+
+        .hljs-punctuation,
+        .hljs-tag {
+            color: #444a;
+        }
+        .hljs-tag.hljs-attr {
+            color: #c44170;
+        }
+        .hljs-tag.hljs-name {
+            color: #4b71bd;
+        }
+        .hljs-attribute,
+        .hljs-doctag,
+        .hljs-keyword,
+        .hljs-meta .hljs-keyword,
+        .hljs-name,
+        .hljs-selector-tag {
+            font-weight: 500;
+            color: #496eb8;
+        }
+        .hljs-deletion,
+        .hljs-number,
+        .hljs-quote,
+        .hljs-selector-class,
+        .hljs-selector-id,
+        .hljs-string,
+        .hljs-template-tag,
+        .hljs-type {
+            color: #886594;
+        }
+        .hljs-section,
+        .hljs-title {
+            color: #c44170;
+            font-weight: 500;
+        }
+
+        .hljs-link,
+        .hljs-operator,
+        .hljs-regexp,
+        .hljs-selector-attr,
+        .hljs-selector-pseudo,
+        .hljs-symbol,
+        .hljs-template-variable,
+        .hljs-variable {
+            color: #e06c75;
+        }
+        .hljs-literal {
+            color: #695;
+        }
+        .hljs-addition,
+        .hljs-built_in,
+        .hljs-bullet,
+        .hljs-code,
+        .hljs-params {
+            color: #c44170;
+        }
+        .hljs-meta {
+            color: #625b6b;
+        }
+        .hljs-meta .hljs-string {
+            color: #38a;
+        }
+        .hljs-emphasis {
+            font-style: italic;
+        }
+        .hljs-strong {
+            font-weight: 500;
         }
     }
 `
