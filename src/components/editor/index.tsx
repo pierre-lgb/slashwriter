@@ -411,7 +411,6 @@ const ContentEditor = styled(EditorContent)`
             gap: 0.5rem;
             padding: 0.5rem 1.5rem;
             background-color: var(--color-n100);
-            border-radius: 0.25rem;
 
             & > .emoji-wrapper {
                 padding-top: 0.25rem;
