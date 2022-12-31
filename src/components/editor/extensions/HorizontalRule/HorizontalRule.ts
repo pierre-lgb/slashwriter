@@ -2,6 +2,11 @@ import { TextSelection } from "prosemirror-state"
 
 import { mergeAttributes, Node, nodeInputRule } from "@tiptap/core"
 
+/**
+ * Extension based on:
+ * - Tiptap HorizontalRule extension (https://tiptap.dev/api/nodes/horizontal-rule)
+ */
+
 export interface HorizontalRuleOptions {
     HTMLAttributes: Record<string, any>
 }

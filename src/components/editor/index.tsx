@@ -30,23 +30,20 @@ import { Editor, EditorContent } from "@tiptap/react"
 import BlockMenu from "./components/BlockMenu"
 import BubbleMenu from "./components/BubbleMenu"
 import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
+import Details from "./extensions/@tiptap-pro/Details"
+import Emoji from "./extensions/@tiptap-pro/Emoji"
 import Callout from "./extensions/Callout"
 import CodeBlock from "./extensions/CodeBlock"
-import Collaboration from "./extensions/Collaboration/Collaboration"
-import CollaborationCursor from "./extensions/Collaboration/CollaborationCursor"
-import CommandsMenu from "./extensions/CommandsMenu"
-import suggestion from "./extensions/CommandsMenu/suggestion"
+import Collaboration from "./extensions/Collaboration"
+import CollaborationCursor from "./extensions/CollaborationCursor"
 import DragAndDrop from "./extensions/DragAndDrop"
 import HorizontalRule from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
 import Shortcuts from "./extensions/Shortcuts"
+import SlashCommands from "./extensions/SlashCommands"
 import Subdocument from "./extensions/Subdocument"
-import TaskItem from "./extensions/TaskList/TaskItem"
-import TaskList from "./extensions/TaskList/TaskList"
-import Details from "./extensions/tiptap-pro/Details/Details"
-import DetailsContent from "./extensions/tiptap-pro/Details/DetailsContent"
-import DetailsSummary from "./extensions/tiptap-pro/Details/DetailsSummary"
-import Emoji from "./extensions/tiptap-pro/Emoji/Emoji"
+import TaskItem from "./extensions/TaskItem"
+import TaskList from "./extensions/TaskList"
 import TrailingNode from "./extensions/TrailingNode"
 
 function getRandomColor() {
@@ -180,8 +177,6 @@ export default function SlashwriterEditor(props: {
                 HorizontalRule,
                 Subdocument,
                 Details,
-                DetailsSummary,
-                DetailsContent,
                 Youtube,
                 Callout,
                 CodeBlock,
@@ -208,9 +203,7 @@ export default function SlashwriterEditor(props: {
                     color: "#BFE5F4",
                     class: "drop-cursor"
                 }),
-                CommandsMenu.configure({
-                    suggestion
-                }),
+                SlashCommands,
                 Placeholder.configure({
                     placeholder: "Commencez à écrire ici..."
                 }),
@@ -252,7 +245,7 @@ export default function SlashwriterEditor(props: {
                 )}
                 {contentEditor && <BubbleMenu editor={contentEditor} />}
                 {contentEditor && <BlockMenu editor={contentEditor} />}
-                {/* TODO: Performance EmojiMenu */}
+
                 {contentEditor && contentEditor.isEditable && (
                     <CalloutEmojiMenu editor={contentEditor} />
                 )}

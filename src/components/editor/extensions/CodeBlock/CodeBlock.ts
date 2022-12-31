@@ -6,7 +6,8 @@ import { DecorationSet } from "prosemirror-view"
 import { mergeAttributes, Node, textblockTypeInputRule } from "@tiptap/core"
 
 /**
- * Based on Tiptap CodeBlock extension (https://tiptap.dev/api/nodes/code-block)
+ * Extension based on:
+ * - Tiptap CodeBlock extension (https://tiptap.dev/api/nodes/code-block)
  */
 
 export interface CodeBlockOptions {

@@ -4,6 +4,11 @@ import { ReactNodeViewRenderer } from "@tiptap/react"
 import ImageComponent from "./ImageComponent"
 import ImagePlaceholder from "./ImagePlaceholder"
 
+/**
+ * Extension based on:
+ * - Tiptap Image extension (https://tiptap.dev/api/nodes/image)
+ */
+
 export interface ImageOptions {
     allowBase64: boolean
     HTMLAttributes: Record<string, any>
@@ -32,7 +37,7 @@ export const Image = Node.create<ImageOptions>({
 
     addOptions() {
         return {
-            allowBase64: false,
+            allowBase64: true,
             HTMLAttributes: {}
         }
     },

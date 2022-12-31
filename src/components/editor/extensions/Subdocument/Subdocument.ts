@@ -21,6 +21,9 @@ declare module "@tiptap/core" {
 
 export const Subdocument = Node.create({
     name: "subdocument",
+
+    group: "block",
+
     addAttributes() {
         return {
             docId: {
@@ -29,8 +32,6 @@ export const Subdocument = Node.create({
             }
         }
     },
-
-    group: "block",
 
     parseHTML() {
         return [{ tag: `div[data-type="${this.name}"]`, ignore: true }]

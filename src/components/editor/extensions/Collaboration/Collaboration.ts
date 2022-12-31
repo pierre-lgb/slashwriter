@@ -3,6 +3,10 @@ import { UndoManager } from "yjs"
 
 import { Extension } from "@tiptap/core"
 
+/**
+ * Code from Tiptap Collaboration extension (https://tiptap.dev/api/extensions/collaboration):
+ */
+
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
         collaboration: {

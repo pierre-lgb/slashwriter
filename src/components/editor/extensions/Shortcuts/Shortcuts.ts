@@ -1,7 +1,14 @@
 import { Extension, textInputRule } from "@tiptap/core"
 
+/**
+ * Extension based on:
+ * - Tiptap Typography extension (https://tiptap.dev/api/extensions/typography)
+ * - Tiptap SmilieReplacer example (https://tiptap.dev/examples/savvy)
+ */
+
 export default Extension.create({
     name: "shortcuts",
+
     addInputRules() {
         return [
             textInputRule({ find: /-- $/, replace: "— " }),

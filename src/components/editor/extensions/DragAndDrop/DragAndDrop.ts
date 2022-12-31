@@ -5,7 +5,7 @@ import DragHandle from "./DragHandle"
 export interface DragAndDropOptions {}
 
 export const DragAndDrop = Extension.create<DragAndDropOptions>({
-    name: "drag-and-drop",
+    name: "dragAndDrop",
 
     addProseMirrorPlugins() {
         return [

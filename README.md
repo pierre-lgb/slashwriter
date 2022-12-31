@@ -1,3 +1,3 @@
 # Slashwriter
 
-![Cover](assets/slashwriter-cover.png)
+![Cover](.github/slashwriter-cover.png)

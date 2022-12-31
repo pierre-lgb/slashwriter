@@ -12,7 +12,8 @@ import {
 } from "@tiptap/core"
 
 /**
- * See Remirror Callout extension : https://github.com/remirror/remirror/blob/main/packages/remirror__extension-callout/
+ * Extension based on:
+ * - https://github.com/remirror/remirror/blob/main/packages/remirror__extension-callout/
  */
 
 export interface CalloutOptions {

@@ -2,6 +2,10 @@ import { yCursorPlugin } from "y-prosemirror"
 
 import { Extension } from "@tiptap/core"
 
+/**
+ * Code from Tiptap CollaborationCursor extension (https://tiptap.dev/api/extensions/collaboration-cursor):
+ */
+
 type CollaborationCursorStorage = {
     users: { clientId: number; [key: string]: any }[]
 }

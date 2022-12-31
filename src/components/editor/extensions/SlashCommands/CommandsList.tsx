@@ -1,6 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import Flex from "src/components/Flex"
-import Typography from "src/components/ui/Typography"
 import styled, { css } from "styled-components"
 
 export default forwardRef(function CommandsList(props: any, ref) {

@@ -1,12 +1,12 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react"
 import { RiSearchLine as SearchIcon } from "react-icons/ri"
 import { FixedSizeList } from "react-window"
+import emojis from "src/assets/emojis"
+import Emoji from "src/components/Emoji"
 import Flex from "src/components/Flex"
 import Input from "src/components/ui/Input"
 import styled from "styled-components"
 
-import Emoji from "../../../Emoji"
-import emojis from "../../assets/emojis"
 import { filterEmojis, formatEmojis, HEIGHT, NB_EMOJIS_PER_ROW, ROW_HEIGHT, WIDTH } from "./utils"
 
 export interface EmojiPickerProps {
