@@ -356,7 +356,8 @@ const ContentEditor = styled(EditorContent)`
             margin-right: 0;
         }
 
-        ul:not([data-type="taskList"]) {
+        ul:not([data-type="taskList"]),
+        ol {
             padding-inline-start: 2rem;
             & > li {
                 padding-left: 0.25rem;
@@ -411,6 +412,7 @@ const ContentEditor = styled(EditorContent)`
             gap: 0.5rem;
             padding: 0.5rem 1.5rem;
             background-color: var(--color-n100);
+            border-radius: 0.25rem;
 
             & > .emoji-wrapper {
                 padding-top: 0.25rem;
