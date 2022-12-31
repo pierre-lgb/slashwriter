@@ -277,7 +277,8 @@ const ContentEditor = styled(EditorContent)`
         li > *,
         div[data-type="detailsContent"] > *,
         ul[data-type="taskList"] > li > div > *,
-        div[data-type="callout"] > .content > * {
+        div[data-type="callout"] > .content > *,
+        blockquote > * {
             margin-top: 0.5rem;
             margin-bottom: 0.5rem;
         }
