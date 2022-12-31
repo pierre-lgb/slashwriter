@@ -110,6 +110,7 @@ const Container = styled.div`
     border-radius: 5px;
     gap: 0.5rem;
     padding: 5px;
+    user-select: none;
     cursor: pointer;
 
     &:hover {
