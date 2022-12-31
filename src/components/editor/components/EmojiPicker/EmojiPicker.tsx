@@ -138,7 +138,10 @@ const EmojiRow = ({ data, index, style }) => {
         >
             {row.map((emoji) => {
                 return (
-                    <EmojiButton key={emoji.unicode}>
+                    <EmojiButton
+                        key={emoji.unicode}
+                        title={`:${emoji.shortcode}:`}
+                    >
                         <Emoji
                             emoji={emoji.unicode}
                             style={{
