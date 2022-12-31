@@ -274,22 +274,6 @@ export default Node.create({
                             () => undefined
                         )
 
-                        tr.doc.descendants((child, pos) => {
-                            if (
-                                child.isBlock &&
-                                ["codeBlock"].indexOf(child.type.name) > -1
-                            ) {
-                                console.log({
-                                    node: child,
-                                    pos: pos
-                                })
-
-                                return false
-                            }
-
-                            return
-                        })
-
                         return DecorationSet.create(tr.doc, content)
                     }
                 },
