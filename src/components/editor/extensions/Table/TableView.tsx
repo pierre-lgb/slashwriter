@@ -418,14 +418,24 @@ export class TableView implements NodeView {
     }
 
     updateControls() {
-        const { hoveredTable: table, hoveredCell: cell } =
-            this.decorations[0]?.spec || {}
+        const { hoveredTable: table, hoveredCell: cell } = Object.values(
+            this.decorations
+        ).reduce((acc, curr) => {
+            if (curr.spec.hoveredCell !== undefined) {
+                acc["hoveredCell"] = curr.spec.hoveredCell
+            }
+
+            if (curr.spec.hoveredTable !== undefined) {
+                acc["hoveredTable"] = curr.spec.hoveredTable
+            }
+            return acc
+        }, {}) as any
 
         if (table === undefined || cell === undefined) {
-            return this.dom.classList.add("controls--disabled")
+            return this.root.classList.add("controls--disabled")
         }
 
-        this.dom.classList.remove("controls--disabled")
+        this.root.classList.remove("controls--disabled")
         this.hoveredCell = cell
 
         const cellDom = this.editor.view.nodeDOM(cell.pos) as HTMLElement
