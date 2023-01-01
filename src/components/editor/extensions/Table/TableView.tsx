@@ -303,10 +303,7 @@ export class TableView implements NodeView {
             "div",
             { className: "rowsControl" },
             h("button", {
-                onClick: () => {
-                    this.selectRow()
-                    console.log("test")
-                }
+                onClick: () => this.selectRow()
             })
         )
 
@@ -314,10 +311,7 @@ export class TableView implements NodeView {
             "div",
             { className: "columnsControl" },
             h("button", {
-                onClick: () => {
-                    this.selectColumn()
-                    console.log("test")
-                }
+                onClick: () => this.selectColumn()
             })
         )
 
@@ -423,7 +417,6 @@ export class TableView implements NodeView {
         const { hoveredTable: table, hoveredCell: cell } =
             this.decorations[0]?.spec || {}
 
-        console.log(table, cell)
         if (table === undefined || cell === undefined) {
             return this.dom.classList.add("controls--disabled")
         }

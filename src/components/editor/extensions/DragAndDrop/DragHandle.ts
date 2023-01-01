@@ -31,7 +31,7 @@ function nodeDOMAtCoords(coords: { x: number; y: number }) {
 
 export function nodePosAtDOM(node: Element, view: EditorView) {
     const boundingRect = node.getBoundingClientRect()
-    console.log(node)
+
     return view.posAtCoords({
         left: boundingRect.left + 1,
         top: boundingRect.top + 1

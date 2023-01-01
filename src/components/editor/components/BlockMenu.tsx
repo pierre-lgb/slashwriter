@@ -97,13 +97,9 @@ export default function BlockMenu(props: BlockMenuProps) {
                     const { view } = editor
                     const { state } = view
                     const { tr, selection } = state
-                    console.log(
-                        selection.from,
-                        selection.content().content.firstChild.toJSON()
-                    )
+
                     editor
                         .chain()
-                        // .focus()
                         .insertContentAt(
                             selection.to,
                             selection.content().content.firstChild.toJSON(),

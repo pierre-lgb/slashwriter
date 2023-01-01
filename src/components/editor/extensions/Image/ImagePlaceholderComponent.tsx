@@ -59,7 +59,11 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
                     `${documentId}/${uuidv4()}-${imageFile.name}`,
                     imageFile
                 )
-            console.log(data, error)
+
+            if (error) {
+                console.log(error)
+                return
+            }
 
             if (data?.path) {
                 // Upload image to storage
