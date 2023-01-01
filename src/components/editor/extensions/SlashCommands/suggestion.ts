@@ -1,5 +1,6 @@
 import tippy from "tippy.js"
 
+import { findParentNode } from "@tiptap/core"
 import { ReactRenderer } from "@tiptap/react"
 import { SuggestionOptions } from "@tiptap/suggestion"
 
@@ -42,6 +43,18 @@ const suggestionConfig: Partial<SuggestionOptions> = {
         )
 
         return filteredItemsArray
+    },
+
+    allow({ editor, state, range }) {
+        const isInsideTable = !!findParentNode(
+            (node) => node.type.name === "table"
+        )(editor.state.selection)
+
+        if (isInsideTable) {
+            return false
+        }
+
+        return true
     },
 
     render: () => {

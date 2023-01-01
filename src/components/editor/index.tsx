@@ -539,7 +539,6 @@ const ContentEditor = styled(EditorContent)`
             table {
                 border-collapse: collapse;
                 table-layout: fixed;
-                border-radius: 4px;
                 margin: 0;
                 width: 100%;
                 overflow: hidden;
@@ -547,7 +546,7 @@ const ContentEditor = styled(EditorContent)`
                 td,
                 th {
                     min-width: 1em;
-                    border: 1px solid #e8e8eb;
+                    border: 1px solid #d8dae5;
                     padding: 0.25rem 0.5rem;
                     vertical-align: top;
                     box-sizing: border-box;
@@ -589,6 +588,121 @@ const ContentEditor = styled(EditorContent)`
                     background-color: #adf;
                     pointer-events: none;
                 }
+            }
+
+            .tableControls {
+                position: absolute;
+
+                .columnsControl,
+                .rowsControl {
+                    transition: opacity ease-in 100ms;
+                    position: absolute;
+                    z-index: 99;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .columnsControl {
+                    height: 20px;
+                    transform: translateY(-50%);
+
+                    > button {
+                        color: white;
+                        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='%238F95B2' d='M4.5 10.5c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5S6 12.825 6 12s-.675-1.5-1.5-1.5zm15 0c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5S21 12.825 21 12s-.675-1.5-1.5-1.5zm-7.5 0c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5 1.5-.675 1.5-1.5-.675-1.5-1.5-1.5z'/%3E%3C/svg%3E");
+                        width: 30px;
+                        height: 15px;
+                    }
+                }
+
+                .rowsControl {
+                    width: 20px;
+                    transform: translateX(-50%);
+
+                    > button {
+                        color: white;
+                        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='%238F95B2' d='M12 3c-.825 0-1.5.675-1.5 1.5S11.175 6 12 6s1.5-.675 1.5-1.5S12.825 3 12 3zm0 15c-.825 0-1.5.675-1.5 1.5S11.175 21 12 21s1.5-.675 1.5-1.5S12.825 18 12 18zm0-7.5c-.825 0-1.5.675-1.5 1.5s.675 1.5 1.5 1.5 1.5-.675 1.5-1.5-.675-1.5-1.5-1.5z'/%3E%3C/svg%3E");
+                        height: 30px;
+                        width: 15px;
+                    }
+                }
+
+                button {
+                    background-color: white;
+                    border: 1px solid #d8dae5;
+                    border-radius: 2px;
+                    background-size: 1.25rem;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    transition: transform ease-out 100ms,
+                        background-color ease-out 100ms;
+                    outline: none;
+
+                    box-shadow: rgb(15 15 15 / 10%) 0px 2px 4px;
+
+                    cursor: pointer;
+
+                    &:hover {
+                        transform: scale(1.2, 1.2);
+                        background-color: var(--color-n50);
+                    }
+                }
+
+                .tableToolbox,
+                .tableColorPickerToolbox {
+                    padding: 0.25rem;
+                    display: flex;
+                    flex-direction: column;
+                    width: 200px;
+                    gap: 0.25rem;
+
+                    .toolboxItem {
+                        background: none;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        border: none;
+                        padding: 0.1rem;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+
+                        &:hover {
+                            background-color: var(--color-n100);
+                        }
+
+                        .iconContainer,
+                        .colorContainer {
+                            border: 1px solid #e6e8f0;
+                            border-radius: 3px;
+                            padding: 4px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 1.75rem;
+                            height: 1.75rem;
+
+                            svg {
+                                width: 1rem;
+                                height: 1rem;
+                            }
+                        }
+
+                        .label {
+                            font-size: 0.95rem;
+                            color: var(--color-black);
+                        }
+                    }
+                }
+            }
+        }
+
+        &.resize-cursor .tableWrapper .tableControls,
+        .tableWrapper.controls--disabled .tableControls {
+            .rowsControl,
+            .columnsControl {
+                opacity: 0;
+                pointer-events: none;
             }
         }
 
@@ -658,7 +772,7 @@ const ContentEditor = styled(EditorContent)`
                 }
 
                 &.tableWrapper {
-                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px !important;
+                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px inset !important;
                 }
             }
         }

@@ -13,7 +13,8 @@ import {
     RiNotificationBadgeLine as CalloutWithIconIcon,
     RiPlayList2Line as DetailsIcon,
     RiSeparator as DividerIcon,
-    RiStickyNote2Line as CalloutIcon
+    RiStickyNote2Line as CalloutIcon,
+    RiTable2 as TableIcon
 } from "react-icons/ri"
 import store from "src/store"
 import { supabaseClient } from "src/utils/supabase"
@@ -203,7 +204,15 @@ const blocks = [
     {
         name: "Tableau",
         description: "Un tableau",
-        aliases: ["table", "cells", "columns", "colonnes"],
+        aliases: [
+            "table",
+            "cells",
+            "columns",
+            "colonnes",
+            "cellules",
+            "donnees",
+            "données"
+        ],
         command: ({ editor, range }) => {
             editor
                 .chain()
@@ -212,7 +221,7 @@ const blocks = [
                 .insertTable({ rows: 2, cols: 2 })
                 .run()
         },
-        icon: <DetailsIcon />
+        icon: <TableIcon />
     },
     {
         name: "Document",

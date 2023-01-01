@@ -12,7 +12,7 @@ export default Node.create<TableHeaderOptions>({
         }
     },
 
-    content: "block+",
+    content: "paragraph+",
 
     addAttributes() {
         return {
@@ -30,6 +30,9 @@ export default Node.create<TableHeaderOptions>({
 
                     return value
                 }
+            },
+            background: {
+                default: "none"
             }
         }
     },
@@ -42,10 +45,12 @@ export default Node.create<TableHeaderOptions>({
         return [{ tag: "th" }]
     },
 
-    renderHTML({ HTMLAttributes }) {
+    renderHTML({ node, HTMLAttributes }) {
         return [
             "th",
-            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+                style: `background-color: ${node.attrs.background}`
+            }),
             0
         ]
     }

@@ -21,6 +21,7 @@ import {
     toggleHeaderCell
 } from "@tiptap/prosemirror-tables"
 
+import { tableControls } from "./tableControls"
 import { TableView } from "./TableView"
 import { createTable } from "./utilities/createTable"
 import { deleteTableWhenAllCellsSelected } from "./utilities/deleteTableWhenAllCellsSelected"
@@ -125,7 +126,7 @@ export default Node.create({
     addCommands() {
         return {
             insertTable:
-                ({ rows = 3, cols = 3, withHeaderRow = true } = {}) =>
+                ({ rows = 3, cols = 3, withHeaderRow = false } = {}) =>
                 ({ tr, dispatch, editor }) => {
                     const node = createTable(
                         editor.schema,
@@ -282,6 +283,7 @@ export default Node.create({
     addNodeView() {
         return ({ editor, getPos, node, decorations }) => {
             const { cellMinWidth } = this.options
+
             return new TableView(
                 node,
                 cellMinWidth,
@@ -295,22 +297,27 @@ export default Node.create({
     addProseMirrorPlugins() {
         const isResizable = this.options.resizable && this.editor.isEditable
 
-        return [
-            ...(isResizable
-                ? [
-                      columnResizing({
-                          handleWidth: this.options.handleWidth,
-                          cellMinWidth: this.options.cellMinWidth,
-                          View: TableView,
-                          // @ts-ignore
-                          lastColumnResizable: this.options.lastColumnResizable
-                      })
-                  ]
-                : []),
+        const plugins = [
             tableEditing({
                 allowTableNodeSelection: this.options.allowTableNodeSelection
-            })
+            }),
+            tableControls()
         ]
+
+        if (isResizable) {
+            plugins.unshift(
+                columnResizing({
+                    handleWidth: this.options.handleWidth,
+                    cellMinWidth: this.options.cellMinWidth,
+                    // View: TableView,
+
+                    // @ts-ignore
+                    lastColumnResizable: this.options.lastColumnResizable
+                })
+            )
+        }
+
+        return plugins
     },
 
     extendNodeSchema(extension) {

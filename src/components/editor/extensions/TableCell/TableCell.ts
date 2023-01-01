@@ -13,7 +13,7 @@ export default Node.create<TableCellOptions>({
         }
     },
 
-    content: "block+",
+    content: "paragraph+",
 
     addAttributes() {
         return {
@@ -31,6 +31,9 @@ export default Node.create<TableCellOptions>({
 
                     return value
                 }
+            },
+            background: {
+                default: null
             }
         }
     },
@@ -43,10 +46,12 @@ export default Node.create<TableCellOptions>({
         return [{ tag: "td" }]
     },
 
-    renderHTML({ HTMLAttributes }) {
+    renderHTML({ node, HTMLAttributes }) {
         return [
             "td",
-            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+                style: `background-color: ${node.attrs.background}`
+            }),
             0
         ]
     }
