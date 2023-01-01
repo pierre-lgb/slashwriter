@@ -32,7 +32,7 @@ export default Node.create<TableHeaderOptions>({
                 }
             },
             background: {
-                default: "none"
+                default: "#ffffff"
             }
         }
     },

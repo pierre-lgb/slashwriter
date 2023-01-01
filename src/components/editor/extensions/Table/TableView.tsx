@@ -202,7 +202,7 @@ function createColorPickerToolbox({
     onSelectColor?: (color) => void
 }) {
     const items = {
-        "Fond par défault": "none",
+        "Fond par défault": "#ffffff",
         "Fond gris clair": "#e7f3f8",
         "Fond gris foncé": "#c7d2d7",
         "Fond bleu": "#e7f3f8",

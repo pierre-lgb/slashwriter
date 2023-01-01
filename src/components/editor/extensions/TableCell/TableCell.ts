@@ -33,7 +33,7 @@ export default Node.create<TableCellOptions>({
                 }
             },
             background: {
-                default: "none"
+                default: "#ffffff"
             }
         }
     },
