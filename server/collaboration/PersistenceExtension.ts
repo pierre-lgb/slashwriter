@@ -58,7 +58,11 @@ export default class PersistenceExtension implements Extension {
         context
     }: onStoreDocumentPayload) {
         const documentId = documentName.split(".").pop()
-        const { user, session } = context
+        const { user, permission, session } = context
+        if (!permission.includes("edit")) {
+            return
+        }
+
         console.log(
             `Persisting document ${documentId} for user ${user.email} (${user.id})`
         )

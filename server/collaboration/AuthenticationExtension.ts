@@ -42,6 +42,7 @@ export default class AuthenticationExtension implements Extension {
 
         return {
             session,
+            permission: !!canEditError ? "read" : "read|edit",
             user: {
                 ...user
             }
