@@ -10,6 +10,7 @@ import BulletList from "@tiptap/extension-bullet-list"
 import Code from "@tiptap/extension-code"
 import Document from "@tiptap/extension-document"
 import Dropcursor from "@tiptap/extension-dropcursor"
+import Focus from "@tiptap/extension-focus"
 import HardBreak from "@tiptap/extension-hard-break"
 import Heading from "@tiptap/extension-heading"
 import Highlight from "@tiptap/extension-highlight"
@@ -206,6 +207,7 @@ export default function SlashwriterEditor(props: {
                 DragAndDrop,
                 HardBreak,
                 Shortcuts,
+                Focus,
                 Dropcursor.configure({
                     width: 3,
                     color: "#BFE5F4",
