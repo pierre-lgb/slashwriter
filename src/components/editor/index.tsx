@@ -558,6 +558,10 @@ const ContentEditor = styled(EditorContent)`
                         margin: 0 !important;
                         padding: 0.25rem 0 !important;
                     }
+
+                    &.has-focus {
+                        box-shadow: var(--color-b300) 0px 0px 0px 2px inset !important;
+                    }
                 }
 
                 th {
@@ -587,7 +591,7 @@ const ContentEditor = styled(EditorContent)`
                     bottom: -2px;
                     width: 4px;
                     z-index: 99;
-                    background-color: #adf;
+                    background-color: var(--color-b300);
                     pointer-events: none;
                 }
             }
