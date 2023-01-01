@@ -201,6 +201,20 @@ const blocks = [
         icon: <DetailsIcon />
     },
     {
+        name: "Tableau",
+        description: "Un tableau",
+        aliases: ["table", "cells", "columns", "colonnes"],
+        command: ({ editor, range }) => {
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .insertTable({ rows: 2, cols: 2 })
+                .run()
+        },
+        icon: <DetailsIcon />
+    },
+    {
         name: "Document",
         description: "Un document intégré",
         aliases: ["subpage", "embeddedpage", "subdocument", "document"],

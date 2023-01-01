@@ -84,6 +84,12 @@ a {
 * TEMPORARY
 */
 
+// Tables resize cursor
+.resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
+}
+
 .drag-handle {
     position: fixed;
     opacity: 1;
@@ -95,8 +101,8 @@ a {
     background-position: center;
     width: 1.2rem;
     height: 1.5rem;
-    cursor: grab;
     z-index: 50;
+    cursor: grab;
 
     &.hidden {
         opacity: 0;
@@ -105,9 +111,11 @@ a {
 
     &:hover {
         background-color: #0d0d0d10;
-        transition: background-color ease-out 0.2s;
+        transition: background-color  0.2s;
     }
 }
+
+
 
 `
 

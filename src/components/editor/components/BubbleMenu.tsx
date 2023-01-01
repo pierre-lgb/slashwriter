@@ -16,6 +16,8 @@ import styled from "styled-components"
 
 import { BubbleMenu as TiptapBubbleMenu, Editor, isNodeSelection } from "@tiptap/react"
 
+import { isCellSelection } from "../extensions/Table/utilities/isCellSelection"
+
 interface BubbleMenuProps {
     editor: Editor
 }
@@ -78,6 +80,7 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                     empty ||
                     !editor.isEditable ||
                     isNodeSelection(selection) ||
+                    isCellSelection(selection) ||
                     isSelecting
                 ) {
                     return false

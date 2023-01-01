@@ -42,6 +42,10 @@ import Image from "./extensions/Image"
 import Shortcuts from "./extensions/Shortcuts"
 import SlashCommands from "./extensions/SlashCommands"
 import Subdocument from "./extensions/Subdocument"
+import Table from "./extensions/Table"
+import TableCell from "./extensions/TableCell"
+import TableHeader from "./extensions/TableHeader"
+import TableRow from "./extensions/TableRow"
 import TaskItem from "./extensions/TaskItem"
 import TaskList from "./extensions/TaskList"
 import TrailingNode from "./extensions/TrailingNode"
@@ -164,11 +168,7 @@ export default function SlashwriterEditor(props: {
                 Document,
                 Text,
                 Paragraph,
-                Blockquote.extend({
-                    addInputRules() {
-                        return [] // Disable input rule (used by Details instead)
-                    }
-                }),
+                Blockquote,
                 Heading.configure({
                     levels: [1, 2, 3]
                 }),
@@ -184,6 +184,10 @@ export default function SlashwriterEditor(props: {
                 Youtube,
                 Callout,
                 CodeBlock,
+                TableCell,
+                TableHeader,
+                TableRow,
+                Table,
                 Emoji,
 
                 // Format
@@ -526,6 +530,68 @@ const ContentEditor = styled(EditorContent)`
             width: 100%;
         }
 
+        .tableWrapper {
+            overflow-x: auto;
+            padding: 2px;
+            width: fit-content;
+            max-width: 100%;
+
+            table {
+                border-collapse: collapse;
+                table-layout: fixed;
+                border-radius: 4px;
+                margin: 0;
+                width: 100%;
+                overflow: hidden;
+
+                td,
+                th {
+                    min-width: 1em;
+                    border: 1px solid #e8e8eb;
+                    padding: 0.25rem 0.5rem;
+                    vertical-align: top;
+                    box-sizing: border-box;
+                    position: relative;
+
+                    > * {
+                        margin: 0 !important;
+                        padding: 0.25rem 0 !important;
+                    }
+                }
+
+                th {
+                    * {
+                        font-weight: 600;
+                    }
+                    text-align: left;
+                    background-color: #f1f3f5;
+                }
+
+                .selectedCell:after {
+                    z-index: 2;
+                    position: absolute;
+                    content: "";
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    background: rgba(200, 200, 255, 0.4);
+                    pointer-events: none;
+                }
+
+                .column-resize-handle {
+                    position: absolute;
+                    right: -2px;
+                    top: 0;
+                    bottom: -2px;
+                    width: 4px;
+                    z-index: 99;
+                    background-color: #adf;
+                    pointer-events: none;
+                }
+            }
+        }
+
         /**
         * Inline
         */
@@ -576,17 +642,30 @@ const ContentEditor = styled(EditorContent)`
                 box-shadow: none;
 
                 &.image,
-                &.imagePlaceholder {
+                &.imagePlaceholder,
+                &.tableWrapper {
                     background-color: transparent !important;
-                    transition: box-shadow ease-out 100ms !important;
-                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px !important;
+                    transition: box-shadow ease-out 200ms !important;
 
                     *::selection {
                         background: none;
                     }
                 }
+
+                &.image,
+                &.imagePlaceholder {
+                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px !important;
+                }
+
+                &.tableWrapper {
+                    box-shadow: rgb(51, 102, 255, 0.9) 0px 0px 0px 2px !important;
+                }
             }
         }
+
+        /**
+        * Code highlighting
+        */
 
         pre code span {
             font-family: "JetBrains Mono", monospace;
