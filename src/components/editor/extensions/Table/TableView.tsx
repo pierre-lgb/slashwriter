@@ -299,62 +299,64 @@ export class TableView implements NodeView {
          */
 
         // Controllers
-        this.rowsControl = h(
-            "div",
-            { className: "rowsControl" },
-            h("button", {
-                onClick: () => this.selectRow()
-            })
-        )
-
-        this.columnsControl = h(
-            "div",
-            { className: "columnsControl" },
-            h("button", {
-                onClick: () => this.selectColumn()
-            })
-        )
-
-        this.controls = h(
-            "div",
-            { className: "tableControls", contentEditable: "false" },
-            this.rowsControl,
-            this.columnsControl
-        )
-
-        this.columnsToolbox = createToolbox({
-            triggerButton: this.columnsControl.querySelector("button"),
-            items: columnsToolboxItems,
-            tippyOptions: {
-                ...defaultTippyOptions,
-                appendTo: this.controls
-            },
-            onClickItem: (item) => {
-                item.action({
-                    editor: this.editor,
-                    triggerButton: this.columnsControl.firstElementChild,
-                    controlsContainer: this.controls
+        if (editor.isEditable) {
+            this.rowsControl = h(
+                "div",
+                { className: "rowsControl" },
+                h("button", {
+                    onClick: () => this.selectRow()
                 })
-                this.columnsToolbox.hide()
-            }
-        })
+            )
 
-        this.rowsToolbox = createToolbox({
-            triggerButton: this.rowsControl.firstElementChild,
-            items: rowsToolboxItems,
-            tippyOptions: {
-                ...defaultTippyOptions,
-                appendTo: this.controls
-            },
-            onClickItem: (item) => {
-                item.action({
-                    editor: this.editor,
-                    triggerButton: this.rowsControl.firstElementChild,
-                    controlsContainer: this.controls
+            this.columnsControl = h(
+                "div",
+                { className: "columnsControl" },
+                h("button", {
+                    onClick: () => this.selectColumn()
                 })
-                this.rowsToolbox.hide()
-            }
-        })
+            )
+
+            this.controls = h(
+                "div",
+                { className: "tableControls", contentEditable: "false" },
+                this.rowsControl,
+                this.columnsControl
+            )
+
+            this.columnsToolbox = createToolbox({
+                triggerButton: this.columnsControl.querySelector("button"),
+                items: columnsToolboxItems,
+                tippyOptions: {
+                    ...defaultTippyOptions,
+                    appendTo: this.controls
+                },
+                onClickItem: (item) => {
+                    item.action({
+                        editor: this.editor,
+                        triggerButton: this.columnsControl.firstElementChild,
+                        controlsContainer: this.controls
+                    })
+                    this.columnsToolbox.hide()
+                }
+            })
+
+            this.rowsToolbox = createToolbox({
+                triggerButton: this.rowsControl.firstElementChild,
+                items: rowsToolboxItems,
+                tippyOptions: {
+                    ...defaultTippyOptions,
+                    appendTo: this.controls
+                },
+                onClickItem: (item) => {
+                    item.action({
+                        editor: this.editor,
+                        triggerButton: this.rowsControl.firstElementChild,
+                        controlsContainer: this.controls
+                    })
+                    this.rowsToolbox.hide()
+                }
+            })
+        }
 
         // Table
 
@@ -386,7 +388,9 @@ export class TableView implements NodeView {
         this.decorations = decorations
         this.map = TableMap.get(this.node)
 
-        this.updateControls()
+        if (this.editor.isEditable) {
+            this.updateControls()
+        }
 
         this.render()
 
