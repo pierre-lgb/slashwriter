@@ -76,6 +76,42 @@ a {
         "Noto Color Emoji";
 }
 
+/**
+* Custom scrollbar
+*/
+
+::-webkit-scrollbar {
+    height: .875rem;
+    width: .875rem;
+}
+
+
+::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+:hover::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb {
+    background-color: rgb(13 13 13 / 10%)
+}
+
+::-webkit-scrollbar-thumb, ::-webkit-scrollbar-track {
+    background-clip: padding-box;
+    border: 4px solid transparent;
+    border-radius: 8px;
+}
+
+
+
+/**
+* Popovers
+*/
+
 .tippy-box[data-theme~='no-padding'] .tippy-content {
     padding: 0;
 }
