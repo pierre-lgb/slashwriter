@@ -26,7 +26,9 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
             }
 
             event.preventDefault()
-            calloutPos.current = view.posAtDOM(target, 0) - 1
+            const pos = view.posAtDOM(target, 0) - 1
+            calloutPos.current = pos
+            editor.commands.focus(pos)
 
             popup.current.setProps({
                 getReferenceClientRect: () => target.getBoundingClientRect()
