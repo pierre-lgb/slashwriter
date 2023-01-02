@@ -153,7 +153,7 @@ const rowsToolboxItems = [
     {
         label: "Supprimer la ligne",
         icon: icons.deleteRow,
-        action: ({ editor }) => editor.chain().focus().deleteColumn().run()
+        action: ({ editor }) => editor.chain().focus().deleteRow().run()
     }
 ]
 
