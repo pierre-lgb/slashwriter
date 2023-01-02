@@ -61,7 +61,7 @@ export default Node.create({
     renderHTML({ HTMLAttributes }) {
         return [
             "div",
-            undefined,
+            {},
             ["span", { "data-katex": true }, `$${HTMLAttributes.katex}$`]
         ]
     },
