@@ -38,6 +38,7 @@ import CodeBlock from "./extensions/CodeBlock"
 import Collaboration from "./extensions/Collaboration"
 import CollaborationCursor from "./extensions/CollaborationCursor"
 import DragAndDrop from "./extensions/DragAndDrop"
+import Equation from "./extensions/Equation"
 import HorizontalRule from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
 import Shortcuts from "./extensions/Shortcuts"
@@ -190,6 +191,7 @@ export default function SlashwriterEditor(props: {
                 TableRow,
                 Table,
                 Emoji,
+                Equation,
 
                 // Format
                 Bold,

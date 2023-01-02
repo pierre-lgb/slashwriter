@@ -3,6 +3,7 @@ import {
     RiCodeBoxLine as CodeBlockIcon,
     RiDoubleQuotesR as QuoteIcon,
     RiFileLine as DocumentIcon,
+    RiFunctions as EquationIcon,
     RiH1 as Heading1Icon,
     RiH2 as Heading2Icon,
     RiH3 as Heading3Icon,
@@ -178,20 +179,22 @@ const blocks = [
         },
         icon: <CodeBlockIcon />
     },
-    // {
-    //     name: "Équation",
-    //     description: "Une équation LaTeX",
-    //     aliases: ["equation", "tex", "math"],
-    //     command: ({ editor, range }) => {
-    //         // editor
-    //         //     .chain()
-    //         //     .focus()
-    //         //     .deleteRange(range)
-    //         //
-    //         //     .run()
-    //     },
-    //     icon: <EquationIcon />
-    // },
+    {
+        name: "Équation en ligne",
+        description: "Une équation LaTeX",
+        aliases: ["equation", "tex", "math", "katex", "latex"],
+        command: ({ editor, range }) => {
+            console.log(range)
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .setEquation()
+                .setNodeSelection(range.from)
+                .run()
+        },
+        icon: <EquationIcon />
+    },
     {
         name: "Dépliant",
         description: "Un menu dépliant",

@@ -55,6 +55,7 @@
     "framer-motion": "^8.0.2",
     "highlight.js": "^11.7.0",
     "jsx-dom-cjs": "^8.0.3",
+    "katex": "^0.16.4",
     "moment": "^2.29.4",
     "next": "^13.1.0",
     "prosemirror-commands": "^1.5.0",
@@ -89,6 +90,7 @@
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",
+    "@types/katex": "^0.16.0",
     "@types/node": "^18.7.3",
     "@types/react": "^18.0.17",
     "@types/react-window": "^1.8.5",

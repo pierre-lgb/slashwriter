@@ -77,7 +77,11 @@ a {
 }
 
 .tippy-box[data-theme~='no-padding'] .tippy-content {
-  padding: 0;
+    padding: 0;
+}
+
+.ProseMirror .node-equation [data-tippy-root] {
+    display: inline-block;
 }
 
 
