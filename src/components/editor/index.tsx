@@ -317,6 +317,7 @@ const ContentEditor = styled(EditorContent)`
             background: hsla(0, 0%, 58.8%, 0.1);
             border: 1px solid hsla(0, 0%, 39.2%, 0.2);
             border-radius: 3px;
+            font-family: "JetBrains Mono", monospace;
         }
 
         a {

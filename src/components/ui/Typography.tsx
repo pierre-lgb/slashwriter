@@ -201,6 +201,7 @@ const StyledText = styled.div<{
                 border: 1px solid hsla(0, 0%, 39.2%, 0.2);
                 border-radius: 3px;
                 font-weight: 500;
+                font-family: "JetBrains Mono", monospace;
             `
         }
         if (tag === "strong") {
