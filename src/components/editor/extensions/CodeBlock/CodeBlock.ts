@@ -3,7 +3,7 @@ import { getHighlightDecorations, highlightPlugin } from "prosemirror-highlightj
 import { Plugin, PluginKey, Selection, TextSelection } from "prosemirror-state"
 import { DecorationSet } from "prosemirror-view"
 
-import { mergeAttributes, Node, textblockTypeInputRule } from "@tiptap/core"
+import { findParentNode, mergeAttributes, Node, textblockTypeInputRule } from "@tiptap/core"
 
 /**
  * Extension based on:
@@ -133,6 +133,27 @@ export default Node.create({
     addKeyboardShortcuts() {
         return {
             "Mod-Alt-c": () => this.editor.commands.toggleCodeBlock(),
+            /**
+             * When using Mod-A shorcut inside a code block it should select
+             * all the code block's content (instead of the whole editor's one)
+             */
+            "Mod-a": () => {
+                const { selection } = this.editor.state
+                const { $anchor } = selection
+
+                if ($anchor.parent.type.name !== this.name) {
+                    return false
+                }
+
+                const { start, node } = findParentNode(
+                    (node) => node.type.name === "codeBlock"
+                )(selection)
+
+                return this.editor.commands.setTextSelection({
+                    from: start,
+                    to: start + node.nodeSize - 1
+                })
+            },
 
             // Remove code block when at start of document or code block is empty
             Backspace: () => {
