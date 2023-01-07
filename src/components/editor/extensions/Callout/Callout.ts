@@ -268,7 +268,14 @@ export const Callout = Node.create<CalloutOptions>({
                 }
 
                 const previousNode = previousPos.parent
-                const { node, pos } = findParentNode(() => true)(selection)
+                const { node, pos, depth } = findParentNode(() => true)(
+                    selection
+                )
+
+                // If current node is nested
+                if (depth !== 1) {
+                    return false
+                }
 
                 // If previous node is a callout, cut current node's content into it
                 if (
@@ -288,7 +295,6 @@ export const Callout = Node.create<CalloutOptions>({
 
                     return true
                 }
-
                 return false
             }
         }
