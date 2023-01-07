@@ -4,13 +4,7 @@ import { Decoration, NodeView } from "prosemirror-view"
 import tippy, { Instance, Props, Tippy } from "tippy.js"
 
 import { Editor } from "@tiptap/core"
-import {
-    CellSelection,
-    deleteColumn,
-    deleteRow,
-    TableMap,
-    updateColumnsOnResize
-} from "@tiptap/prosemirror-tables"
+import { CellSelection, TableMap, updateColumnsOnResize } from "@tiptap/prosemirror-tables"
 
 import icons from "./icons"
 
@@ -366,13 +360,14 @@ export class TableView implements NodeView {
             Array.from({ length: this.map.width }, () => 1).map(() => h("col"))
         )
         this.tbody = h("tbody")
-        this.table = h("table", null, this.colgroup, this.controls, this.tbody)
+        this.table = h("table", null, this.colgroup, this.tbody)
 
         this.root = h(
             "div",
             {
                 className: "tableWrapper controls--disabled"
             },
+            this.controls,
             this.table
         )
 

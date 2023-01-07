@@ -556,7 +556,7 @@ const ContentEditor = styled(EditorContent)`
                     vertical-align: top;
                     box-sizing: border-box;
                     position: relative;
-
+                    background-clip: padding-box;
                     > * {
                         margin: 0 !important;
                         padding: 0.25rem 0 !important;
