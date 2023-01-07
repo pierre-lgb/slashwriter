@@ -1,6 +1,6 @@
 import { TextSelection } from "prosemirror-state"
 
-import { mergeAttributes, Node, nodeInputRule } from "@tiptap/core"
+import { InputRule, mergeAttributes, Node, nodeInputRule, wrappingInputRule } from "@tiptap/core"
 
 /**
  * Extension based on:
@@ -109,9 +109,15 @@ export default Node.create<HorizontalRuleOptions>({
 
     addInputRules() {
         return [
-            nodeInputRule({
+            new InputRule({
                 find: /^(?:---|—-|___\s|\*\*\*\s)$/,
-                type: this.type
+                handler: ({ state, range, match }) => {
+                    state.tr.replaceRangeWith(
+                        range.from,
+                        range.to,
+                        this.type.create()
+                    )
+                }
             })
         ]
     }
