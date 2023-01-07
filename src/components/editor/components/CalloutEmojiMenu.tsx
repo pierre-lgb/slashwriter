@@ -22,6 +22,7 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
         (event: MouseEvent) => {
             const target = event.target as HTMLElement
             if (!target.matches("[data-emoji-container]")) {
+                popup.current?.hide()
                 return
             }
 
@@ -59,6 +60,7 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
             content: emojiPickerRef.current.containerElement,
             appendTo: view.dom.parentElement,
             trigger: "manual",
+            hideOnClick: true,
             interactive: true,
             arrow: false,
             placement: "right-start",

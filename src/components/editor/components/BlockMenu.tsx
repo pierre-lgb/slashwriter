@@ -20,11 +20,11 @@ export default function BlockMenu(props: BlockMenuProps) {
         (event: MouseEvent) => {
             const target = event.target as HTMLElement
             if (!target.matches("[data-drag-handle]")) {
+                popup.current?.hide()
                 return
             }
 
             event.preventDefault()
-            // calloutPos.current = view.posAtDOM(target, 0) - 1
 
             popup.current.setProps({
                 getReferenceClientRect: () => target.getBoundingClientRect()
