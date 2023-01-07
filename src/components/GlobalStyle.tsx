@@ -156,6 +156,11 @@ a {
     }
 }
 
+@media screen and (max-width: 600px) {
+    display: none;
+    pointer-events: none;
+}
+
 
 
 `
