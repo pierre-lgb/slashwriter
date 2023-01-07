@@ -135,7 +135,7 @@ end; $$;
 -- +------------------------------------------+
 
 create or replace function canInsertSubdocument(user_id uuid, parent_document_id uuid) returns boolean
-language plpgsql
+language plpgsql security definer
 as
 $$
 declare
