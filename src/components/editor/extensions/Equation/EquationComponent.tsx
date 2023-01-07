@@ -156,10 +156,6 @@ const Equation = styled(NodeViewWrapper)`
     padding: 0 0.25rem;
     margin: 0 0.1rem;
 
-    div[data-tippy-root] {
-        display: inline;
-    }
-
     &.empty {
         color: var(--color-n600);
         background-color: var(--color-n100);
@@ -186,7 +182,7 @@ const EquationTextArea = styled.textarea`
     font-size: 0.95rem;
     border: none;
     margin: none;
-    height: 200px;
+    height: 100px;
     width: 300px;
     margin: 0;
     border-radius: 4px;
