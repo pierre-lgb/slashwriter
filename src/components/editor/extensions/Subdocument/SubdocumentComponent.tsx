@@ -109,7 +109,7 @@ const Container = styled.div`
     display: flex;
     border-radius: 5px;
     gap: 0.5rem;
-    padding: 5px;
+    padding: 5px 15px 5px 5px;
     user-select: none;
     cursor: pointer;
 
@@ -118,11 +118,11 @@ const Container = styled.div`
     }
 `
 const DocumentIcon = styled.div`
-    width: 38px;
-    height: 53px;
+    width: 32px;
+    height: 44px;
     border: 1px solid var(--color-n300);
     border-radius: 4px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(200,200,200)' width='25' height='38'%3E%3Cg%3E%3Crect width='25' height='2' y='0'/%3E%3Crect width='25' height='2' y='4'/%3E%3Crect width='15' height='2' y='8'/%3E%3Crect width='30' height='2' y='14'/%3E%3Crect width='20' height='2' y='18'/%3E%3C/g%3E%3C/svg%3E");
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(200,200,200)' width='21' height='32'%3E%3Cg%3E%3Crect width='25' height='2' y='0'/%3E%3Crect width='25' height='2' y='4'/%3E%3Crect width='15' height='2' y='8'/%3E%3Crect width='30' height='2' y='14'/%3E%3Crect width='20' height='2' y='18'/%3E%3C/g%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center center;
     flex-shrink: 0;
