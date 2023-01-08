@@ -10,7 +10,8 @@ function updateDocumentsCacheOnEvent(event, payload, draft) {
                 title: payload.new.title,
                 folder: payload.new.folder,
                 parent: payload.new.parent,
-                updated_at: payload.new.updated_at
+                updated_at: payload.new.updated_at,
+                favorite: payload.new.favorite
             })
             break
         case "UPDATE":
@@ -28,7 +29,8 @@ function updateDocumentsCacheOnEvent(event, payload, draft) {
                 title: payload.new.title,
                 folder: payload.new.folder,
                 parent: payload.new.parent,
-                updated_at: payload.new.updated_at
+                updated_at: payload.new.updated_at,
+                favorite: payload.new.favorite
             })
             break
         case "DELETE":
@@ -52,7 +54,7 @@ export const documentsApi = baseApi.injectEndpoints({
 
                 const { data, error } = await supabaseClient
                     .from("documents")
-                    .select("id, title, folder, parent, updated_at")
+                    .select("id, title, folder, parent, updated_at, favorite")
                     .is("deleted", false)
                     .match({ user_id: user.id })
 
@@ -119,6 +121,17 @@ export const documentsApi = baseApi.injectEndpoints({
                 return data ? { data } : { error }
             }
         }),
+        updateDocument: build.mutation<any, { id: string; update: any }>({
+            queryFn: async ({ id, update }) => {
+                console.log("Updating document", id)
+                const { data, error } = await supabaseClient
+                    .from("documents")
+                    .update(update)
+                    .match({ id })
+
+                return data ? { data } : { error }
+            }
+        }),
         deleteDocument: build.mutation<any, { id: string }>({
             queryFn: async ({ id }) => {
                 console.log("Deleting document", id)
@@ -153,5 +166,6 @@ export const {
     useRenameDocumentMutation,
     useDeleteDocumentMutation,
     useRestoreDocumentMutation,
-    useAddDocumentMutation
+    useAddDocumentMutation,
+    useUpdateDocumentMutation
 } = documentsApi

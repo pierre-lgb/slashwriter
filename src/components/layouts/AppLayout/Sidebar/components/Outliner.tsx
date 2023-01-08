@@ -11,14 +11,14 @@ interface OutlinerProps {
 }
 
 export default function Outliner(props: OutlinerProps) {
-    const { activeFolder } = useAppSelector((store) => store.navigation)
+    const { activeFolderId } = useAppSelector((store) => store.navigation)
 
     return (
         <>
             <Flex
                 justify="space-between"
                 align="center"
-                style={{ marginBottom: 5 }}
+                style={{ marginBottom: 5, flexShrink: 0 }}
             >
                 <Title>Dossiers</Title>
 
@@ -30,7 +30,7 @@ export default function Outliner(props: OutlinerProps) {
                     href={`/folder/${id}`}
                     icon={<FolderIcon />}
                     title={name}
-                    active={id === activeFolder}
+                    active={id === activeFolderId}
                 />
             ))}
         </>

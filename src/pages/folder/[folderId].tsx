@@ -19,7 +19,7 @@ import {
     useUpdateFolderMutation
 } from "src/services/folders"
 import { useAppDispatch } from "src/store"
-import { setActiveFolder } from "src/store/navigation"
+import { setActiveFolderId } from "src/store/navigation"
 import { withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
@@ -111,10 +111,10 @@ function Folder() {
     })
 
     useEffect(() => {
-        dispatch(setActiveFolder(folder?.id))
+        dispatch(setActiveFolderId(folder?.id))
 
         return () => {
-            dispatch(setActiveFolder(null))
+            dispatch(setActiveFolderId(null))
         }
     }, [folder, dispatch])
 

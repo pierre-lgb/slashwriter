@@ -2,6 +2,8 @@ import Link from "next/link"
 import { ReactNode } from "react"
 import {
     RiFolder3Line as FolderIcon,
+    RiHeartFill as FavoriteFillIcon,
+    RiHeartLine as FavoriteIcon,
     RiMenuFoldLine as CloseMenuIcon,
     RiMenuUnfoldLine as OpenMenuIcon,
     RiMoreFill as MoreIcon
@@ -11,7 +13,7 @@ import Flex from "src/components/Flex"
 import ShareDocumentButton from "src/components/ShareDocumentButton"
 import Breadcrumbs from "src/components/ui/Breadcrumbs"
 import Button from "src/components/ui/Button"
-import { useGetDocumentsQuery } from "src/services/documents"
+import { useGetDocumentsQuery, useUpdateDocumentMutation } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { toggleMobileSidebar, toggleSidebar } from "src/store/ui"
@@ -24,24 +26,31 @@ interface HeaderProps {
 
 export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     const dispatch = useAppDispatch()
+    const [updateDocument] = useUpdateDocumentMutation()
 
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
         (state) => state.ui
     )
-    const { activeFolder, activeDocument } = useAppSelector(
+    const { activeFolderId, activeDocumentId } = useAppSelector(
         (state) => state.navigation
     )
 
-    const { folderName } = useGetFoldersQuery(null, {
+    const { activeFolder } = useGetFoldersQuery(null, {
         selectFromResult: ({ data }) => ({
-            folderName: data?.find((f) => f.id === activeFolder)?.name
+            activeFolder: data?.find((f) => f.id === activeFolderId)
+        })
+    })
+
+    const { activeDocument } = useGetDocumentsQuery(null, {
+        selectFromResult: ({ data }) => ({
+            activeDocument: data?.find((d) => d.id === activeDocumentId)
         })
     })
 
     const { documentPath } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data }) => ({
-            documentPath: activeDocument
-                ? getDocumentPath(activeDocument, data)
+            documentPath: activeDocumentId
+                ? getDocumentPath(activeDocumentId, data)
                 : []
         })
     })
@@ -82,15 +91,15 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                     aria-label="breadcrumbs"
                     className="breadcrumbs"
                 >
-                    {activeFolder && (
-                        <Link href={`/folder/${activeFolder}`} legacyBehavior>
+                    {activeFolderId && (
+                        <Link href={`/folder/${activeFolderId}`} legacyBehavior>
                             <Flex as="a" align="center" gap={10}>
                                 <FolderIcon />
-                                <span>{folderName || "Dossier"}</span>
+                                <span>{activeFolder?.name || "Dossier"}</span>
                             </Flex>
                         </Link>
                     )}
-                    {!!activeFolder &&
+                    {!!activeFolderId &&
                         !!documentPath.length &&
                         documentPath.map((document, index) => (
                             <Link
@@ -102,7 +111,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                             </Link>
                         ))}
                     )
-                    {!activeFolder && (
+                    {!activeFolderId && (
                         <Flex as="a" align="center" gap={10}>
                             {pageIcon}
                             {pageTitle}
@@ -115,15 +124,35 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                 gap={8}
                 style={{ justifySelf: "flex-end", flexShrink: 0 }}
             >
-                {!!activeDocument && (
-                    <ShareDocumentButton documentId={activeDocument}>
-                        Partager
-                    </ShareDocumentButton>
+                {!!activeDocumentId && (
+                    <>
+                        <Button
+                            appearance="text"
+                            icon={
+                                activeDocument?.favorite ? (
+                                    <FavoriteFillIcon />
+                                ) : (
+                                    <FavoriteIcon />
+                                )
+                            }
+                            onClick={() => {
+                                updateDocument({
+                                    id: activeDocumentId,
+                                    update: {
+                                        favorite: !activeDocument.favorite
+                                    }
+                                })
+                            }}
+                        />
+                        <ShareDocumentButton documentId={activeDocumentId}>
+                            Partager
+                        </ShareDocumentButton>
+                    </>
                 )}
-                {!!activeFolder && (
-                    <AddDocumentButton folderId={activeFolder} />
+                {!!activeFolderId && (
+                    <AddDocumentButton folderId={activeFolderId} />
                 )}
-                {(!!activeDocument || !!activeFolder) && (
+                {(!!activeDocumentId || !!activeFolderId) && (
                     <>
                         <VerticalSeparator />
                         <Button appearance="text" icon={<MoreIcon />} />

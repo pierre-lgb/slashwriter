@@ -11,6 +11,7 @@ export interface DocumentLinkProps {
     style?: any
     loading?: boolean
     actions?: ReactNode
+    badge?: ReactNode
     [x: string]: any
 }
 
@@ -21,6 +22,7 @@ export default function DocumentLink(props: DocumentLinkProps) {
         status,
         style,
         actions,
+        badge,
         loading = false,
         ...otherProps
     } = props
@@ -47,6 +49,7 @@ export default function DocumentLink(props: DocumentLinkProps) {
                         </>
                     )}
                 </Flex>
+                {badge && <Badge>{badge}</Badge>}
                 <div className="actions">{actions}</div>
             </Container>
         </Link>
@@ -96,6 +99,20 @@ const DocumentTitle = styled.span`
     line-height: 1;
     text-overflow: ellipsis;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`
+
+const Badge = styled.span`
+    padding: 0.1em 0.4em 0.1em;
+    background: hsla(0, 0%, 58.8%, 0.1);
+    border: 1px solid hsla(0, 0%, 39.2%, 0.2);
+    border-radius: 3px;
+    font-weight: 500;
+
+    font-size: 0.8rem;
+    font-family: "JetBrains Mono", monospace;
 `
 
 const DocumentStatus = styled.span`

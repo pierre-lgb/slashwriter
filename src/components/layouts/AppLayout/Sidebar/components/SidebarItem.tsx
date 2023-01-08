@@ -53,6 +53,7 @@ const Container = styled(Flex)<{ active?: boolean }>`
     transition: background-color ease-out 50ms, box-shadow ease-out 200ms;
     outline: none;
     cursor: pointer;
+    flex-shrink: 0;
 
     ${(props) =>
         props.active &&

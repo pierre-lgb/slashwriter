@@ -246,30 +246,33 @@ const blocks = [
         name: "Document",
         description: "Un document intégré",
         aliases: ["subpage", "embeddedpage", "subdocument", "document"],
-        command: async ({ editor, range }) => {
+        command: ({ editor, range }) => {
             const navigationStore = store.getState().navigation
 
-            const { data, error } = await supabaseClient
+            supabaseClient
                 .from("documents")
                 .insert({
-                    parent: navigationStore.activeDocument
+                    parent: navigationStore.activeDocumentId
                 })
                 .select("id")
+                .then(({ data, error }) => {
+                    if (error) {
+                        console.error(error)
+                        return alert("Impossible de créer la page intégrée")
+                    }
 
-            if (error) {
-                console.error(error)
-                return alert("Impossible de créer la page intégrée")
-            }
+                    const docId = data[0].id
+                    editor
+                        .chain()
+                        .focus()
+                        .deleteRange(range)
+                        .insertSubdocument(docId)
+                        .run()
 
-            const docId = data[0].id
-            editor
-                .chain()
-                .focus()
-                .deleteRange(range)
-                .insertSubdocument(docId)
-                .run()
-
-            Router.push(`${Router.asPath.split(/\/[^/]*$/)[0]}/${docId}`)
+                    Router.push(
+                        `${Router.asPath.split(/\/[^/]*$/)[0]}/${docId}`
+                    )
+                })
         },
         icon: <DocumentIcon />
     }

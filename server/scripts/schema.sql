@@ -55,7 +55,7 @@ create table if not exists documents (
   user_id uuid references auth.users default uid() not null,
   folder uuid references folders not null,
   path text default '/'not null,
-  parent uuid references documents,
+  parent uuid references documents ON DELETE CASCADE,
   title text,
   previous_titles text[],
   text text,
@@ -65,7 +65,7 @@ create table if not exists documents (
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
   deleted_at timestamp with time zone,
   deleted boolean default false not null,
-  starred boolean default false not null,
+  favorite boolean default false not null,
 
   primary key (id),
   constraint path_of_uuid check (path ~ '^\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/)*$')
@@ -74,3 +74,36 @@ create table if not exists documents (
 alter table shares
   add foreign key (document_id) references documents (id)
   deferrable initially deferred;
+
+DROP VIEW documents_shared_with_user;
+CREATE VIEW documents_shared_with_user AS
+SELECT * from (
+    SELECT 
+        d.id,
+        d.title,
+        (CASE
+            WHEN uid() = ANY(s.users_can_edit) THEN 'read|edit'
+            WHEN uid() = ANY(s.users_can_read) THEN 'read'
+            ELSE NULL
+        END) AS permission, 
+        p.id as owner_id,
+        p.username as owner_username,
+        p.email as owner_email
+    FROM documents d
+    JOIN shares s ON s.id = d.share_settings
+    INNER JOIN profiles p ON p.id = d.user_id
+    WHERE s.document_id = d.id
+) AS t 
+WHERE permission IS NOT NULL;
+
+DROP VIEW documents_shared_by_user;
+CREATE OR REPLACE VIEW documents_shared_by_user AS
+    SELECT 
+        d.id,
+        d.title,
+        d.folder,
+        s.include_subdocuments,
+        (s.anyone_can_read OR s.anyone_can_edit) AS public
+    FROM documents d
+    JOIN shares s ON s.id = d.share_settings
+    WHERE d.user_id = uid() AND s.document_id = d.id

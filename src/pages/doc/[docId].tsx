@@ -9,7 +9,7 @@ import Typography from "src/components/ui/Typography"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch } from "src/store"
-import { setActiveDocument, setActiveFolder } from "src/store/navigation"
+import { setActiveDocumentId, setActiveFolderId } from "src/store/navigation"
 import { useUser, withPageAuth } from "src/utils/supabase"
 
 function Document() {
@@ -33,12 +33,12 @@ function Document() {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(setActiveDocument(document?.id))
-        dispatch(setActiveFolder(folder?.id))
+        dispatch(setActiveDocumentId(document?.id))
+        dispatch(setActiveFolderId(folder?.id))
 
         return () => {
-            dispatch(setActiveDocument(null))
-            dispatch(setActiveFolder(null))
+            dispatch(setActiveDocumentId(null))
+            dispatch(setActiveFolderId(null))
         }
     }, [document, folder, dispatch])
 

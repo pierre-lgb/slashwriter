@@ -6,7 +6,8 @@ import {
     RiHeartLine as FavoriteIcon,
     RiHome2Line as HomeIcon,
     RiQuestionLine as HelpIcon,
-    RiSearchLine as SearchIcon
+    RiSearchLine as SearchIcon,
+    RiShareLine as ShareIcon
 } from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
@@ -62,7 +63,7 @@ export default function Sidebar() {
                 className="sidebar"
             >
                 <AccountSection user={user} />
-                <Section gap={2}>
+                <Section>
                     <SidebarItem.Link
                         icon={<HomeIcon />}
                         title="Accueil"
@@ -73,6 +74,11 @@ export default function Sidebar() {
                         title="Favoris"
                         href="/favorites"
                     />
+                    <SidebarItem.Link
+                        icon={<ShareIcon />}
+                        title="Partages"
+                        href="/shares"
+                    />
                     <SidebarItem.Button
                         icon={<SearchIcon />}
                         title="Rechercher"
@@ -82,7 +88,13 @@ export default function Sidebar() {
                     />
                 </Section>
                 <Separator />
-                <Section gap={2} auto>
+                <Section
+                    style={{
+                        flex: "1 1 auto",
+                        flexShrink: "initial",
+                        overflow: "auto"
+                    }}
+                >
                     {(isLoadingFolders || isLoadingDocuments) && <Loader />}
                     {(foldersError || documentsError) && (
                         <Typography.Text type="danger">
@@ -95,7 +107,7 @@ export default function Sidebar() {
                     <AddFolderButton />
                 </Section>
                 <Separator />
-                <Section gap={2}>
+                <Section>
                     <SidebarItem.Link
                         icon={<TrashIcon />}
                         title="Corbeille"
@@ -144,6 +156,10 @@ const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
     max-height: 100vh;
     min-width: 300px;
     border-right: 1px solid var(--color-n300);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: auto;
 
     background-color: var(--color-white);
     margin-left: ${({ open }) => `${open ? 0 : -300}px`};
@@ -161,7 +177,10 @@ const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
     }
 `
 
-const Section = styled(Flex)`
-    margin: 16px 20px;
+const Section = styled.div`
+    display: flex;
+    gap: 2px;
+    padding: 16px 20px;
     flex-direction: column;
+    flex-shrink: 0;
 `

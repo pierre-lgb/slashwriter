@@ -19,6 +19,7 @@ interface ButtonProps {
     ariaControls?: boolean
     tabIndex?: number
     className?: string
+    title?: string
 }
 
 export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(

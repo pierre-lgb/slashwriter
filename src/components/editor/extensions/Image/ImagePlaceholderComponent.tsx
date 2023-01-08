@@ -50,7 +50,7 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
 
             setUploading(true)
 
-            const documentId = store.getState().navigation.activeDocument
+            const documentId = store.getState().navigation.activeDocumentId
 
             // Upload
             const { data, error } = await supabaseClient.storage

@@ -7,7 +7,7 @@ import Loader from "src/components/ui/Loader"
 import Typography from "src/components/ui/Typography"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useAppDispatch } from "src/store"
-import { setActiveDocument } from "src/store/navigation"
+import { setActiveDocumentId } from "src/store/navigation"
 import { supabaseClient, useUser } from "src/utils/supabase"
 
 function getRandomName() {
@@ -40,10 +40,10 @@ function Shared() {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(setActiveDocument(docId))
+        dispatch(setActiveDocumentId(docId))
 
         return () => {
-            dispatch(setActiveDocument(null))
+            dispatch(setActiveDocumentId(null))
         }
     }, [docId, dispatch])
 
