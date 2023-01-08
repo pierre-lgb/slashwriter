@@ -16,6 +16,7 @@ interface ModalProps {
     onCancel?: any
     onConfirm?: any
     closeButton?: any
+    placement?: "center" | "top"
 }
 
 export default function Modal(props: ModalProps) {
@@ -28,7 +29,8 @@ export default function Modal(props: ModalProps) {
         footer,
         onCancel,
         onConfirm,
-        closeButton
+        closeButton,
+        placement = "center"
     } = props
 
     const [open, setOpen] = useState(!!visible)
@@ -78,7 +80,7 @@ export default function Modal(props: ModalProps) {
                                 scale: 1,
                                 opacity: 1,
                                 transition: {
-                                    duration: 3,
+                                    duration: 2,
                                     type: "spring",
                                     damping: 25,
                                     stiffness: 300,
@@ -93,6 +95,7 @@ export default function Modal(props: ModalProps) {
                             onClick={(e) => {
                                 e.stopPropagation()
                             }}
+                            placement={placement}
                         >
                             <ModalTitle>{title}</ModalTitle>
                             {description && (
@@ -102,7 +105,7 @@ export default function Modal(props: ModalProps) {
                             )}
                             <ModalContent>{children}</ModalContent>
                             <ModalFooter>
-                                {footer || (
+                                {footer !== undefined || (
                                     <>
                                         <Button
                                             appearance="secondary"
@@ -166,7 +169,7 @@ const ModalContainer = styled(motion.div)`
     pointer-events: none;
 `
 
-const ModalComponent = styled.div`
+const ModalComponent = styled.div<{ placement: "center" | "top" }>`
     display: inline-block;
     background: var(--color-white);
     text-align: left;
@@ -175,9 +178,10 @@ const ModalComponent = styled.div`
     border: 1px solid var(--color-n300);
     border-radius: 0.5rem;
     position: absolute;
-    top: 50%;
+    top: ${({ placement }) => (placement === "center" ? "50%" : "10%")};
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: ${({ placement }) =>
+        placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)"};
     width: 100%;
     max-width: 36rem;
     padding: 1.5rem;
@@ -188,6 +192,10 @@ const ModalTitle = styled.h1`
     margin: 0 0 5px 0;
     font-size: 1.25rem;
     font-weight: 600;
+
+    &:empty {
+        display: none;
+    }
 `
 
 const ModalDescription = styled.div`
@@ -205,6 +213,10 @@ const ModalFooter = styled.div`
     justify-content: flex-end;
     margin-top: 20px;
     gap: 10px;
+
+    &:empty {
+        display: none;
+    }
 `
 
 const CloseButtonContainer = styled.div`

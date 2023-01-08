@@ -6,6 +6,7 @@ import styled from "styled-components"
 import { useUser } from "@supabase/auth-helpers-react"
 
 import Header from "./Header"
+import QuickSearchModal from "./QuickSearchModal"
 import Sidebar from "./Sidebar"
 
 function AppLayout(props) {
@@ -26,6 +27,7 @@ function AppLayout(props) {
                     <Header pageTitle={props.title} pageIcon={props.icon} />
                     <PageContent>{props.children}</PageContent>
                 </Main>
+                <QuickSearchModal />
             </Container>
         </>
     )

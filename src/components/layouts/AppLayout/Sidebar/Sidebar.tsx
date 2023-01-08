@@ -5,7 +5,8 @@ import {
     RiEqualizerLine as SettingsIcon,
     RiHeartLine as FavoriteIcon,
     RiHome2Line as HomeIcon,
-    RiQuestionLine as HelpIcon
+    RiQuestionLine as HelpIcon,
+    RiSearchLine as SearchIcon
 } from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
@@ -14,7 +15,7 @@ import Typography from "src/components/ui/Typography"
 import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
-import { hideMobileSidebar } from "src/store/ui"
+import { closeMobileSidebar, openQuicksearch } from "src/store/ui"
 import { useUser } from "src/utils/supabase"
 import styled, { css } from "styled-components"
 
@@ -45,13 +46,13 @@ export default function Sidebar() {
     } = useGetDocumentsQuery(null)
 
     useEffect(() => {
-        dispatch(hideMobileSidebar())
+        dispatch(closeMobileSidebar())
     }, [router.asPath, dispatch])
 
     return (
         <>
             <Backdrop
-                onClick={() => dispatch(hideMobileSidebar())}
+                onClick={() => dispatch(closeMobileSidebar())}
                 visible={mobileSidebarOpen}
             />
             <SidebarComponent
@@ -72,10 +73,12 @@ export default function Sidebar() {
                         title="Favoris"
                         href="/favorites"
                     />
-                    <SidebarItem.Link
-                        icon={<SettingsIcon />}
-                        title="Paramètres"
-                        href="/settings"
+                    <SidebarItem.Button
+                        icon={<SearchIcon />}
+                        title="Rechercher"
+                        onClick={() => {
+                            dispatch(openQuicksearch())
+                        }}
                     />
                 </Section>
                 <Separator />
@@ -97,6 +100,12 @@ export default function Sidebar() {
                         icon={<TrashIcon />}
                         title="Corbeille"
                         href="/trash"
+                    />
+
+                    <SidebarItem.Link
+                        icon={<SettingsIcon />}
+                        title="Paramètres"
+                        href="/settings"
                     />
                     <SidebarItem.Link
                         icon={<HelpIcon />}

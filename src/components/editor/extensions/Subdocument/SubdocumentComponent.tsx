@@ -10,6 +10,8 @@ import styled from "styled-components"
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
+import DocumentLink from "../../components/DocumentLink"
+
 export default function SubdocumentComponent(props: NodeViewProps) {
     const { docId } = props.node.attrs
     const [document, setDocument] = useState<any>(null)
@@ -57,90 +59,20 @@ export default function SubdocumentComponent(props: NodeViewProps) {
         <NodeViewWrapper
             className={props.selected ? "ProseMirror-selectednode" : ""}
         >
-            <Link href={`${router.asPath.split(/\/[^/]*$/)[0]}/${docId}`}>
-                <Container>
-                    <DocumentIcon />
-                    <Flex
-                        auto
-                        column
-                        justify="center"
-                        style={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis"
-                        }}
-                    >
-                        {loading ? (
-                            <Loader />
-                        ) : document ? (
-                            <>
-                                <DocumentTitle>{document.title}</DocumentTitle>
-                                <DocumentMeta>
-                                    Modifié le{" "}
-                                    {moment(
-                                        new Date(document.updated_at)
-                                    ).format("DD/MM/YYYY")}{" "}
-                                    à{" "}
-                                    {moment(
-                                        new Date(document.updated_at)
-                                    ).format("HH:mm")}
-                                </DocumentMeta>
-                            </>
-                        ) : (
-                            <>
-                                <DocumentTitle>
-                                    Document introuvable
-                                </DocumentTitle>
-                                <DocumentMeta>
-                                    {
-                                        "Vous n'avez pas accès à ce document, ou alors il a été supprimé."
-                                    }
-                                </DocumentMeta>
-                            </>
-                        )}
-                    </Flex>
-                </Container>
-            </Link>
+            <DocumentLink
+                href={`${router.asPath.split(/\/[^/]*$/)[0]}/${docId}`}
+                title={document?.title || "Document introuvable"}
+                status={
+                    document
+                        ? `Modifié le ${moment(
+                              new Date(document.updated_at)
+                          ).format("DD/MM/YYYY")} à ${moment(
+                              new Date(document.updated_at)
+                          ).format("HH:mm")}`
+                        : "Vous n'avez pas accès à ce document, ou alors il a été supprimé."
+                }
+                loading={loading}
+            />
         </NodeViewWrapper>
     )
 }
-
-const Container = styled.div`
-    display: flex;
-    border-radius: 5px;
-    gap: 0.5rem;
-    padding: 5px 15px 5px 5px;
-    user-select: none;
-    cursor: pointer;
-
-    &:hover {
-        background-color: var(--color-n75);
-    }
-`
-const DocumentIcon = styled.div`
-    width: 32px;
-    height: 44px;
-    border: 1px solid var(--color-n300);
-    border-radius: 4px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(200,200,200)' width='21' height='32'%3E%3Cg%3E%3Crect width='25' height='2' y='0'/%3E%3Crect width='25' height='2' y='4'/%3E%3Crect width='15' height='2' y='8'/%3E%3Crect width='30' height='2' y='14'/%3E%3Crect width='20' height='2' y='18'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center center;
-    flex-shrink: 0;
-`
-
-const DocumentTitle = styled.span`
-    color: var(--color-n800);
-    font-weight: 500;
-    max-width: 80%;
-    padding-bottom: 1px;
-    line-height: 1;
-    text-overflow: ellipsis;
-    overflow: hidden;
-`
-
-const DocumentMeta = styled.span`
-    font-size: 0.9em;
-    color: var(--color-n600);
-    text-overflow: ellipsis;
-    overflow: hidden;
-`

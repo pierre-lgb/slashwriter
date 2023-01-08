@@ -1,6 +1,5 @@
 import { RiFolder3Line as FolderIcon } from "react-icons/ri"
 import Flex from "src/components/Flex"
-import Typography from "src/components/ui/Typography"
 import { useAppSelector } from "src/store"
 import styled from "styled-components"
 

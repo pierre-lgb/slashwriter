@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { RiDeleteBin7Line as DeleteIcon, RiEdit2Line as RenameIcon } from "react-icons/ri"
 import AddDocumentButton from "src/components/AddDocumentButton"
+import DocumentLink from "src/components/editor/components/DocumentLink"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import Separator from "src/components/Separator"
@@ -79,7 +80,7 @@ function DeleteDocumentButton({ documentId }) {
                 onClick={(e) => {
                     e.preventDefault()
 
-                    !confirm("Voulez-vous supprimer ce document ?") ||
+                    !confirm("Envoyer le document dans la corbeille ?") ||
                         deleteDocument({ id: documentId })
                 }}
                 icon={<DeleteIcon />}
@@ -196,54 +197,26 @@ function Folder() {
                                                 )
                                         }
                                     })
-                                    .map((doc, index) => (
-                                        <Link
-                                            href={`/doc/${doc.id}`}
+                                    .map((document, index) => (
+                                        <DocumentLink
+                                            href={`/doc/${document.id}`}
                                             key={index}
-                                            passHref
-                                            legacyBehavior
-                                        >
-                                            <DocumentListItem
-                                                key={doc.id}
-                                                gap={10}
-                                                as="a"
-                                            >
-                                                <DocumentIcon />
-
-                                                <Flex
-                                                    auto
-                                                    column
-                                                    justify="center"
-                                                >
-                                                    <DocumentTitle>
-                                                        {doc.title ||
-                                                            "Sans titre"}
-                                                    </DocumentTitle>
-                                                    <DocumentMeta>
-                                                        Modifié le{" "}
-                                                        {moment(
-                                                            new Date(
-                                                                doc.updated_at
-                                                            )
-                                                        ).format(
-                                                            "DD/MM/YYYY"
-                                                        )}{" "}
-                                                        à{" "}
-                                                        {moment(
-                                                            new Date(
-                                                                doc.updated_at
-                                                            )
-                                                        ).format("HH:mm")}
-                                                    </DocumentMeta>
-                                                </Flex>
-
+                                            title={
+                                                document.title || "Sans titre"
+                                            }
+                                            status={`Modifié le ${moment(
+                                                new Date(document.updated_at)
+                                            ).format("DD/MM/YYYY")} à ${moment(
+                                                new Date(document.updated_at)
+                                            ).format("HH:mm")}`}
+                                            actions={
                                                 <Flex align="center">
                                                     <DeleteDocumentButton
-                                                        documentId={doc.id}
+                                                        documentId={document.id}
                                                     />
                                                 </Flex>
-                                            </DocumentListItem>
-                                        </Link>
+                                            }
+                                        />
                                     ))}
                             </DocumentList>
                         </>
