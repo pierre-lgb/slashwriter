@@ -1,20 +1,20 @@
 import { Node, nodeInputRule, wrappingInputRule } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 
-import EquationComponent from "./EquationComponent"
+import EquationBlockComponent from "./EquationBlockComponent"
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
-        equation: {
+        equationBlock: {
             /**
-             * Add an inline equation
+             * Add an equation block
              */
-            setEquation: () => ReturnType
+            setEquationBlock: () => ReturnType
         }
     }
 }
 
-export interface EquationOptions {
+export interface EquationBlockOptions {
     /**
      * Custom HTML attributes that should be added to the rendered HTML tag.
      */
@@ -24,7 +24,7 @@ export interface EquationOptions {
 export const inputRegex = /(?:^|\s)((?:\$\$)((?:[^$]+))(?:\$\$))$/
 
 export default Node.create({
-    name: "equation",
+    name: "equationBlock",
 
     addOptions() {
         return {
@@ -32,9 +32,7 @@ export default Node.create({
         }
     },
 
-    group: "inline",
-
-    inline: true,
+    group: "block",
 
     atom: true,
 
@@ -50,7 +48,7 @@ export default Node.create({
     parseHTML() {
         return [
             {
-                tag: "span",
+                tag: "div",
                 getAttrs: (node: HTMLElement) => {
                     return node.hasAttribute("data-katex") ? {} : false
                 }
@@ -62,21 +60,21 @@ export default Node.create({
         return [
             "div",
             {},
-            ["span", { "data-katex": true }, `$${HTMLAttributes.katex}$`]
+            ["div", { "data-katex": true }, `$${HTMLAttributes.katex}$`]
         ]
+    },
+
+    addNodeView() {
+        return ReactNodeViewRenderer(EquationBlockComponent)
     },
 
     renderText({ node }) {
         return node.attrs.katex
     },
 
-    addNodeView() {
-        return ReactNodeViewRenderer(EquationComponent)
-    },
-
     addCommands() {
         return {
-            setEquation:
+            setEquationBlock:
                 (attributes?: Record<string, any>) =>
                 ({ commands }) => {
                     return commands.insertContent({

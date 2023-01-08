@@ -17,6 +17,7 @@ import {
     RiStickyNote2Line as CalloutIcon,
     RiTable2 as TableIcon
 } from "react-icons/ri"
+import { TbMath as EquationInlineIcon } from "react-icons/tb"
 import store from "src/store"
 import { supabaseClient } from "src/utils/supabase"
 
@@ -179,18 +180,33 @@ const blocks = [
         },
         icon: <CodeBlockIcon />
     },
+
     {
         name: "Équation en ligne",
-        description: "Une équation LaTeX",
+        description: "Une équation LaTeX en ligne",
         aliases: ["equation", "tex", "math", "katex", "latex"],
         command: ({ editor, range }) => {
-            console.log(range)
             editor
                 .chain()
                 .focus()
                 .deleteRange(range)
                 .setEquation()
                 .setNodeSelection(range.from)
+                .run()
+        },
+        icon: <EquationInlineIcon />
+    },
+    {
+        name: "Équation en bloc",
+        description: "Une équation LaTeX en bloc",
+        aliases: ["equation", "tex", "math", "katex", "latex", "block"],
+        command: ({ editor, range }) => {
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .setEquationBlock()
+                // .setNodeSelection(range.from)
                 .run()
         },
         icon: <EquationIcon />

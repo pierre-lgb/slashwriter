@@ -3,7 +3,6 @@ import "katex/dist/katex.min.css"
 import katex from "katex"
 import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
-import { Instance, Props } from "tippy.js"
 
 import Tippy from "@tippyjs/react"
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
@@ -14,7 +13,6 @@ export default function EquationComponent(props: NodeViewProps) {
     const equationPreviewContainer = useRef()
     const [error, setError] = useState(null)
     const [preview, setPreview] = useState("")
-    const [popup, setPopup] = useState<Instance<Props>>()
 
     const textAreaRef = useRef<HTMLTextAreaElement>()
 
@@ -23,7 +21,10 @@ export default function EquationComponent(props: NodeViewProps) {
     useEffect(() => {
         setError("")
         try {
-            katex.render(node.attrs.katex, equationResultContainer.current)
+            katex.render(node.attrs.katex, equationResultContainer.current, {
+                displayMode: true,
+                strict: false
+            })
         } catch (error) {
             console.error(error)
             setError(error)
@@ -34,7 +35,10 @@ export default function EquationComponent(props: NodeViewProps) {
         if (editMode) {
             setError("")
             try {
-                katex.render(preview, equationPreviewContainer.current)
+                katex.render(preview, equationPreviewContainer.current, {
+                    displayMode: true,
+                    strict: false
+                })
             } catch (error) {
                 console.error(error)
                 setError(error)
@@ -56,11 +60,11 @@ export default function EquationComponent(props: NodeViewProps) {
             arrow={false}
             interactive
             appendTo={"parent"}
+            visible={editMode}
             onShown={() => {
                 textAreaRef.current.focus()
                 textAreaRef.current.select()
             }}
-            visible={editMode}
             onHide={() => {
                 if (!preview.length) {
                     return props.deleteNode()
@@ -73,12 +77,16 @@ export default function EquationComponent(props: NodeViewProps) {
             }}
             animation="shift-away"
             duration={[200, 0]}
+            maxWidth="none"
             content={
                 <EquationTextArea
                     ref={textAreaRef}
                     draggable="false"
                     value={preview}
                     placeholder={"e^{i\\pi} + 1 = 0"}
+                    onBlur={(e) => {
+                        e.preventDefault()
+                    }}
                     onKeyDown={(e) => {
                         if (
                             e.key === "Escape" ||
@@ -93,15 +101,15 @@ export default function EquationComponent(props: NodeViewProps) {
                             textAreaRef.current
 
                         if (
-                            e.key === "ArrowLeft" &&
+                            (e.key === "ArrowLeft" || e.key === "ArrowUp") &&
                             selectionStart === selectionEnd &&
                             selectionStart === 0
                         ) {
-                            editor.commands.focus(getPos())
+                            editor.commands.focus(getPos() - 1)
                         }
 
                         if (
-                            e.key === "ArrowRight" &&
+                            (e.key === "ArrowRight" || e.key === "ArrowDown") &&
                             selectionStart === selectionEnd &&
                             selectionStart === textAreaRef.current.value.length
                         ) {
@@ -113,7 +121,6 @@ export default function EquationComponent(props: NodeViewProps) {
                     }}
                 ></EquationTextArea>
             }
-            onCreate={(instance) => setPopup(instance)}
         >
             <Equation
                 data-katex="true"
@@ -127,7 +134,9 @@ export default function EquationComponent(props: NodeViewProps) {
                 ].join(" ")}
             >
                 <div
-                    style={{ display: editMode ? undefined : "none" }}
+                    style={{
+                        display: editMode && preview.length ? undefined : "none"
+                    }}
                     ref={equationPreviewContainer}
                 ></div>
                 <div
@@ -145,14 +154,19 @@ export default function EquationComponent(props: NodeViewProps) {
 }
 
 const Equation = styled(NodeViewWrapper)`
-    display: inline-block;
+    display: block;
+    text-align: center;
+    padding: 0.05rem;
     white-space: pre-wrap;
     word-break: break-word;
     caret-color: rgb(55, 53, 47);
     border-radius: 4px;
     transition: background-color 0.2s;
-    padding: 0 0.25rem;
     margin: 0 0.1rem;
+
+    .base {
+        margin: 2px 0;
+    }
 
     &.empty {
         color: var(--color-n600);
@@ -180,8 +194,9 @@ const EquationTextArea = styled.textarea`
     font-size: 0.95rem;
     border: none;
     margin: none;
-    height: 100px;
-    width: 300px;
+    height: 200px;
+    width: 400px;
+    max-width: calc(100vw - 20px);
     margin: 0;
     border-radius: 4px;
     padding: 0.5rem;
