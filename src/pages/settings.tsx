@@ -1,4 +1,4 @@
-import { MdOutlineTune as SettingsIcon } from "react-icons/md"
+import { RiEqualizerLine as SettingsIcon } from "react-icons/ri"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"

@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-import { MdOutlineFontDownload as HighlightIcon } from "react-icons/md"
+import { useEffect, useRef, useState } from "react"
 import {
     RiBold as BoldIcon,
     RiCodeSLine as CodeIcon,
     RiItalic as ItalicIcon,
     RiLink as LinkIcon,
     RiLinkUnlink as UnlinkIcon,
+    RiMarkPenLine as HighlightIcon,
     RiStrikethrough as StrikethroughIcon,
     RiSubscript as SubscriptIcon,
     RiSuperscript as SuperscriptIcon,

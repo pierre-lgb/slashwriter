@@ -1,11 +1,11 @@
 import Link from "next/link"
 import { ReactNode } from "react"
 import {
-    MdOutlineFolderOpen as FolderIcon,
-    MdOutlineMenu as MenuIcon,
-    MdOutlineMenuOpen as MenuOpenIcon,
-    MdOutlineMoreHoriz as MoreIcon
-} from "react-icons/md"
+    RiFolder3Line as FolderIcon,
+    RiMenuFoldLine as CloseMenuIcon,
+    RiMenuUnfoldLine as OpenMenuIcon,
+    RiMoreFill as MoreIcon
+} from "react-icons/ri"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import Flex from "src/components/Flex"
 import ShareDocumentButton from "src/components/ShareDocumentButton"
@@ -55,7 +55,9 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                             dispatch(toggleSidebar())
                         }}
                         appearance="text"
-                        icon={sidebarOpen ? <MenuOpenIcon /> : <MenuIcon />}
+                        icon={
+                            sidebarOpen ? <CloseMenuIcon /> : <OpenMenuIcon />
+                        }
                         size="large"
                     />
                 </ToggleSidebarButtonContainer>
@@ -66,7 +68,11 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                         }}
                         appearance="secondary"
                         icon={
-                            mobileSidebarOpen ? <MenuOpenIcon /> : <MenuIcon />
+                            mobileSidebarOpen ? (
+                                <CloseMenuIcon />
+                            ) : (
+                                <OpenMenuIcon />
+                            )
                         }
                     />
                 </MobileToggleSidebarButtonContainer>

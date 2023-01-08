@@ -2,10 +2,7 @@ import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import {
-    MdOutlineDelete as DeleteIcon,
-    MdOutlineDriveFileRenameOutline as RenameIcon
-} from "react-icons/md"
+import { RiDeleteBin7Line as DeleteIcon, RiEdit2Line as RenameIcon } from "react-icons/ri"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"

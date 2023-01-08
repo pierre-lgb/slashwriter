@@ -1,4 +1,4 @@
-import { MdOutlineStarBorder as StarIcon } from "react-icons/md"
+import { RiHeartLine as FavoriteIcon } from "react-icons/ri"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"
@@ -19,7 +19,7 @@ function Favorites() {
 
 Favorites.Layout = AppLayout
 Favorites.Title = "Favoris"
-Favorites.Icon = <StarIcon />
+Favorites.Icon = <FavoriteIcon />
 
 const Container = styled.div`
     padding: 100px 25px;

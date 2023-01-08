@@ -1,4 +1,4 @@
-import { MdOutlineHelpOutline as HelpIcon } from "react-icons/md"
+import { RiQuestionLine as HelpIcon } from "react-icons/ri"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"

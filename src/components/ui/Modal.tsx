@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { ReactNode, useEffect, useState } from "react"
-import { MdOutlineClose as CloseIcon } from "react-icons/md"
+import { RiCloseLine as CloseIcon } from "react-icons/ri"
 import Button from "src/components/ui/Button"
 import styled from "styled-components"
 

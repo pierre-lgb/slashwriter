@@ -1,10 +1,10 @@
 import { useRouter } from "next/router"
 import {
-    MdOutlineListAlt as ChangelogIcon,
-    MdOutlineLogout as LogoutIcon,
-    MdOutlinePerson as PersonIcon
-} from "react-icons/md"
-import { RiCommandLine as CommandIcon } from "react-icons/ri"
+    RiCommandLine as CommandIcon,
+    RiFileList3Line as ChangelogIcon,
+    RiLogoutBoxRLine as LogoutIcon,
+    RiUser3Line as ProfileIcon
+} from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Menu from "src/components/ui/navigation/Menu"
 import { signOut } from "src/utils/supabase"
@@ -18,7 +18,7 @@ function AccountMenu({ children }) {
             content={(instance) => (
                 <Container column gap={4}>
                     <Menu.Item
-                        icon={<PersonIcon />}
+                        icon={<ProfileIcon />}
                         title="Profil"
                         onClick={() => router.push("/settings")}
                         menu={instance}

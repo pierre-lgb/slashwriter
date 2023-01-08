@@ -1,5 +1,6 @@
-import { MdOutlineFolderOpen as FolderIcon } from "react-icons/md"
+import { RiFolder3Line as FolderIcon } from "react-icons/ri"
 import Flex from "src/components/Flex"
+import Typography from "src/components/ui/Typography"
 import { useAppSelector } from "src/store"
 import styled from "styled-components"
 
@@ -21,6 +22,7 @@ export default function Outliner(props: OutlinerProps) {
                 style={{ marginBottom: 5 }}
             >
                 <Title>Dossiers</Title>
+
                 <Badge>{props.folders.length}</Badge>
             </Flex>
             {props.folders.map(({ id, name }) => (
@@ -38,7 +40,7 @@ export default function Outliner(props: OutlinerProps) {
 
 const Title = styled.h3`
     font-size: 0.9em;
-    font-weight: 600;
+    font-weight: 500;
     margin: 0;
     color: var(--color-n500);
 `

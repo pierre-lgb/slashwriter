@@ -1,5 +1,5 @@
 import Image from "next/legacy/image"
-import { MdOutlineExpandMore as ExpandIcon } from "react-icons/md"
+import { RiArrowDownSLine as ExpandIcon } from "react-icons/ri"
 import Flex from "src/components/Flex"
 import AccountMenu from "src/components/menus/AccountMenu"
 import styled from "styled-components"

@@ -1,8 +1,8 @@
-import { MdOutlineFontDownload as HighlightIcon } from "react-icons/md"
 import {
     RiBold as BoldIcon,
     RiCodeSLine as CodeIcon,
     RiItalic as ItalicIcon,
+    RiMarkPenLine as HighlightIcon,
     RiStrikethrough as StrikethroughIcon,
     RiSubscript as SubscriptIcon,
     RiSuperscript as SuperscriptIcon,

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { ReactNode } from "react"
-import { MdOutlineAdd as AddIcon } from "react-icons/md"
+import { RiAddLine as AddIcon } from "react-icons/ri"
 import { useAddDocumentMutation } from "src/services/documents"
 
 import Button from "./ui/Button"

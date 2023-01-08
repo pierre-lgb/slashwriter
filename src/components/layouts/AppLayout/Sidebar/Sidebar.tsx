@@ -1,12 +1,12 @@
 import { useRouter } from "next/router"
 import { useEffect } from "react"
 import {
-    MdOutlineDelete as TrashIcon,
-    MdOutlineHelpOutline as HelpIcon,
-    MdOutlineHome as HomeIcon,
-    MdOutlineStarBorder as StarIcon,
-    MdOutlineTune as SettingsIcon
-} from "react-icons/md"
+    RiDeleteBin7Line as TrashIcon,
+    RiEqualizerLine as SettingsIcon,
+    RiHeartLine as FavoriteIcon,
+    RiHome2Line as HomeIcon,
+    RiQuestionLine as HelpIcon
+} from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
 import Loader from "src/components/ui/Loader"
@@ -68,7 +68,7 @@ export default function Sidebar() {
                         href="/home"
                     />
                     <SidebarItem.Link
-                        icon={<StarIcon />}
+                        icon={<FavoriteIcon />}
                         title="Favoris"
                         href="/favorites"
                     />

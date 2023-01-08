@@ -1,4 +1,4 @@
-import { MdOutlineHome as HomeIcon } from "react-icons/md"
+import { RiHome2Line as HomeIcon } from "react-icons/ri"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
 import Typography from "src/components/ui/Typography"

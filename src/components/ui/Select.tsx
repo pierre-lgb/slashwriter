@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, ReactNode } from "react"
-import { MdCheck as CheckedIcon, MdOutlineExpandMore as ExpandIcon } from "react-icons/md"
+import { RiArrowDownSLine as ExpandIcon, RiCheckLine as CheckedIcon } from "react-icons/ri"
 import styled from "styled-components"
 
 import * as SelectPrimitive from "@radix-ui/react-select"

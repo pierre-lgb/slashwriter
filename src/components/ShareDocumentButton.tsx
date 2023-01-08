@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react"
-import { MdOutlineIosShare as ShareIcon, MdOutlineLink as LinkIcon } from "react-icons/md"
+import { RiLinkM as LinkIcon, RiShareLine as ShareIcon } from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Button from "src/components/ui/Button"
 import Input from "src/components/ui/Input"

@@ -81,7 +81,7 @@ const IconContainer = styled(Flex)`
     justify-content: center;
 
     & > svg {
-        font-size: 1.25em;
+        font-size: 1.15em;
     }
 `
 

@@ -1,5 +1,5 @@
 import { LoremIpsum } from "lorem-ipsum"
-import { MdSubject as ParagraphIcon } from "react-icons/md"
+import { RiMistLine as ParagraphIcon } from "react-icons/ri"
 
 const others = [
     {

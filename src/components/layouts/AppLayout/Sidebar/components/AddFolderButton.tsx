@@ -1,4 +1,4 @@
-import { MdOutlineAdd as AddIcon } from "react-icons/md"
+import { RiAddLine as AddIcon } from "react-icons/ri"
 import { useAddFolderMutation } from "src/services/folders"
 
 import SidebarItem from "./SidebarItem"

@@ -1,9 +1,9 @@
 import { InputHTMLAttributes, ReactNode, Ref, useState } from "react"
 import {
-    MdCheck as CheckedIcon,
-    MdContentCopy as CopyIcon,
-    MdErrorOutline as ErrorIcon
-} from "react-icons/md"
+    RiCheckLine as CheckedIcon,
+    RiErrorWarningLine as ErrorIcon,
+    RiFileCopyLine as CopyIcon
+} from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Button from "src/components/ui/Button"
 import FormLayout from "src/components/ui/FormLayout"
