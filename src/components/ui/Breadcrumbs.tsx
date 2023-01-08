@@ -58,7 +58,7 @@ const BreadcrumbsList = styled.ol`
 `
 
 const BreadcrumbsItem = styled.li<{ active: boolean }>`
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: ${({ active }) =>
         active ? "var(--color-n900)" : "var(--color-n600)"};
     font-weight: ${({ active }) => (active ? 500 : 400)};

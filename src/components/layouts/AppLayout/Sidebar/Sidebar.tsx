@@ -62,7 +62,7 @@ export default function Sidebar() {
                 className="sidebar"
             >
                 <AccountSection user={user} />
-                <Section gap={5}>
+                <Section gap={2}>
                     <SidebarItem.Link
                         icon={<HomeIcon />}
                         title="Accueil"
@@ -82,7 +82,7 @@ export default function Sidebar() {
                     />
                 </Section>
                 <Separator />
-                <Section gap={5} auto>
+                <Section gap={2} auto>
                     {(isLoadingFolders || isLoadingDocuments) && <Loader />}
                     {(foldersError || documentsError) && (
                         <Typography.Text type="danger">
@@ -95,7 +95,7 @@ export default function Sidebar() {
                     <AddFolderButton />
                 </Section>
                 <Separator />
-                <Section gap={5}>
+                <Section gap={2}>
                     <SidebarItem.Link
                         icon={<TrashIcon />}
                         title="Corbeille"

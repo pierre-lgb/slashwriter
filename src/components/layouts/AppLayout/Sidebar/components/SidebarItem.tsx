@@ -71,7 +71,7 @@ const Container = styled(Flex)<{ active?: boolean }>`
 `
 
 const Title = styled(Flex)`
-    font-size: 0.95em;
+    font-size: 0.9em;
 `
 
 const IconContainer = styled(Flex)`
