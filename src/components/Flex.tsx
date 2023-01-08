@@ -1,7 +1,6 @@
 import { CSSProperties } from "react"
 import styled from "styled-components"
 
-
 interface FlexProps {
     auto?: boolean
     column?: boolean
@@ -17,7 +16,7 @@ const Flex = styled.div<FlexProps>`
     flex: ${({ auto }) => (auto ? "1 1 auto" : "initial")};
     flex-direction: ${({ column, reverse }) =>
         (column ? "column" : "row") + (reverse ? "-reverse" : "")};
-    flex-shrink: ${({ shrink }) => (shrink ? 1 : "initial")};
+    flex-shrink: ${({ shrink }) => (shrink ? 1 : 0)};
     align-items: ${({ align }) => align};
     justify-content: ${({ justify }) => justify};
     gap: ${({ gap }) => (gap ? `${gap}px` : "initial")};

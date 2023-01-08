@@ -118,12 +118,11 @@ function Shares() {
                                                     folder.id ===
                                                     document.folder
                                             )?.name
+                                        } · ${
+                                            document.include_subdocuments
+                                                ? "Inclut les sous-documents"
+                                                : "N'inclut pas les sous-documents"
                                         }
-                                            ${
-                                                document.include_subdocuments
-                                                    ? "Inclut les sous-documents"
-                                                    : "N'inclut pas les sous-documents"
-                                            }
                                         `}
                                         badge={
                                             document.public ? "PUBLIC" : null

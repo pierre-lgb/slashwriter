@@ -1,9 +1,9 @@
 import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import {
     RiDeleteBin7Line as TrashIcon,
     RiEqualizerLine as SettingsIcon,
-    RiHeartLine as FavoriteIcon,
+    RiFileTextLine as DocumentIcon,
     RiHome2Line as HomeIcon,
     RiQuestionLine as HelpIcon,
     RiSearchLine as SearchIcon,
@@ -32,6 +32,8 @@ export default function Sidebar() {
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
         (store) => store.ui
     )
+    const { activeDocumentId } = useAppSelector((store) => store.navigation)
+
     const dispatch = useAppDispatch()
 
     const {
@@ -45,6 +47,11 @@ export default function Sidebar() {
         error: documentsError,
         isLoading: isLoadingDocuments
     } = useGetDocumentsQuery(null)
+
+    const favorites = useMemo(
+        () => documents?.filter((d) => d.favorite),
+        [documents]
+    )
 
     useEffect(() => {
         dispatch(closeMobileSidebar())
@@ -70,11 +77,6 @@ export default function Sidebar() {
                         href="/home"
                     />
                     <SidebarItem.Link
-                        icon={<FavoriteIcon />}
-                        title="Favoris"
-                        href="/favorites"
-                    />
-                    <SidebarItem.Link
                         icon={<ShareIcon />}
                         title="Partages"
                         href="/shares"
@@ -92,19 +94,42 @@ export default function Sidebar() {
                     style={{
                         flex: "1 1 auto",
                         flexShrink: "initial",
-                        overflow: "auto"
+                        overflow: "auto",
+                        gap: 20
                     }}
                 >
-                    {(isLoadingFolders || isLoadingDocuments) && <Loader />}
-                    {(foldersError || documentsError) && (
-                        <Typography.Text type="danger">
-                            Une erreur est survenue. Voir la console.
-                        </Typography.Text>
+                    {!!favorites?.length && (
+                        <Flex column gap={2}>
+                            <SectionTitle>
+                                Favoris <Badge>{favorites?.length}</Badge>
+                            </SectionTitle>
+                            {favorites.map(({ id, title }) => (
+                                <SidebarItem.Link
+                                    key={id}
+                                    href={`/doc/${id}`}
+                                    icon={<DocumentIcon />}
+                                    title={title}
+                                    active={id === activeDocumentId}
+                                />
+                            ))}
+                        </Flex>
                     )}
-                    {folders && documents && (
-                        <Outliner folders={folders} documents={documents} />
-                    )}
-                    <AddFolderButton />
+
+                    <Flex auto column gap={2}>
+                        <SectionTitle>
+                            Dossiers <Badge>{folders?.length}</Badge>
+                        </SectionTitle>
+                        {(isLoadingFolders || isLoadingDocuments) && <Loader />}
+                        {(foldersError || documentsError) && (
+                            <Typography.Text type="danger">
+                                Une erreur est survenue. Voir la console.
+                            </Typography.Text>
+                        )}
+                        {folders && documents && (
+                            <Outliner folders={folders} documents={documents} />
+                        )}
+                        <AddFolderButton />
+                    </Flex>
                 </Section>
                 <Separator />
                 <Section>
@@ -113,7 +138,6 @@ export default function Sidebar() {
                         title="Corbeille"
                         href="/trash"
                     />
-
                     <SidebarItem.Link
                         icon={<SettingsIcon />}
                         title="Paramètres"
@@ -183,4 +207,24 @@ const Section = styled.div`
     padding: 16px 20px;
     flex-direction: column;
     flex-shrink: 0;
+`
+
+const SectionTitle = styled.h3`
+    font-size: 0.9em;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+    color: var(--color-n500);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+`
+
+const Badge = styled.span`
+    background-color: var(--color-n100);
+    padding: 5px;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--color-n700);
+    border-radius: 5px;
+    font-family: "JetBrains Mono", monospace;
 `
