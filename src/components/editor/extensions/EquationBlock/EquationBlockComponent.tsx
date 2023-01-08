@@ -12,7 +12,7 @@ export default function EquationComponent(props: NodeViewProps) {
     const equationResultContainer = useRef()
     const equationPreviewContainer = useRef()
     const [error, setError] = useState(null)
-    const [preview, setPreview] = useState("")
+    const [preview, setPreview] = useState(null)
 
     const textAreaRef = useRef<HTMLTextAreaElement>()
 
@@ -43,6 +43,13 @@ export default function EquationComponent(props: NodeViewProps) {
                 console.error(error)
                 setError(error)
             }
+        } else if (!editMode && preview !== null) {
+            if (!preview.trim().length) {
+                return props.deleteNode()
+            }
+            updateAttributes({
+                katex: preview
+            })
         }
     }, [preview, editMode])
 
@@ -64,16 +71,6 @@ export default function EquationComponent(props: NodeViewProps) {
             onShown={() => {
                 textAreaRef.current.focus()
                 textAreaRef.current.select()
-            }}
-            onHide={() => {
-                if (!preview.length) {
-                    return props.deleteNode()
-                }
-
-                updateAttributes({
-                    katex: preview
-                })
-                setEditMode(false)
             }}
             animation="shift-away"
             duration={[200, 0]}
@@ -166,6 +163,10 @@ const Equation = styled(NodeViewWrapper)`
 
     .base {
         margin: 2px 0;
+    }
+
+    & > div {
+        margin: 1rem 0;
     }
 
     &.empty {
