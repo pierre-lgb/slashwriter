@@ -100,12 +100,14 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             )
         }
 
-        if (shareSettings.users_can_read.includes(foundUser.id)) {
+        if (shareSettings.users_can_read?.includes(foundUser.id)) {
             return
         }
 
         updateShareSettings({
-            users_can_read: shareSettings.users_can_read.concat(foundUser.id)
+            users_can_read: (shareSettings.users_can_read || []).concat(
+                foundUser.id
+            )
         })
         setUserQuery("")
     }
@@ -327,6 +329,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                                         <Flex
                                             justify="space-between"
                                             style={{ padding: "0 10px" }}
+                                            key={user_id}
                                         >
                                             <Typography.Text small>
                                                 {user_id}
