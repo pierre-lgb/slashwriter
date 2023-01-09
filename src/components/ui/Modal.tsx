@@ -184,10 +184,12 @@ const ModalComponent = styled.div<{ placement: "center" | "top" }>`
     left: 50%;
     transform: ${({ placement }) =>
         placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)"};
-    width: 100%;
-    max-width: 36rem;
+    width: 36rem;
     padding: 1.5rem;
     pointer-events: all;
+    max-height: 95vh;
+    max-width: 95vw;
+    overflow: auto;
 `
 
 const ModalTitle = styled.h1`

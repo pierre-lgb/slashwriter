@@ -94,18 +94,18 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             return setAddUserFieldError("Aucun utilisateur trouvé.")
         }
 
-        if (shareSettings.user_id === foundUser.id) {
+        if (shareSettings?.user_id === foundUser.id) {
             return setAddUserFieldError(
                 "Vous ne pouvez pas vous inviter vous-même."
             )
         }
 
-        if (shareSettings.users_can_read?.includes(foundUser.id)) {
+        if (shareSettings?.users_can_read?.includes(foundUser.id)) {
             return
         }
 
         updateShareSettings({
-            users_can_read: (shareSettings.users_can_read || []).concat(
+            users_can_read: (shareSettings?.users_can_read || []).concat(
                 foundUser.id
             )
         })
@@ -114,23 +114,12 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
 
     const setUserPermission = (user_id, permission) => {
         updateShareSettings({
-            users_can_read: (shareSettings.users_can_read || [])
+            users_can_read: (shareSettings?.users_can_read || [])
                 .filter((id) => id !== user_id)
                 .concat(permission === "read" ? [user_id] : []),
-            users_can_edit: (shareSettings.users_can_edit || [])
+            users_can_edit: (shareSettings?.users_can_edit || [])
                 .filter((id) => id !== user_id)
                 .concat(permission === "edit" ? [user_id] : [])
-        })
-    }
-
-    const handleRemoveUser = (user_id) => {
-        updateShareSettings({
-            users_can_read: (shareSettings.users_can_read || []).filter(
-                (id) => id !== user_id
-            ),
-            users_can_edit: (shareSettings.users_can_edit || []).filter(
-                (id) => id !== user_id
-            )
         })
     }
 
@@ -152,10 +141,9 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                 return setError(error.message)
             }
 
-            if (data) {
-                const { share_settings } = data
-                setInherited(documentId !== share_settings.document_id)
-                setShareSettings(share_settings)
+            if (data && data.share_settings) {
+                setInherited(documentId !== data.share_settings.document_id)
+                setShareSettings(data.share_settings)
             }
         }
 
@@ -231,63 +219,62 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                             readOnly
                             copy
                         />
-                        <Flex column gap={10}>
-                            <Select
-                                label="Toute personne disposant du lien"
-                                layout="horizontal"
-                                value={
-                                    shareSettings?.anyone_can_edit
-                                        ? "edit"
-                                        : shareSettings?.anyone_can_read
-                                        ? "read"
-                                        : "none"
-                                }
-                                onValueChange={(value) => {
-                                    updateShareSettings({
-                                        anyone_can_read: value === "read",
-                                        anyone_can_edit: value === "edit"
-                                    })
-                                }}
-                                size="small"
-                            >
-                                <Select.Option value="none">
-                                    Aucune permission
-                                </Select.Option>
-                                <Select.Option value="read">
-                                    Peut lire
-                                </Select.Option>
-                                <Select.Option value="edit">
-                                    Peut modifier
-                                </Select.Option>
-                            </Select>
-                            <Select
-                                label="Sous-documents"
-                                layout="horizontal"
-                                value={
-                                    shareSettings?.include_subdocuments
-                                        ? "true"
-                                        : "false"
-                                }
-                                onValueChange={(value) => {
-                                    updateShareSettings({
-                                        include_subdocuments: value === "true"
-                                    })
-                                }}
-                                size="small"
-                            >
-                                <Select.Option value="true">
-                                    Inclure
-                                </Select.Option>
-                                <Select.Option value="false">
-                                    Ne pas inclure
-                                </Select.Option>
-                            </Select>
-                        </Flex>
+                        {/* <Flex column gap={10}> */}
+                        <Select
+                            label="Toute personne disposant du lien"
+                            layout="horizontal"
+                            value={
+                                shareSettings?.anyone_can_edit
+                                    ? "edit"
+                                    : shareSettings?.anyone_can_read
+                                    ? "read"
+                                    : "none"
+                            }
+                            onValueChange={(value) => {
+                                updateShareSettings({
+                                    anyone_can_read: value === "read",
+                                    anyone_can_edit: value === "edit"
+                                })
+                            }}
+                            size="small"
+                        >
+                            <Select.Option value="none">
+                                Aucune permission
+                            </Select.Option>
+                            <Select.Option value="read">
+                                Peut lire
+                            </Select.Option>
+                            <Select.Option value="edit">
+                                Peut modifier
+                            </Select.Option>
+                        </Select>
+                        <Select
+                            label="Sous-documents"
+                            layout="horizontal"
+                            value={
+                                shareSettings?.include_subdocuments
+                                    ? "true"
+                                    : "false"
+                            }
+                            onValueChange={(value) => {
+                                updateShareSettings({
+                                    include_subdocuments: value === "true"
+                                })
+                            }}
+                            size="small"
+                        >
+                            <Select.Option value="true">Inclure</Select.Option>
+                            <Select.Option value="false">
+                                Ne pas inclure
+                            </Select.Option>
+                        </Select>
+                        {/* </Flex> */}
                         <Flex column style={{ width: "100%" }} gap={10}>
                             <Input
                                 label="Ajouter des utilisateurs"
                                 layout="vertical"
                                 placeholder="Nom d'utilisateur ou adresse email"
+                                value={userQuery}
                                 actions={
                                     <Button
                                         appearance="secondary"
@@ -309,12 +296,12 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
 
                             {Object.entries(
                                 [
-                                    ...(shareSettings.users_can_read || []).map(
-                                        (id) => [id, "read"]
-                                    ),
-                                    ...(shareSettings.users_can_edit || []).map(
-                                        (id) => [id, "edit"]
-                                    )
+                                    ...(
+                                        shareSettings?.users_can_read || []
+                                    ).map((id) => [id, "read"]),
+                                    ...(
+                                        shareSettings?.users_can_edit || []
+                                    ).map((id) => [id, "edit"])
                                 ].reduce((acc, curr) => {
                                     acc[curr[0]] = curr[1]
                                     return acc
@@ -331,7 +318,14 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                                             style={{ padding: "0 10px" }}
                                             key={user_id}
                                         >
-                                            <Typography.Text small>
+                                            <Typography.Text
+                                                small
+                                                style={{
+                                                    whiteSpace: "nowrap",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis"
+                                                }}
+                                            >
                                                 {user_id}
                                             </Typography.Text>
                                             <Menu
@@ -373,8 +367,9 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                                                             icon={<CrossIcon />}
                                                             title="Supprimer"
                                                             onClick={() =>
-                                                                handleRemoveUser(
-                                                                    user_id
+                                                                setUserPermission(
+                                                                    user_id,
+                                                                    "none"
                                                                 )
                                                             }
                                                             menu={instance}
@@ -389,6 +384,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                                                     appearance="text"
                                                     size="small"
                                                     icon={<ExpandIcon />}
+                                                    style={{ flexShrink: 0 }}
                                                 >
                                                     {permission === "edit"
                                                         ? "Peut modifier"

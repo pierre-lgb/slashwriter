@@ -20,6 +20,7 @@ interface ButtonProps {
     tabIndex?: number
     className?: string
     title?: string
+    [x: string]: any
 }
 
 export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(
