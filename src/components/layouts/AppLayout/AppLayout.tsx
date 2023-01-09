@@ -66,6 +66,7 @@ const Main = styled.main`
 const PageContent = styled.div`
     overflow-y: auto;
     width: 100%;
+    height: 100%;
 
     @media print {
         overflow-y: hidden;

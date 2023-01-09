@@ -192,8 +192,6 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
         }
     }, [modalVisible, documentId])
 
-    console.log(shareSettings)
-
     return (
         <Modal
             title="Partager"

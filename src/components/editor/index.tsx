@@ -28,6 +28,8 @@ import Underline from "@tiptap/extension-underline"
 import Youtube from "@tiptap/extension-youtube"
 import { Editor, EditorContent } from "@tiptap/react"
 
+import Flex from "../Flex"
+import Loader from "../ui/Loader"
 import BlockMenu from "./components/BlockMenu"
 import BubbleMenu from "./components/BubbleMenu"
 import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
@@ -74,6 +76,7 @@ export default function SlashwriterEditor(props: {
     const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
     const ydoc = useMemo(() => new Y.Doc(), [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
     const [, setStatus] = useState("connecting")
+    const [loading, setLoading] = useState(true)
 
     const forceUpdate = useForceUpdate()
 
@@ -95,10 +98,19 @@ export default function SlashwriterEditor(props: {
         })
     }, [documentId, ydoc])
 
-    const localProvider = useMemo(
-        () => new IndexeddbPersistence(`document.${documentId}`, ydoc),
-        [documentId, ydoc]
-    )
+    const localProvider = useMemo(() => {
+        const provider = new IndexeddbPersistence(
+            `document.${documentId}`,
+            ydoc
+        )
+
+        setLoading(true)
+        provider.on("synced", () => {
+            setLoading(false)
+        })
+
+        return provider
+    }, [documentId, ydoc])
 
     function getCollaborationExtensions(yDocField: string) {
         return [
@@ -247,26 +259,112 @@ export default function SlashwriterEditor(props: {
     return (
         <>
             <Container className="editorContainer">
-                {titleEditor && (
-                    <EditorTitle
-                        editor={titleEditor}
-                        onKeyDown={handleTitleEditorKeyDown}
-                        spellCheck="false"
-                    />
+                {loading && (
+                    <Flex
+                        align="center"
+                        justify="center"
+                        style={{ height: "100%" }}
+                    >
+                        <Loader size="large" />
+                    </Flex>
                 )}
-                {contentEditor && (
-                    <ContentEditor editor={contentEditor} spellCheck="false" />
-                )}
-                {contentEditor && <BubbleMenu editor={contentEditor} />}
-                {contentEditor && <BlockMenu editor={contentEditor} />}
+                <div style={loading ? { opacity: 0 } : null}>
+                    {titleEditor && (
+                        <EditorTitle
+                            editor={titleEditor}
+                            onKeyDown={handleTitleEditorKeyDown}
+                            spellCheck="false"
+                        />
+                    )}
+                    {contentEditor && (
+                        <ContentEditor
+                            editor={contentEditor}
+                            spellCheck="false"
+                        />
+                    )}
+                    {contentEditor && <BubbleMenu editor={contentEditor} />}
+                    {contentEditor && <BlockMenu editor={contentEditor} />}
 
-                {contentEditor && contentEditor.isEditable && (
-                    <CalloutEmojiMenu editor={contentEditor} />
-                )}
+                    {contentEditor && contentEditor.isEditable && (
+                        <CalloutEmojiMenu editor={contentEditor} />
+                    )}
+                </div>
             </Container>
         </>
     )
 }
+
+const Container = styled.div`
+    padding: 100px 25px;
+    height: 100%;
+
+    @media print {
+        padding: 50px;
+    }
+
+    .ProseMirror {
+        padding: 25px calc((100% - (700px)) / 2);
+        outline: none;
+
+        /* Collaboration cursor */
+        .collaboration-cursor__caret {
+            border-left: 1px solid #0d0d0d;
+            border-right: 1px solid #0d0d0d;
+
+            margin-left: -1px;
+            margin-right: -1px;
+            position: relative;
+            word-break: normal;
+            box-sizing: border-box;
+
+            &::after {
+                content: "";
+                display: block;
+                position: absolute;
+                left: -8px;
+                right: -8px;
+                top: 0;
+                bottom: 0;
+            }
+
+            .collaboration-cursor__label {
+                opacity: 0;
+                border-radius: 3px 3px 3px 0;
+                color: #ffffff;
+                font-size: 12px;
+                font-style: normal;
+                font-weight: 600;
+                left: -1px;
+                line-height: normal;
+                padding: 0.1rem 0.3rem;
+                position: absolute;
+                top: -1.4em;
+                user-select: none;
+                white-space: nowrap;
+                transition: opacity 100ms ease-in-out;
+            }
+
+            &:hover {
+                .collaboration-cursor__label {
+                    opacity: 1;
+                }
+            }
+        }
+
+        /* Placeholder*/
+        & > .is-editor-empty:first-child::before {
+            color: #adb5bd;
+            content: attr(data-placeholder);
+            float: left;
+            height: 0;
+            pointer-events: none;
+        }
+
+        @media print {
+            padding: 0;
+        }
+    }
+`
 
 const EditorTitle = styled(EditorContent)`
     .ProseMirror {
@@ -875,77 +973,6 @@ const ContentEditor = styled(EditorContent)`
         }
         .hljs-strong {
             font-weight: 500;
-        }
-    }
-`
-
-const Container = styled.div`
-    padding: 100px 25px;
-
-    @media print {
-        padding: 50px;
-    }
-
-    .ProseMirror {
-        padding: 25px calc((100% - (700px)) / 2);
-        outline: none;
-
-        /* Collaboration cursor */
-        .collaboration-cursor__caret {
-            border-left: 1px solid #0d0d0d;
-            border-right: 1px solid #0d0d0d;
-
-            margin-left: -1px;
-            margin-right: -1px;
-            position: relative;
-            word-break: normal;
-            box-sizing: border-box;
-
-            &::after {
-                content: "";
-                display: block;
-                position: absolute;
-                left: -8px;
-                right: -8px;
-                top: 0;
-                bottom: 0;
-            }
-
-            .collaboration-cursor__label {
-                opacity: 0;
-                border-radius: 3px 3px 3px 0;
-                color: #ffffff;
-                font-size: 12px;
-                font-style: normal;
-                font-weight: 600;
-                left: -1px;
-                line-height: normal;
-                padding: 0.1rem 0.3rem;
-                position: absolute;
-                top: -1.4em;
-                user-select: none;
-                white-space: nowrap;
-                transition: opacity 100ms ease-in-out;
-            }
-
-            &:hover {
-                .collaboration-cursor__label {
-                    opacity: 1;
-                }
-            }
-        }
-
-        /* Placeholder*/
-        & > .is-editor-empty:first-child::before {
-            color: #adb5bd;
-            content: attr(data-placeholder);
-            float: left;
-            height: 0;
-            pointer-events: none;
-        }
-
-        @media print {
-            padding: 0;
         }
     }
 `
