@@ -105,7 +105,9 @@ export default function Modal(props: ModalProps) {
                             )}
                             <ModalContent>{children}</ModalContent>
                             <ModalFooter>
-                                {footer !== undefined || (
+                                {footer !== undefined ? (
+                                    footer
+                                ) : (
                                     <>
                                         <Button
                                             appearance="secondary"

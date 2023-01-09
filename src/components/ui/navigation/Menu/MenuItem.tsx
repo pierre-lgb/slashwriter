@@ -8,9 +8,11 @@ interface MenuItemProps {
     icon: ReactNode
     onClick: MouseEventHandler<HTMLButtonElement>
     menu: TippyInstance
+    [x: string]: any
 }
 
 export default function MenuItem(props: MenuItemProps) {
+    const { menu, onClick, icon, title, ...otherProps } = props
     return (
         <Wrapper
             gap={10}
@@ -20,6 +22,7 @@ export default function MenuItem(props: MenuItemProps) {
                 props.onClick(e)
             }}
             as="button"
+            {...otherProps}
         >
             <IconContainer>{props.icon}</IconContainer>
             <Title>{props.title}</Title>
@@ -29,7 +32,7 @@ export default function MenuItem(props: MenuItemProps) {
 
 const Wrapper = styled(Flex)<{ active?: boolean }>`
     border-radius: 4px;
-    padding: 2px;
+    padding: 2px 6px 2px 2px;
     color: var(--color-n700);
     border: none;
     font-size: 1em;

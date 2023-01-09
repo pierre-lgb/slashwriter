@@ -95,6 +95,12 @@ export default function Input(props: InputProps) {
                 {icon && <InputIconContainer>{icon}</InputIconContainer>}
                 {(copy || error || actions) && (
                     <InputActionsContainer>
+                        {error && (
+                            <ErrorIcon
+                                color="var(--color-red)"
+                                style={{ marginRight: 5 }}
+                            />
+                        )}
                         {actions}
                         {copy && !(reveal && hidden) && (
                             <Button
@@ -114,7 +120,6 @@ export default function Input(props: InputProps) {
                                 Dévoiler
                             </Button>
                         )}
-                        {error && <ErrorIcon />}
                     </InputActionsContainer>
                 )}
             </InputContainer>

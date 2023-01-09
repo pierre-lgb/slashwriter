@@ -107,8 +107,8 @@ function Shares() {
                                         status={`Partagé par ${document.owner_username} (${document.owner_email})`}
                                         badge={
                                             document.permission === "read"
-                                                ? "LECTURE SEULE"
-                                                : "ÉDITEUR"
+                                                ? "Lecteur"
+                                                : "Éditeur"
                                         }
                                         key={index}
                                     />
@@ -130,7 +130,7 @@ function Shares() {
                                         }
                                         `}
                                         badge={
-                                            document.public ? "PUBLIC" : null
+                                            document.public ? "Public" : null
                                         }
                                         key={index}
                                     />
