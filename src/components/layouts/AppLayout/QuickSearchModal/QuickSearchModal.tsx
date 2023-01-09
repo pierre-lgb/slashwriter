@@ -63,9 +63,8 @@ export default function QuickSearchModal() {
         setSelectedIndex(0)
     }, [query])
 
-    // Keydown handler
-    useEffect(() => {
-        function handleKeyDown(e: KeyboardEvent) {
+    const handleKeyDown = useCallback(
+        (e: KeyboardEvent) => {
             if (e.key === "p" && e.ctrlKey) {
                 e.preventDefault()
                 openModal()
@@ -97,13 +96,17 @@ export default function QuickSearchModal() {
                     ) as HTMLElement
                 ).click()
             }
-        }
+        },
+        [quickSearchOpen, filteredDocuments]
+    )
 
+    // Keydown handler
+    useEffect(() => {
         document.addEventListener("keydown", handleKeyDown)
         return () => {
             document.removeEventListener("keydown", handleKeyDown)
         }
-    }, [quickSearchOpen])
+    }, [handleKeyDown])
 
     // Auto scroll
     useEffect(() => {
