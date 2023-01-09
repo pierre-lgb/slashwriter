@@ -99,7 +99,7 @@ export default function Sidebar() {
                     }}
                 >
                     {!!favorites?.length && (
-                        <Flex column gap={2}>
+                        <Flex column gap={2} style={{ flexShrink: 0 }}>
                             <SectionTitle>
                                 Favoris <Badge>{favorites?.length}</Badge>
                             </SectionTitle>

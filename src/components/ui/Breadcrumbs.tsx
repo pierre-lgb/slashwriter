@@ -84,7 +84,7 @@ const BreadcrumbsItem = styled.li<{ active: boolean }>`
     // icons
     svg {
         font-size: 1.15rem;
-        flex-shrink: 0;
+        /* flex-shrink: 0; */
     }
 `
 
