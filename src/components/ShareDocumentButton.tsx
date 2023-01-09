@@ -46,12 +46,28 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
         skip: !shareSettings || !inherited
     })
 
+    const disableInheritance = async () => {
+        const { error } = await supabaseClient
+            .from("documents")
+            .update({ share_settings: null })
+            .match({ id: documentId })
+            .single()
+
+        if (error) {
+            console.error(error)
+            return setError(error.message)
+        }
+
+        setShareSettings(null)
+        setInherited(false)
+    }
+
     const updateShareSettings = async (settings) => {
         if (!shareSettings) {
             // Create share settings if not existing yet
             const { data: share_settings, error } = await supabaseClient
                 .from("shares")
-                .insert({ document_id: documentId, ...settings })
+                .insert({ document_id: documentId, ...(settings || {}) })
                 .select("*")
                 .single()
 
@@ -77,6 +93,25 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
         }
 
         setShareSettings(share_settings)
+    }
+
+    const deleteShareSettings = async () => {
+        const { error: updateError } = await supabaseClient
+            .from("documents")
+            .update({ share_settings: null })
+            .match({ id: shareSettings.document_id })
+
+        const { error: deleteError } = await supabaseClient
+            .from("shares")
+            .delete()
+            .match({ id: shareSettings.id })
+
+        if (updateError || deleteError) {
+            console.error(updateError, deleteError)
+            return setError((updateError || deleteError).message)
+        }
+
+        setShareSettings(null)
     }
 
     const handleAddUser = async () => {
@@ -151,7 +186,13 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
         if (modalVisible) {
             fetchShareSettings()
         }
+
+        return () => {
+            setShareSettings(null)
+        }
     }, [modalVisible, documentId])
+
+    console.log(shareSettings)
 
     return (
         <Modal
@@ -169,7 +210,23 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             }
             visible={modalVisible}
             footer={
-                <Button onClick={() => setModalVisible(false)}>Terminé</Button>
+                <>
+                    {!!shareSettings && !inherited && (
+                        <Button
+                            onClick={deleteShareSettings}
+                            appearance="secondary"
+                            danger
+                        >
+                            Supprimer le partage
+                        </Button>
+                    )}
+                    <Button
+                        onClick={() => setModalVisible(false)}
+                        appearance="primary"
+                    >
+                        Terminé
+                    </Button>
+                </>
             }
             onCancel={() => {
                 setModalVisible(false)
@@ -198,10 +255,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                             danger
                             appearance="secondary"
                             size="small"
-                            onClick={() => {
-                                setShareSettings(null)
-                                setInherited(false)
-                            }}
+                            onClick={disableInheritance}
                         >
                             Dissocier
                         </Button>
@@ -219,7 +273,6 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                             readOnly
                             copy
                         />
-                        {/* <Flex column gap={10}> */}
                         <Select
                             label="Toute personne disposant du lien"
                             layout="horizontal"
@@ -252,9 +305,9 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                             label="Sous-documents"
                             layout="horizontal"
                             value={
-                                shareSettings?.include_subdocuments
-                                    ? "true"
-                                    : "false"
+                                shareSettings?.include_subdocuments === false
+                                    ? "false"
+                                    : "true"
                             }
                             onValueChange={(value) => {
                                 updateShareSettings({
@@ -268,7 +321,6 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                                 Ne pas inclure
                             </Select.Option>
                         </Select>
-                        {/* </Flex> */}
                         <Flex column style={{ width: "100%" }} gap={10}>
                             <Input
                                 label="Ajouter des utilisateurs"
