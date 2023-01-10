@@ -23,18 +23,19 @@ interface BubbleMenuProps {
 }
 
 export default function BubbleMenu(props: BubbleMenuProps) {
-    const menuRef = useRef<HTMLDivElement>()
+    const { editor } = props
 
-    const [isSelecting, setIsSelecting] = useState(false)
+    const menuRef = useRef<HTMLDivElement>()
 
     /**
      * Keep track of whether the user is selecting with the mouse
      * to prevent glitch with the bubble menu when hovering it
      */
+    const [isSelecting, setIsSelecting] = useState(false)
     useEffect(() => {
         function handleMouseDown() {
             function handleMouseMove() {
-                if (!props.editor.state.selection.empty) {
+                if (!editor.state.selection.empty) {
                     setIsSelecting(true)
                     document.removeEventListener("mousemove", handleMouseMove)
                 }
@@ -60,7 +61,7 @@ export default function BubbleMenu(props: BubbleMenuProps) {
 
     return (
         <TiptapBubbleMenu
-            editor={props.editor}
+            editor={editor}
             tippyOptions={{
                 duration: 100,
                 theme: "light-border no-padding",
@@ -69,7 +70,7 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                 animation: "shift-away",
                 inertia: true
             }}
-            shouldShow={({ view, state, from, to, editor }) => {
+            shouldShow={({ view, state, editor }) => {
                 const { selection } = state
 
                 const { empty } = selection
@@ -91,149 +92,95 @@ export default function BubbleMenu(props: BubbleMenuProps) {
         >
             {isSelecting ? null : (
                 <Container ref={menuRef}>
-                    {props.editor.can().chain().focus().toggleBold().run() && (
-                        <Button
-                            icon={<BoldIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                props.editor.chain().focus().toggleBold().run()
-                            }}
-                            active={props.editor.isActive("bold")}
-                        />
-                    )}
-                    {props.editor
-                        .can()
-                        .chain()
-                        .focus()
-                        .toggleItalic()
-                        .run() && (
-                        <Button
-                            icon={<ItalicIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                props.editor
-                                    .chain()
-                                    .focus()
-                                    .toggleItalic()
-                                    .run()
-                            }}
-                            active={props.editor.isActive("italic")}
-                        />
-                    )}
-                    {props.editor
-                        .can()
-                        .chain()
-                        .focus()
-                        .toggleUnderline()
-                        .run() && (
+                    {/* {editor.can().chain().focus().toggleBold().run() && ( */}
+                    <Button
+                        icon={<BoldIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleBold().run()
+                        }}
+                        active={editor.isActive("bold")}
+                    />
+                    {/* )} */}
+                    {/* {editor.can().chain().focus().toggleItalic().run() && ( */}
+                    <Button
+                        icon={<ItalicIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleItalic().run()
+                        }}
+                        active={editor.isActive("italic")}
+                    />
+                    {/* )} */}
+                    {editor.can().chain().focus().toggleUnderline().run() && (
                         <Button
                             icon={<UnderlineIcon size={16} />}
                             appearance="text"
                             size="small"
                             onClick={() => {
-                                props.editor
-                                    .chain()
-                                    .focus()
-                                    .toggleUnderline()
-                                    .run()
+                                editor.chain().focus().toggleUnderline().run()
                             }}
-                            active={props.editor.isActive("underline")}
+                            active={editor.isActive("underline")}
                         />
                     )}
-                    {props.editor
-                        .can()
-                        .chain()
-                        .focus()
-                        .toggleStrike()
-                        .run() && (
+                    {editor.can().chain().focus().toggleStrike().run() && (
                         <Button
                             icon={<StrikethroughIcon size={16} />}
                             appearance="text"
                             size="small"
                             onClick={() => {
-                                props.editor
-                                    .chain()
-                                    .focus()
-                                    .toggleStrike()
-                                    .run()
+                                editor.chain().focus().toggleStrike().run()
                             }}
-                            active={props.editor.isActive("strike")}
+                            active={editor.isActive("strike")}
                         />
                     )}
-                    {props.editor.can().chain().focus().toggleCode().run() && (
+                    {editor.can().chain().focus().toggleCode().run() && (
                         <Button
                             icon={<CodeIcon size={16} />}
                             appearance="text"
                             size="small"
                             onClick={() => {
-                                props.editor.chain().focus().toggleCode().run()
+                                editor.chain().focus().toggleCode().run()
                             }}
-                            active={props.editor.isActive("code")}
+                            active={editor.isActive("code")}
                         />
                     )}
-                    {props.editor
-                        .can()
-                        .chain()
-                        .focus()
-                        .toggleHighlight()
-                        .run() && (
+                    {editor.can().chain().focus().toggleHighlight().run() && (
                         <Button
                             icon={<HighlightIcon size={16} />}
                             appearance="text"
                             size="small"
                             onClick={() => {
-                                props.editor
-                                    .chain()
-                                    .focus()
-                                    .toggleHighlight()
-                                    .run()
+                                editor.chain().focus().toggleHighlight().run()
                             }}
-                            active={props.editor.isActive("highlight")}
+                            active={editor.isActive("highlight")}
                         />
                     )}
-                    {props.editor
-                        .can()
-                        .chain()
-                        .focus()
-                        .toggleSubscript()
-                        .run() && (
+                    {editor.can().chain().focus().toggleSubscript().run() && (
                         <Button
                             icon={<SubscriptIcon size={16} />}
                             appearance="text"
                             size="small"
                             onClick={() => {
-                                props.editor
-                                    .chain()
-                                    .focus()
-                                    .toggleSubscript()
-                                    .run()
+                                editor.chain().focus().toggleSubscript().run()
                             }}
-                            active={props.editor.isActive("subscript")}
+                            active={editor.isActive("subscript")}
                         />
                     )}
-                    {props.editor
-                        .can()
-                        .chain()
-                        .focus()
-                        .toggleSuperscript()
-                        .run() && (
+                    {editor.can().chain().focus().toggleSuperscript().run() && (
                         <Button
                             icon={<SuperscriptIcon size={16} />}
                             appearance="text"
                             size="small"
                             onClick={() => {
-                                props.editor
-                                    .chain()
-                                    .focus()
-                                    .toggleSuperscript()
-                                    .run()
+                                editor.chain().focus().toggleSuperscript().run()
                             }}
-                            active={props.editor.isActive("superscript")}
+                            active={editor.isActive("superscript")}
                         />
                     )}
-                    {props.editor
+                    {editor
                         .can()
                         .chain()
                         .focus()
@@ -241,7 +188,7 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                         .run() && (
                         <Button
                             icon={
-                                props.editor.isActive("link") ? (
+                                editor.isActive("link") ? (
                                     <UnlinkIcon size={16} />
                                 ) : (
                                     <LinkIcon size={16} />
@@ -250,16 +197,12 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                             appearance="text"
                             size="small"
                             onClick={() => {
-                                if (props.editor.isActive("link")) {
-                                    props.editor
-                                        .chain()
-                                        .focus()
-                                        .unsetLink()
-                                        .run()
+                                if (editor.isActive("link")) {
+                                    editor.chain().focus().unsetLink().run()
                                 } else {
                                     const href = prompt("Entrez l'URL :")
                                     if (href) {
-                                        props.editor
+                                        editor
                                             .chain()
                                             .focus()
                                             .toggleLink({ href })
@@ -267,7 +210,7 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                                     }
                                 }
                             }}
-                            active={props.editor.isActive("link")}
+                            active={editor.isActive("link")}
                         />
                     )}
                 </Container>

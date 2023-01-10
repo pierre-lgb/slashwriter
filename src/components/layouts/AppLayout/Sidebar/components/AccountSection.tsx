@@ -19,7 +19,7 @@ export default function AccountSection({ user }: AccountSectionProps) {
                     width={25}
                     height={25}
                 />
-                <StyledEmail>{user?.email}</StyledEmail>
+                <StyledEmail>{user?.email || "Non connecté"}</StyledEmail>
                 <ExpandIcon color="var(--color-n700)" fontSize="1.2rem" />
             </Container>
         </AccountMenu>

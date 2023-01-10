@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
+import { KeyboardEvent, useLayoutEffect, useMemo, useState } from "react"
 import styled from "styled-components"
 import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
@@ -26,7 +26,7 @@ import Superscript from "@tiptap/extension-superscript"
 import Text from "@tiptap/extension-text"
 import Underline from "@tiptap/extension-underline"
 import Youtube from "@tiptap/extension-youtube"
-import { Editor, EditorContent } from "@tiptap/react"
+import { EditorContent, useEditor } from "@tiptap/react"
 
 import Flex from "../Flex"
 import Loader from "../ui/Loader"
@@ -55,15 +55,14 @@ import TaskItem from "./extensions/TaskItem"
 import TaskList from "./extensions/TaskList"
 import TrailingNode from "./extensions/TrailingNode"
 
+function getRandomName() {
+    const NAMES = ["Anonymous", "Toad", "Yoshi", "Luma", "Boo"]
+    return NAMES[Math.round(Math.random() * (NAMES.length - 1))]
+}
+
 function getRandomColor() {
     const COLORS = ["#ffb020", "#3366ff", "#474d66"]
     return COLORS[Math.round(Math.random() * (COLORS.length - 1))]
-}
-
-function useForceUpdate() {
-    const [, setValue] = useState(0)
-
-    return () => setValue((value) => value + 1)
 }
 
 export default function SlashwriterEditor(props: {
@@ -72,31 +71,11 @@ export default function SlashwriterEditor(props: {
     editable?: boolean
 }) {
     const { documentId, user, editable = true } = props
-    const [contentEditor, setContentEditor] = useState<Editor | null>(null)
-    const [titleEditor, setTitleEditor] = useState<Editor | null>(null)
+
     const ydoc = useMemo(() => new Y.Doc(), [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
-    const [, setStatus] = useState("connecting")
-    const [loading, setLoading] = useState(true)
 
-    const forceUpdate = useForceUpdate()
-
-    const websocketProvider = useMemo(() => {
-        return new HocuspocusProvider({
-            name: `document.${documentId}`,
-            url: process.env.NEXT_PUBLIC_COLLABORATION_URL,
-            document: ydoc,
-            // We start the connection inside useLayoutEffect()
-            // so that a single connection is started (not two)
-            connect: false,
-            // The token is retrieved from the cookies server-side,
-            // we only set a value for `token` here so that the
-            // onAuthenticate hook does not log a warning message.
-            token: "token",
-            onStatus({ status }) {
-                setStatus(status)
-            }
-        })
-    }, [documentId, ydoc])
+    const [isLocalSynced, setLocalSynced] = useState(false)
+    const [isRemoteSynced, setRemoteSynced] = useState(false)
 
     const localProvider = useMemo(() => {
         const provider = new IndexeddbPersistence(
@@ -104,29 +83,46 @@ export default function SlashwriterEditor(props: {
             ydoc
         )
 
-        setLoading(true)
         provider.on("synced", () => {
-            setLoading(false)
+            // Only set local storage to "synced" if it's loaded a non-empty doc
+            setLocalSynced(!!ydoc.get("default")._start)
         })
 
         return provider
     }, [documentId, ydoc])
 
-    function getCollaborationExtensions(yDocField: string) {
-        return [
-            Collaboration.configure({
-                document: websocketProvider.document,
-                field: yDocField || "default"
-            }),
-            CollaborationCursor.configure({
-                provider: websocketProvider,
-                user: {
-                    name: user.email,
-                    color: getRandomColor()
-                }
-            })
-        ]
-    }
+    const remoteProvider = useMemo(() => {
+        const provider = new HocuspocusProvider({
+            name: `document.${documentId}`,
+            url: process.env.NEXT_PUBLIC_COLLABORATION_URL,
+            document: ydoc,
+            // We start the connection inside useLayoutEffect()
+            // to prevent orphan connection with React StrictMode
+            connect: false,
+            // The token is retrieved from the cookies server-side,
+            // we only set a value for `token` here so that the
+            // onAuthenticate hook does not log a warning message.
+            token: "token",
+            onStatus({ status }) {
+                // setStatus(status)
+            }
+        })
+
+        provider.on("synced", () => {
+            setRemoteSynced(true)
+        })
+
+        return provider
+    }, [documentId, ydoc])
+
+    useLayoutEffect(() => {
+        remoteProvider.connect()
+
+        return () => {
+            remoteProvider.destroy()
+            localProvider.destroy()
+        }
+    }, [remoteProvider, localProvider])
 
     function handleTitleEditorKeyDown(event: KeyboardEvent<HTMLDivElement>) {
         const selection = titleEditor.state.selection
@@ -145,17 +141,15 @@ export default function SlashwriterEditor(props: {
         }
     }
 
-    useLayoutEffect(() => {
-        websocketProvider.connect()
-
-        return () => {
-            websocketProvider.destroy()
-            localProvider.destroy()
+    const userCursor = useMemo(() => {
+        return {
+            name: user?.email || getRandomName(),
+            color: getRandomColor()
         }
-    }, [websocketProvider, localProvider])
+    }, [user])
 
-    useEffect(() => {
-        const titleEditor = new Editor({
+    const titleEditor = useEditor(
+        {
             extensions: [
                 Document.extend({
                     content: "heading"
@@ -167,17 +161,26 @@ export default function SlashwriterEditor(props: {
                 Placeholder.configure({
                     placeholder: "Entrez un titre"
                 }),
-                ...getCollaborationExtensions("title")
+                Collaboration.configure({
+                    document: remoteProvider.document,
+                    field: "title"
+                }),
+                CollaborationCursor.configure({
+                    provider: remoteProvider,
+                    user: userCursor
+                })
             ],
-            autofocus: "start",
             onCreate({ editor }) {
                 // Autofocus
                 editor.commands.focus()
             },
             editable
-        })
+        },
+        [documentId, editable, remoteProvider]
+    )
 
-        const contentEditor = new Editor({
+    const contentEditor = useEditor(
+        {
             extensions: [
                 // Nodes
                 Document,
@@ -233,33 +236,26 @@ export default function SlashwriterEditor(props: {
                 Placeholder.configure({
                     placeholder: "Commencez à écrire ici..."
                 }),
-                ...getCollaborationExtensions("default")
+                Collaboration.configure({
+                    document: remoteProvider.document,
+                    field: "default"
+                }),
+                CollaborationCursor.configure({
+                    provider: remoteProvider,
+                    user: userCursor
+                })
             ],
             editable
-        })
+        },
+        [documentId, editable, remoteProvider]
+    )
 
-        setTitleEditor(titleEditor)
-        setContentEditor(contentEditor)
-        contentEditor.on("transaction", () => {
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    forceUpdate()
-                })
-            })
-        })
-
-        return () => {
-            titleEditor?.destroy()
-            contentEditor?.destroy()
-            setTitleEditor(null)
-            setContentEditor(null)
-        }
-    }, [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
+    const isSynced = isLocalSynced || isRemoteSynced
 
     return (
         <>
             <Container className="editorContainer">
-                {loading && (
+                {!isSynced && (
                     <Flex
                         align="center"
                         justify="center"
@@ -268,25 +264,24 @@ export default function SlashwriterEditor(props: {
                         <Loader size="large" />
                     </Flex>
                 )}
-                <div style={loading ? { opacity: 0 } : null}>
-                    {titleEditor && (
-                        <EditorTitle
-                            editor={titleEditor}
-                            onKeyDown={handleTitleEditorKeyDown}
-                            spellCheck="false"
-                        />
-                    )}
-                    {contentEditor && (
-                        <ContentEditor
-                            editor={contentEditor}
-                            spellCheck="false"
-                        />
-                    )}
-                    {contentEditor && <BubbleMenu editor={contentEditor} />}
-                    {contentEditor && <BlockMenu editor={contentEditor} />}
+                <div
+                    style={
+                        !isSynced ? { opacity: 0, pointerEvents: "none" } : null
+                    }
+                >
+                    <TitleEditor
+                        editor={titleEditor}
+                        onKeyDown={handleTitleEditorKeyDown}
+                        spellCheck="false"
+                    />
 
+                    <ContentEditor editor={contentEditor} spellCheck="false" />
                     {contentEditor && contentEditor.isEditable && (
-                        <CalloutEmojiMenu editor={contentEditor} />
+                        <>
+                            <BubbleMenu editor={contentEditor} />
+                            <BlockMenu editor={contentEditor} />
+                            <CalloutEmojiMenu editor={contentEditor} />
+                        </>
                     )}
                 </div>
             </Container>
@@ -366,7 +361,7 @@ const Container = styled.div`
     }
 `
 
-const EditorTitle = styled(EditorContent)`
+const TitleEditor = styled(EditorContent)`
     .ProseMirror {
         h1 {
             margin: 1rem 0;

@@ -40,13 +40,13 @@ export default function Sidebar() {
         data: folders,
         error: foldersError,
         isLoading: isLoadingFolders
-    } = useGetFoldersQuery(null)
+    } = useGetFoldersQuery(null, { skip: !user })
 
     const {
         data: documents,
         error: documentsError,
         isLoading: isLoadingDocuments
-    } = useGetDocumentsQuery(null)
+    } = useGetDocumentsQuery(null, { skip: !user })
 
     const favorites = useMemo(
         () => documents?.filter((d) => d.favorite),
@@ -65,11 +65,12 @@ export default function Sidebar() {
             />
             <SidebarComponent
                 column
-                open={sidebarOpen}
-                mobileOpen={mobileSidebarOpen}
+                open={sidebarOpen && !!user}
+                mobileOpen={mobileSidebarOpen && !!user}
                 className="sidebar"
             >
                 <AccountSection user={user} />
+
                 <Section>
                     <SidebarItem.Link
                         icon={<HomeIcon />}
@@ -121,14 +122,20 @@ export default function Sidebar() {
                         </SectionTitle>
                         {(isLoadingFolders || isLoadingDocuments) && <Loader />}
                         {(foldersError || documentsError) && (
-                            <Typography.Text type="danger">
-                                Une erreur est survenue. Voir la console.
+                            <Typography.Text type="danger" small>
+                                Une erreur est survenue. <br />
+                                Voir la console.
                             </Typography.Text>
                         )}
                         {folders && documents && (
-                            <Outliner folders={folders} documents={documents} />
+                            <>
+                                <Outliner
+                                    folders={folders}
+                                    documents={documents}
+                                />
+                                <AddFolderButton />
+                            </>
                         )}
-                        <AddFolderButton />
                     </Flex>
                 </Section>
                 <Separator />
@@ -178,7 +185,7 @@ const Backdrop = styled.div<{ visible: boolean }>`
 const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
     position: relative;
     max-height: 100vh;
-    min-width: 300px;
+    width: 300px;
     border-right: 1px solid var(--color-n300);
     display: flex;
     flex-direction: column;

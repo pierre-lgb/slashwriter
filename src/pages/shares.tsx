@@ -103,7 +103,7 @@ function Shares() {
                                 tab === "sharedWithUser" ? (
                                     <DocumentLink
                                         title={document.title || "Sans titre"}
-                                        href={`/shared/${document.id}`}
+                                        href={`/doc/${document.id}`}
                                         status={`Partagé par ${document.owner_username} (${document.owner_email})`}
                                         badge={
                                             document.permission === "read"

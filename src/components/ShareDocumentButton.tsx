@@ -264,10 +264,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                             placeholder="Entrez une valeur"
                             label="Lien de partage"
                             icon={<LinkIcon />}
-                            value={window.location.href.replace(
-                                "doc",
-                                "shared"
-                            )}
+                            value={window.location.href}
                             readOnly
                             copy
                         />

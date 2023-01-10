@@ -1,6 +1,7 @@
+import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
-import { useEffect } from "react"
-import DocumentEditor from "src/components/editor"
+import { useCallback, useEffect, useState } from "react"
+import { RiFileTextLine as DocumentIcon } from "react-icons/ri"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
@@ -10,24 +11,31 @@ import { useGetDocumentsQuery } from "src/services/documents"
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch } from "src/store"
 import { setActiveDocumentId, setActiveFolderId } from "src/store/navigation"
-import { useUser, withPageAuth } from "src/utils/supabase"
+import { supabaseClient, useUser } from "src/utils/supabase"
+
+const DocumentEditor = dynamic(() => import("src/components/editor"), {
+    ssr: false
+})
 
 function Document() {
     const router = useRouter()
     const { docId } = router.query as { docId: string }
     const user = useUser()
 
-    const { document, isDocumentLoading } = useGetDocumentsQuery(null, {
-        selectFromResult: ({ data, isLoading, isUninitialized }) => ({
-            document: data?.find((d) => d.id === docId),
-            isDocumentLoading: isUninitialized || isLoading
-        })
+    const [permission, setPermission] = useState("loading")
+
+    const { document } = useGetDocumentsQuery(null, {
+        selectFromResult: ({ data }) => ({
+            document: data?.find((d) => d.id === docId)
+        }),
+        skip: !user
     })
 
     const { folder } = useGetFoldersQuery(null, {
         selectFromResult: ({ data }) => ({
             folder: data?.find((f) => f.id === document?.folder)
-        })
+        }),
+        skip: !user
     })
 
     const dispatch = useAppDispatch()
@@ -42,12 +50,62 @@ function Document() {
         }
     }, [document, folder, dispatch])
 
+    useEffect(() => {
+        const getSharedDocumentPermission = async () => {
+            let permission = "none"
+
+            const { error: canReadError } = await supabaseClient.rpc(
+                "canreaddocument",
+                {
+                    user_id: user?.id || null,
+                    document_id: docId
+                }
+            )
+
+            if (canReadError) {
+                return permission
+            }
+
+            permission = "read"
+
+            const { error: canEditError } = await supabaseClient.rpc(
+                "caneditdocument",
+                {
+                    user_id: user?.id || null,
+                    document_id: docId
+                }
+            )
+
+            if (canEditError) {
+                return permission
+            }
+
+            permission = "read|edit"
+            return permission
+        }
+
+        if (docId) {
+            if (document) {
+                setPermission("read|edit")
+            } else {
+                getSharedDocumentPermission().then((permission) => {
+                    setPermission(permission)
+                })
+            }
+        }
+
+        return () => {
+            setPermission("loading")
+        }
+    }, [docId, user?.id])
+
     return (
         <TransitionOpacity>
-            {!!document && !!user ? (
+            {permission.includes("read") ? (
                 <DocumentEditor
                     documentId={docId}
-                    user={{ email: user.email }}
+                    user={{ email: user?.email }}
+                    editable={!!permission.includes("edit")}
                 />
             ) : (
                 <Flex
@@ -55,12 +113,11 @@ function Document() {
                     justify="center"
                     style={{ width: "100%", height: "100%" }}
                 >
-                    {!!isDocumentLoading ? (
+                    {permission === "loading" ? (
                         <Loader size="large" />
                     ) : (
                         <Typography.Text>
-                            Ce document n&apos;existe pas. Il a peut-être été
-                            supprimé.
+                            {"Vous n'avez pas accès à ce document."}
                         </Typography.Text>
                     )}
                 </Flex>
@@ -71,7 +128,6 @@ function Document() {
 
 Document.Layout = AppLayout
 Document.Title = "Document"
-
-export const getServerSideProps = withPageAuth()
+Document.Icon = <DocumentIcon />
 
 export default Document

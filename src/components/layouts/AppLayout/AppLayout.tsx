@@ -14,7 +14,7 @@ function AppLayout(props) {
     const router = useRouter()
 
     useEffect(() => {
-        if (!user) {
+        if (!user && router.route !== "/doc/[docId]") {
             router.push("/auth")
         }
     }, [user, router])
@@ -27,7 +27,7 @@ function AppLayout(props) {
                     <Header pageTitle={props.title} pageIcon={props.icon} />
                     <PageContent>{props.children}</PageContent>
                 </Main>
-                <QuickSearchModal />
+                {user && <QuickSearchModal />}
             </Container>
         </>
     )

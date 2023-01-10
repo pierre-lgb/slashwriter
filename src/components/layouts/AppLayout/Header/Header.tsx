@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { ReactNode } from "react"
 import {
     RiFolder3Line as FolderIcon,
@@ -6,7 +7,8 @@ import {
     RiHeartLine as FavoriteIcon,
     RiMenuFoldLine as CloseMenuIcon,
     RiMenuUnfoldLine as OpenMenuIcon,
-    RiMoreFill as MoreIcon
+    RiMoreFill as MoreIcon,
+    RiUserLine as UserIcon
 } from "react-icons/ri"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import Flex from "src/components/Flex"
@@ -17,6 +19,7 @@ import { useGetDocumentsQuery, useUpdateDocumentMutation } from "src/services/do
 import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { toggleMobileSidebar, toggleSidebar } from "src/store/ui"
+import { useUser } from "src/utils/supabase"
 import styled from "styled-components"
 
 interface HeaderProps {
@@ -25,7 +28,9 @@ interface HeaderProps {
 }
 
 export default function Header({ pageTitle, pageIcon }: HeaderProps) {
+    const user = useUser()
     const dispatch = useAppDispatch()
+    const router = useRouter()
     const [updateDocument] = useUpdateDocumentMutation()
 
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
@@ -38,13 +43,15 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     const { activeFolder } = useGetFoldersQuery(null, {
         selectFromResult: ({ data }) => ({
             activeFolder: data?.find((f) => f.id === activeFolderId)
-        })
+        }),
+        skip: !user
     })
 
     const { activeDocument } = useGetDocumentsQuery(null, {
         selectFromResult: ({ data }) => ({
             activeDocument: data?.find((d) => d.id === activeDocumentId)
-        })
+        }),
+        skip: !user
     })
 
     const { documentPath } = useGetDocumentsQuery(null, {
@@ -52,24 +59,31 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
             documentPath: activeDocumentId
                 ? getDocumentPath(activeDocumentId, data)
                 : []
-        })
+        }),
+        skip: !user
     })
 
     return (
         <Container className="header">
             <Flex auto align="center" gap={20}>
-                <ToggleSidebarButtonContainer>
-                    <Button
-                        onClick={() => {
-                            dispatch(toggleSidebar())
-                        }}
-                        appearance="text"
-                        icon={
-                            sidebarOpen ? <CloseMenuIcon /> : <OpenMenuIcon />
-                        }
-                        size="large"
-                    />
-                </ToggleSidebarButtonContainer>
+                {!!user && (
+                    <ToggleSidebarButtonContainer>
+                        <Button
+                            onClick={() => {
+                                dispatch(toggleSidebar())
+                            }}
+                            appearance="text"
+                            icon={
+                                sidebarOpen ? (
+                                    <CloseMenuIcon />
+                                ) : (
+                                    <OpenMenuIcon />
+                                )
+                            }
+                            size="large"
+                        />
+                    </ToggleSidebarButtonContainer>
+                )}
                 <MobileToggleSidebarButtonContainer>
                     <Button
                         onClick={() => {
@@ -124,6 +138,15 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                 gap={8}
                 style={{ justifySelf: "flex-end", flexShrink: 0 }}
             >
+                {!user && (
+                    <Button
+                        appearance="secondary"
+                        onClick={() => router.push("/auth")}
+                        icon={<UserIcon />}
+                    >
+                        Se connecter
+                    </Button>
+                )}
                 {!!activeDocumentId && (
                     <>
                         <Button

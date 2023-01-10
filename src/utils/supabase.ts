@@ -1,4 +1,5 @@
 import { GetServerSidePropsContext } from "next"
+import Router from "next/router"
 import api from "src/services"
 import store from "src/store"
 
