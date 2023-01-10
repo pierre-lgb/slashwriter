@@ -455,7 +455,7 @@ const ContentEditor = styled(EditorContent)`
 
         blockquote {
             border-left: 3px solid rgb(13, 13, 13);
-            padding-left: 1rem;
+            padding-left: 1.5rem;
             margin-left: 0;
             margin-right: 0;
         }

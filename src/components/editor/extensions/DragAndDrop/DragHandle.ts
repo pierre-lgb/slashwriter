@@ -24,13 +24,34 @@ function absoluteRect(node: Element) {
 function nodeDOMAtCoords(coords: { x: number; y: number }) {
     return document
         .elementsFromPoint(coords.x, coords.y)
-        .find((elem: HTMLElement) =>
-            elem.parentElement?.matches?.(".ProseMirror")
+        .find(
+            (elem: HTMLElement) =>
+                elem.parentElement?.matches?.(".ProseMirror") ||
+                elem.matches(
+                    [
+                        "li",
+                        "p:not(:first-child)",
+                        "pre",
+                        "blockquote",
+                        "h1, h2, h3",
+                        "[data-type=callout]",
+                        "[data-type=horizontalRule]",
+                        ".tableWrapper",
+                        ".node-subdocument",
+                        ".node-equationBlock"
+                    ].join(", ")
+                )
         )
 }
 
 export function nodePosAtDOM(node: Element, view: EditorView) {
     const boundingRect = node.getBoundingClientRect()
+    console.log(
+        view.posAtCoords({
+            left: boundingRect.left + 1,
+            top: boundingRect.top + 1
+        })
+    )
 
     return view.posAtCoords({
         left: boundingRect.left + 1,
@@ -120,7 +141,7 @@ export default function DragHandle(options: DragHandleOptions) {
 
             hideDragHandle()
 
-            document.body.appendChild(dragHandleElement)
+            view.dom.parentElement.appendChild(dragHandleElement)
 
             return {
                 destroy: () => {
@@ -154,6 +175,12 @@ export default function DragHandle(options: DragHandleOptions) {
 
                     rect.top += (lineHeight - 24) / 2
                     rect.top += paddingTop
+                    // Li markers
+                    if (
+                        node.matches("ul:not([data-type=taskList]) li, ol li")
+                    ) {
+                        rect.left -= options.dragHandleWidth
+                    }
                     rect.width = options.dragHandleWidth
 
                     dragHandleElement.style.left = `${rect.left - rect.width}px`
