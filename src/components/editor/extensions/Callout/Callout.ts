@@ -71,7 +71,10 @@ const defaultEmojiRenderer = (node) => {
     const dom = document.createElement("span")
     dom.dataset.emojiContainer = ""
     dom.textContent = node.attrs.emoji
-    twemoji.parse(dom)
+    twemoji.parse(dom, {
+        folder: "svg",
+        ext: ".svg"
+    })
 
     // Prevent ProseMirror from handling the `mousedown` event so that the cursor
     // won't move when users click the emoji.
