@@ -73,7 +73,7 @@ export default function EquationComponent(props: NodeViewProps) {
                 <EquationTextArea
                     ref={textAreaRef}
                     draggable="false"
-                    value={preview}
+                    value={preview ?? ""}
                     placeholder={"e^{i\\pi} + 1 = 0"}
                     onKeyDown={(e) => {
                         if (
