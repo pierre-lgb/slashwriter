@@ -92,7 +92,6 @@ export default function BubbleMenu(props: BubbleMenuProps) {
         >
             {isSelecting ? null : (
                 <Container ref={menuRef}>
-                    {/* {editor.can().chain().focus().toggleBold().run() && ( */}
                     <Button
                         icon={<BoldIcon size={16} />}
                         appearance="text"
@@ -102,8 +101,6 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                         }}
                         active={editor.isActive("bold")}
                     />
-                    {/* )} */}
-                    {/* {editor.can().chain().focus().toggleItalic().run() && ( */}
                     <Button
                         icon={<ItalicIcon size={16} />}
                         appearance="text"
@@ -113,106 +110,87 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                         }}
                         active={editor.isActive("italic")}
                     />
-                    {/* )} */}
-                    {editor.can().chain().focus().toggleUnderline().run() && (
-                        <Button
-                            icon={<UnderlineIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                editor.chain().focus().toggleUnderline().run()
-                            }}
-                            active={editor.isActive("underline")}
-                        />
-                    )}
-                    {editor.can().chain().focus().toggleStrike().run() && (
-                        <Button
-                            icon={<StrikethroughIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                editor.chain().focus().toggleStrike().run()
-                            }}
-                            active={editor.isActive("strike")}
-                        />
-                    )}
-                    {editor.can().chain().focus().toggleCode().run() && (
-                        <Button
-                            icon={<CodeIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                editor.chain().focus().toggleCode().run()
-                            }}
-                            active={editor.isActive("code")}
-                        />
-                    )}
-                    {editor.can().chain().focus().toggleHighlight().run() && (
-                        <Button
-                            icon={<HighlightIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                editor.chain().focus().toggleHighlight().run()
-                            }}
-                            active={editor.isActive("highlight")}
-                        />
-                    )}
-                    {editor.can().chain().focus().toggleSubscript().run() && (
-                        <Button
-                            icon={<SubscriptIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                editor.chain().focus().toggleSubscript().run()
-                            }}
-                            active={editor.isActive("subscript")}
-                        />
-                    )}
-                    {editor.can().chain().focus().toggleSuperscript().run() && (
-                        <Button
-                            icon={<SuperscriptIcon size={16} />}
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                editor.chain().focus().toggleSuperscript().run()
-                            }}
-                            active={editor.isActive("superscript")}
-                        />
-                    )}
-                    {editor
-                        .can()
-                        .chain()
-                        .focus()
-                        .toggleLink({ href: "" })
-                        .run() && (
-                        <Button
-                            icon={
-                                editor.isActive("link") ? (
-                                    <UnlinkIcon size={16} />
-                                ) : (
-                                    <LinkIcon size={16} />
-                                )
-                            }
-                            appearance="text"
-                            size="small"
-                            onClick={() => {
-                                if (editor.isActive("link")) {
-                                    editor.chain().focus().unsetLink().run()
-                                } else {
-                                    const href = prompt("Entrez l'URL :")
-                                    if (href) {
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleLink({ href })
-                                            .run()
-                                    }
+                    <Button
+                        icon={<UnderlineIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleUnderline().run()
+                        }}
+                        active={editor.isActive("underline")}
+                    />
+                    <Button
+                        icon={<StrikethroughIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleStrike().run()
+                        }}
+                        active={editor.isActive("strike")}
+                    />
+                    <Button
+                        icon={<CodeIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleCode().run()
+                        }}
+                        active={editor.isActive("code")}
+                    />
+                    <Button
+                        icon={<HighlightIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleHighlight().run()
+                        }}
+                        active={editor.isActive("highlight")}
+                    />
+                    <Button
+                        icon={<SubscriptIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleSubscript().run()
+                        }}
+                        active={editor.isActive("subscript")}
+                    />
+                    <Button
+                        icon={<SuperscriptIcon size={16} />}
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            editor.chain().focus().toggleSuperscript().run()
+                        }}
+                        active={editor.isActive("superscript")}
+                    />
+
+                    <Button
+                        icon={
+                            editor.isActive("link") ? (
+                                <UnlinkIcon size={16} />
+                            ) : (
+                                <LinkIcon size={16} />
+                            )
+                        }
+                        appearance="text"
+                        size="small"
+                        onClick={() => {
+                            if (editor.isActive("link")) {
+                                editor.chain().focus().unsetLink().run()
+                            } else {
+                                const href = prompt("Entrez l'URL :")
+                                if (href) {
+                                    editor
+                                        .chain()
+                                        .focus()
+                                        .toggleLink({ href })
+                                        .run()
                                 }
-                            }}
-                            active={editor.isActive("link")}
-                        />
-                    )}
+                            }
+                        }}
+                        active={editor.isActive("link")}
+                    />
                 </Container>
             )}
         </TiptapBubbleMenu>
