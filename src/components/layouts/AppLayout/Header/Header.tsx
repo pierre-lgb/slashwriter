@@ -126,7 +126,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
             >
                 {!!activeDocumentId && (
                     <>
-                        {/* <Button
+                        <Button
                             appearance="text"
                             icon={
                                 activeDocument?.favorite ? (
@@ -143,7 +143,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                                     }
                                 })
                             }}
-                        /> */}
+                        />
                         <ShareDocumentButton documentId={activeDocumentId}>
                             Partager
                         </ShareDocumentButton>
