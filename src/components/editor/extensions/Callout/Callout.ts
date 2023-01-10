@@ -73,7 +73,9 @@ const defaultEmojiRenderer = (node) => {
     dom.textContent = node.attrs.emoji
     twemoji.parse(dom, {
         folder: "svg",
-        ext: ".svg"
+        ext: ".svg",
+        //  https://github.com/twitter/twemoji/issues/580
+        base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/"
     })
 
     // Prevent ProseMirror from handling the `mousedown` event so that the cursor

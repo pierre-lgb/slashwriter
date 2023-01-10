@@ -7,7 +7,9 @@ export default function Emoji({ emoji, ...props }) {
             dangerouslySetInnerHTML={{
                 __html: twemoji.parse(emoji, {
                     folder: "svg",
-                    ext: ".svg"
+                    ext: ".svg",
+                    //  https://github.com/twitter/twemoji/issues/580
+                    base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/"
                 })
             }}
             {...props}
