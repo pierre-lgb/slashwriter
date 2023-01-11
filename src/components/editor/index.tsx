@@ -186,7 +186,9 @@ export default function SlashwriterEditor(props: {
                 Document,
                 Text,
                 Paragraph,
-                Blockquote,
+                Blockquote.extend({
+                    addInputRules: () => []
+                }),
                 Heading.configure({
                     levels: [1, 2, 3]
                 }),
