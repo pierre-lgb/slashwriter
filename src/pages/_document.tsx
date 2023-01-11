@@ -15,16 +15,6 @@ export default function CustomDocument() {
                     href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
                     rel="stylesheet"
                 />
-                <link
-                    rel="icon"
-                    href="/favicon-light.ico"
-                    media="(prefers-color-scheme: dark)"
-                />
-                <link
-                    rel="icon"
-                    href="/favicon-light.ico"
-                    media="(prefers-color-scheme: light)"
-                />
             </Head>
             <body>
                 <Main />
