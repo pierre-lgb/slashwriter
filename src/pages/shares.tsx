@@ -1,3 +1,4 @@
+import moment from "moment"
 import { useEffect, useState } from "react"
 import { RiShareLine as ShareIcon } from "react-icons/ri"
 import DocumentLink from "src/components/editor/components/DocumentLink"
@@ -8,7 +9,7 @@ import TransitionOpacity from "src/components/TransitionOpacity"
 import Button from "src/components/ui/Button"
 import Loader from "src/components/ui/Loader"
 import Typography from "src/components/ui/Typography"
-import { useGetFoldersQuery } from "src/services/folders"
+import { useAppSelector } from "src/store"
 import { supabaseClient, withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
@@ -18,8 +19,8 @@ function Shares() {
     const [isLoading, setIsLoading] = useState(true)
     const [sharedDocuments, setSharedDocuments] = useState([])
 
-    const { data: folders } = useGetFoldersQuery(null)
-
+    const { folders } = useAppSelector((state) => state.folders)
+    console.log(sharedDocuments)
     useEffect(() => {
         setIsLoading(true)
         supabaseClient
@@ -121,13 +122,13 @@ function Shares() {
                                             folders?.find(
                                                 (folder) =>
                                                     folder.id ===
-                                                    document.folder
+                                                    document.folder_id
                                             )?.name
-                                        } · ${
-                                            document.include_subdocuments
-                                                ? "Inclut les sous-documents"
-                                                : "N'inclut pas les sous-documents"
-                                        }
+                                        } · Partagé le ${moment(
+                                            new Date(document.share_created_at)
+                                        ).format("DD/MM/YYYY")} à ${moment(
+                                            new Date(document.share_created_at)
+                                        ).format("HH:mm")}
                                         `}
                                         badge={
                                             document.public ? "Public" : null

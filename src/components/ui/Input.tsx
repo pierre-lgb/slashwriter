@@ -141,9 +141,9 @@ const InputComponent = styled.input<{
     display: block;
     padding: ${({ inputSize }) =>
         ({
-            small: "0.4rem 0.6rem",
-            medium: "0.5rem 0.8rem",
-            large: "0.6rem 1rem"
+            small: "0.3rem 0.6rem",
+            medium: "0.4rem 0.8rem",
+            large: "0.5rem 1rem"
         }[inputSize])};
     font-size: ${({ inputSize }) =>
         ({

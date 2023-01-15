@@ -1,12 +1,8 @@
 import moment from "moment"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import Flex from "src/components/Flex"
-import Loader from "src/components/ui/Loader"
-import { useGetDocumentsQuery } from "src/services/documents"
+import { useAppSelector } from "src/store"
 import { supabaseClient, useUser } from "src/utils/supabase"
-import styled from "styled-components"
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
@@ -18,11 +14,9 @@ export default function SubdocumentComponent(props: NodeViewProps) {
     const [loading, setLoading] = useState(true)
 
     // Try to get the title from query cache
-    const { document: cacheDocument } = useGetDocumentsQuery(null, {
-        selectFromResult: ({ data }) => ({
-            document: data?.find((d) => d.id === docId)
-        })
-    })
+    const { cacheDocument } = useAppSelector((state) => ({
+        cacheDocument: state.documents.documents.find((d) => d.id === docId)
+    }))
 
     useEffect(() => {
         if (cacheDocument) {

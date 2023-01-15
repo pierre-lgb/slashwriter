@@ -1,10 +1,11 @@
 import { RiAddLine as AddIcon } from "react-icons/ri"
-import { useAddFolderMutation } from "src/services/folders"
+import * as foldersApi from "src/api/folders"
+import { useAppDispatch } from "src/store"
 
 import SidebarItem from "./SidebarItem"
 
 export default function AddFolderButton() {
-    const [addFolder] = useAddFolderMutation()
+    const dispatch = useAppDispatch()
 
     return (
         <SidebarItem.Button
@@ -13,7 +14,7 @@ export default function AddFolderButton() {
             onClick={() => {
                 const folderName = prompt("Nom du dossier :")
                 if (!folderName) return
-                addFolder({ name: folderName })
+                dispatch(foldersApi.insertFolder({ name: folderName }))
             }}
         />
     )

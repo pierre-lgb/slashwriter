@@ -1,3 +1,4 @@
+import Router from "next/router"
 import { useCallback, useRef, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { RiImage2Line as ImageIcon } from "react-icons/ri"
@@ -50,7 +51,7 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
 
             setUploading(true)
 
-            const documentId = store.getState().navigation.activeDocumentId
+            const documentId = Router.query.docId
 
             // Upload
             const { data, error } = await supabaseClient.storage

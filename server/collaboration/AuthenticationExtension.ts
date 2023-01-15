@@ -15,34 +15,26 @@ export default class AuthenticationExtension implements Extension {
         const user = session?.user
 
         const documentId = documentName.split(".").pop()
-        const { error: canReadError } = await supabaseClient.rpc(
-            "canreaddocument",
-            {
+        const { data: permission, error } = await supabaseClient
+            .rpc("get_user_permission_for_document", {
+                document_id: documentId,
                 user_id: user?.id || null,
-                document_id: documentId
-            }
-        )
+                document: null
+            })
+            .single()
 
-        if (canReadError) {
-            console.error(canReadError)
+        if (!["read", "edit"].includes(permission)) {
+            console.error(error)
             throw new Error("Not allowed.")
         }
 
-        const { error: canEditError } = await supabaseClient.rpc(
-            "caneditdocument",
-            {
-                user_id: user?.id || null,
-                document_id: documentId
-            }
-        )
-
-        if (!!canEditError) {
+        if (permission !== "edit") {
             connection.readOnly = true
         }
 
         return {
             session,
-            permission: !!canEditError ? "read" : "read|edit",
+            permission: permission === "edit" ? "edit" : "read",
             user: {
                 ...user
             }

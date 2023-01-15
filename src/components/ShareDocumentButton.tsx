@@ -13,7 +13,7 @@ import Button from "src/components/ui/Button"
 import Input from "src/components/ui/Input"
 import Modal from "src/components/ui/Modal"
 import Select from "src/components/ui/Select"
-import { useGetDocumentsQuery } from "src/services/documents"
+import { useAppSelector } from "src/store"
 import { supabaseClient } from "src/utils/supabase"
 import styled from "styled-components"
 
@@ -37,14 +37,11 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
     const [userQuery, setUserQuery] = useState("")
     const [addUserFieldError, setAddUserFieldError] = useState(null)
 
-    const { documentInheritedFrom } = useGetDocumentsQuery(null, {
-        selectFromResult: ({ data }) => ({
-            documentInheritedFrom: data?.find(
-                (d) => d.id === shareSettings.document_id
-            )
-        }),
-        skip: !shareSettings || !inherited
-    })
+    const { documentInheritedFrom } = useAppSelector((state) => ({
+        documentInheritedFrom: state.documents.documents.find(
+            (d) => d.id === shareSettings?.document_id
+        )
+    }))
 
     const disableInheritance = async () => {
         const { error } = await supabaseClient
@@ -96,25 +93,26 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
     }
 
     const deleteShareSettings = async () => {
-        const { error: updateError } = await supabaseClient
-            .from("documents")
-            .update({ share_settings: null })
-            .match({ id: shareSettings.document_id })
-
-        const { error: deleteError } = await supabaseClient
+        const { error } = await supabaseClient
             .from("shares")
             .delete()
             .match({ id: shareSettings.id })
 
-        if (updateError || deleteError) {
-            console.error(updateError, deleteError)
-            return setError((updateError || deleteError).message)
+        if (error) {
+            console.error(error)
+            return setError(error.message)
         }
 
         setShareSettings(null)
     }
 
     const handleAddUser = async () => {
+        setAddUserFieldError(null)
+
+        if (!userQuery) {
+            return
+        }
+
         const { data: foundUser, error } = await supabaseClient
             .from("profiles")
             .select("id")
@@ -135,26 +133,31 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
             )
         }
 
-        if (shareSettings?.users_can_read?.includes(foundUser.id)) {
+        if (shareSettings?.user_permissions?.[foundUser.id]) {
+            setAddUserFieldError("Cet utilisateur a déjà été ajouté.")
             return
         }
 
         updateShareSettings({
-            users_can_read: (shareSettings?.users_can_read || []).concat(
-                foundUser.id
-            )
+            user_permissions: {
+                ...(shareSettings?.user_permissions || {}),
+                [foundUser.id]: "read"
+            }
         })
         setUserQuery("")
     }
 
     const setUserPermission = (user_id, permission) => {
+        const user_permissions = { ...shareSettings?.user_permissions }
+
+        if (["edit", "read"].includes(permission)) {
+            user_permissions[user_id] = permission
+        } else {
+            delete user_permissions[user_id]
+        }
+
         updateShareSettings({
-            users_can_read: (shareSettings?.users_can_read || [])
-                .filter((id) => id !== user_id)
-                .concat(permission === "read" ? [user_id] : []),
-            users_can_edit: (shareSettings?.users_can_edit || [])
-                .filter((id) => id !== user_id)
-                .concat(permission === "edit" ? [user_id] : [])
+            user_permissions
         })
     }
 
@@ -271,17 +274,10 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                         <Select
                             label="Toute personne disposant du lien"
                             layout="horizontal"
-                            value={
-                                shareSettings?.anyone_can_edit
-                                    ? "edit"
-                                    : shareSettings?.anyone_can_read
-                                    ? "read"
-                                    : "none"
-                            }
+                            value={shareSettings?.anyone_permission || "none"}
                             onValueChange={(value) => {
                                 updateShareSettings({
-                                    anyone_can_read: value === "read",
-                                    anyone_can_edit: value === "edit"
+                                    anyone_permission: value
                                 })
                             }}
                             size="small"
@@ -294,26 +290,6 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                             </Select.Option>
                             <Select.Option value="edit">
                                 Peut modifier
-                            </Select.Option>
-                        </Select>
-                        <Select
-                            label="Sous-documents"
-                            layout="horizontal"
-                            value={
-                                shareSettings?.include_subdocuments === false
-                                    ? "false"
-                                    : "true"
-                            }
-                            onValueChange={(value) => {
-                                updateShareSettings({
-                                    include_subdocuments: value === "true"
-                                })
-                            }}
-                            size="small"
-                        >
-                            <Select.Option value="true">Inclure</Select.Option>
-                            <Select.Option value="false">
-                                Ne pas inclure
                             </Select.Option>
                         </Select>
                         <Flex column style={{ width: "100%" }} gap={10}>
@@ -342,17 +318,7 @@ export default function ShareDocumentButton(props: ShareDocumentButtonProps) {
                             />
 
                             {Object.entries(
-                                [
-                                    ...(
-                                        shareSettings?.users_can_read || []
-                                    ).map((id) => [id, "read"]),
-                                    ...(
-                                        shareSettings?.users_can_edit || []
-                                    ).map((id) => [id, "edit"])
-                                ].reduce((acc, curr) => {
-                                    acc[curr[0]] = curr[1]
-                                    return acc
-                                }, {})
+                                shareSettings?.user_permissions || []
                             )
                                 .sort((a, b) => a[0].localeCompare(b[0]))
                                 .map(

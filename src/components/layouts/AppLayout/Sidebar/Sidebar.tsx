@@ -2,7 +2,6 @@ import { useRouter } from "next/router"
 import { useEffect, useMemo } from "react"
 import {
     RiDeleteBin7Line as TrashIcon,
-    RiEqualizerLine as SettingsIcon,
     RiFileTextLine as DocumentIcon,
     RiHome2Line as HomeIcon,
     RiQuestionLine as HelpIcon,
@@ -13,8 +12,6 @@ import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
 import Loader from "src/components/ui/Loader"
 import Typography from "src/components/ui/Typography"
-import { useGetDocumentsQuery } from "src/services/documents"
-import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { closeMobileSidebar, openQuicksearch } from "src/store/ui"
 import { useUser } from "src/utils/supabase"
@@ -22,7 +19,7 @@ import styled, { css } from "styled-components"
 
 import AccountSection from "./components/AccountSection"
 import AddFolderButton from "./components/AddFolderButton"
-import Outliner from "./components/Outliner"
+import DocumentsTree from "./components/DocumentsTree"
 import SidebarItem from "./components/SidebarItem"
 
 export default function Sidebar() {
@@ -32,21 +29,20 @@ export default function Sidebar() {
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
         (store) => store.ui
     )
-    const { activeDocumentId } = useAppSelector((store) => store.navigation)
 
     const dispatch = useAppDispatch()
 
     const {
-        data: folders,
-        error: foldersError,
-        isLoading: isLoadingFolders
-    } = useGetFoldersQuery(null, { skip: !user })
+        folders,
+        isLoading: isLoadingFolders,
+        error: foldersError
+    } = useAppSelector((store) => store.folders)
 
     const {
-        data: documents,
-        error: documentsError,
-        isLoading: isLoadingDocuments
-    } = useGetDocumentsQuery(null, { skip: !user })
+        documents,
+        isLoading: isLoadingDocuments,
+        error: documentsError
+    } = useAppSelector((store) => store.documents)
 
     const favorites = useMemo(
         () => documents?.filter((d) => d.favorite),
@@ -109,8 +105,7 @@ export default function Sidebar() {
                                     key={id}
                                     href={`/doc/${id}`}
                                     icon={<DocumentIcon />}
-                                    title={title}
-                                    active={id === activeDocumentId}
+                                    title={title || "Sans titre"}
                                 />
                             ))}
                         </Flex>
@@ -129,7 +124,7 @@ export default function Sidebar() {
                         )}
                         {folders && documents && (
                             <>
-                                <Outliner
+                                <DocumentsTree
                                     folders={folders}
                                     documents={documents}
                                 />
@@ -145,11 +140,7 @@ export default function Sidebar() {
                         title="Corbeille"
                         href="/trash"
                     />
-                    <SidebarItem.Link
-                        icon={<SettingsIcon />}
-                        title="Paramètres"
-                        href="/settings"
-                    />
+
                     <SidebarItem.Link
                         icon={<HelpIcon />}
                         title="Aide"

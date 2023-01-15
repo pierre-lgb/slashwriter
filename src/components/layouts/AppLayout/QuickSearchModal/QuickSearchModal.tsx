@@ -7,8 +7,6 @@ import Input from "src/components/ui/Input"
 import Loader from "src/components/ui/Loader"
 import Modal from "src/components/ui/Modal"
 import Typography from "src/components/ui/Typography"
-import { useGetDocumentsQuery } from "src/services/documents"
-import { useGetFoldersQuery } from "src/services/folders"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { closeQuicksearch, openQuicksearch } from "src/store/ui"
 import styled from "styled-components"
@@ -21,13 +19,17 @@ export default function QuickSearchModal() {
     const { quickSearchOpen } = useAppSelector((store) => store.ui)
     const dispatch = useAppDispatch()
 
-    const { data: folders } = useGetFoldersQuery(null)
+    const {
+        documents,
+        isLoading: isLoadingDocuments,
+        error: documentsError
+    } = useAppSelector((store) => store.documents)
 
     const {
-        data: documents,
-        error: documentsError,
-        isLoading: isLoadingDocuments
-    } = useGetDocumentsQuery(null)
+        folders,
+        isLoading: isLoadingFolders,
+        error: foldersError
+    } = useAppSelector((store) => store.folders)
 
     const filteredDocuments = useMemo(
         () =>
@@ -39,7 +41,7 @@ export default function QuickSearchModal() {
                             ?.toLowerCase()
                             .includes(query.toLowerCase()) ||
                         folders
-                            ?.find((folder) => folder.id === document.folder)
+                            ?.find((folder) => folder.id === document.folder_id)
                             ?.name.toLowerCase()
                             .includes(query.toLowerCase())
                 )
@@ -159,12 +161,12 @@ export default function QuickSearchModal() {
                     onChange={(event) => setQuery(event.target.value)}
                 />
 
-                {!!isLoadingDocuments && (
+                {!!(isLoadingDocuments || isLoadingFolders) && (
                     <Flex align="center" justify="center">
                         <Loader />
                     </Flex>
                 )}
-                {!!documentsError && (
+                {!!(documentsError || foldersError) && (
                     <Flex align="center" justify="center">
                         <Typography.Text type="danger">
                             Une erreur est survenue.
@@ -187,7 +189,7 @@ export default function QuickSearchModal() {
                             title={document.title || "Sans titre"}
                             status={`${
                                 folders?.find(
-                                    (folder) => folder.id === document.folder
+                                    (folder) => folder.id === document.folder_id
                                 )?.name
                             } · Modifié le ${moment(
                                 new Date(document.updated_at)

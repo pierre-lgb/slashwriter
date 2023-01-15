@@ -1,8 +1,13 @@
 import moment from "moment"
-import Link from "next/link"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import { RiDeleteBin7Line as DeleteIcon, RiEdit2Line as RenameIcon } from "react-icons/ri"
+import { useState } from "react"
+import {
+    RiDeleteBin7Line as DeleteIcon,
+    RiEdit2Line as RenameIcon,
+    RiFolder2Line as FolderIcon
+} from "react-icons/ri"
+import * as documentsApi from "src/api/documents"
+import * as foldersApi from "src/api/folders"
 import AddDocumentButton from "src/components/AddDocumentButton"
 import DocumentLink from "src/components/editor/components/DocumentLink"
 import Flex from "src/components/Flex"
@@ -12,21 +17,15 @@ import TransitionOpacity from "src/components/TransitionOpacity"
 import Button from "src/components/ui/Button"
 import Select from "src/components/ui/Select"
 import Typography from "src/components/ui/Typography"
-import { useDeleteDocumentMutation, useGetDocumentsQuery } from "src/services/documents"
-import {
-    useDeleteFolderMutation,
-    useGetFoldersQuery,
-    useUpdateFolderMutation
-} from "src/services/folders"
-import { useAppDispatch } from "src/store"
-import { setActiveFolderId } from "src/store/navigation"
+import { useAppDispatch, useAppSelector } from "src/store"
 import { withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
 import Tippy from "@tippyjs/react"
 
 function DeleteFolderButton({ folderId }) {
-    const [deleteFolder] = useDeleteFolderMutation()
+    const dispatch = useAppDispatch()
+    const router = useRouter()
 
     return (
         <Tippy content="Supprimer" arrow={false}>
@@ -38,9 +37,13 @@ function DeleteFolderButton({ folderId }) {
                     )
                     if (!confirmation) return
 
-                    deleteFolder({
-                        id: folderId
-                    })
+                    dispatch(
+                        foldersApi.updateFolder({ id: folderId, deleted: true })
+                    )
+
+                    alert("Dossier supprimé.")
+
+                    router.push("/home")
                 }}
                 icon={<DeleteIcon />}
                 tabIndex={-1}
@@ -50,18 +53,24 @@ function DeleteFolderButton({ folderId }) {
 }
 
 function RenameFolderButton({ folderId }) {
-    const [updateFolder] = useUpdateFolderMutation()
+    const dispatch = useAppDispatch()
+
     return (
         <Tippy content="Renommer" arrow={false}>
             <Button
                 appearance="text"
                 onClick={() => {
-                    const folderName = prompt("Renommer le dossier:")
+                    const folderName = prompt("Renommer le dossier :")
                     if (!folderName) return
-                    updateFolder({
-                        id: folderId,
-                        update: { name: folderName }
-                    })
+
+                    dispatch(
+                        foldersApi.updateFolder({
+                            id: folderId,
+                            name: folderName
+                        })
+                    )
+
+                    alert("Dossier renommé.")
                 }}
                 icon={<RenameIcon />}
                 tabIndex={-1}
@@ -71,7 +80,7 @@ function RenameFolderButton({ folderId }) {
 }
 
 function DeleteDocumentButton({ documentId }) {
-    const [deleteDocument] = useDeleteDocumentMutation()
+    const dispatch = useAppDispatch()
 
     return (
         <Tippy content="Supprimer" arrow={false} placement="bottom">
@@ -80,8 +89,14 @@ function DeleteDocumentButton({ documentId }) {
                 onClick={(e) => {
                     e.preventDefault()
 
-                    !confirm("Envoyer le document dans la corbeille ?") ||
-                        deleteDocument({ id: documentId })
+                    if (confirm("Envoyer le document dans la corbeille ?")) {
+                        dispatch(
+                            documentsApi.updateDocument({
+                                id: documentId,
+                                deleted: true
+                            })
+                        )
+                    }
                 }}
                 icon={<DeleteIcon />}
                 size="small"
@@ -95,28 +110,23 @@ function Folder() {
     const [sortOrder, setSortOrder] = useState("a-z")
     const router = useRouter()
     const { folderId } = router.query as { folderId: string }
-    const dispatch = useAppDispatch()
 
-    const { folder, isFolderLoading } = useGetFoldersQuery(null, {
-        selectFromResult: ({ data, isUninitialized, isLoading }) => ({
-            folder: data?.find((f) => f.id === folderId),
-            isFolderLoading: isUninitialized || isLoading
-        })
-    })
+    const { folder, isLoadingFolder } = useAppSelector((state) => ({
+        folder: state.folders.folders.find((f) => f.id === folderId),
+        isLoadingFolder: state.folders.isLoading
+    }))
 
-    const { documents } = useGetDocumentsQuery(null, {
-        selectFromResult: ({ data }) => ({
-            documents: data?.filter((d) => d.folder === folderId && !d.parent)
-        })
-    })
+    const { subfolders } = useAppSelector((state) => ({
+        subfolders: state.folders.folders.filter(
+            (f) => f.parent_id === folderId
+        )
+    }))
 
-    useEffect(() => {
-        dispatch(setActiveFolderId(folder?.id))
-
-        return () => {
-            dispatch(setActiveFolderId(null))
-        }
-    }, [folder, dispatch])
+    const { documents } = useAppSelector((state) => ({
+        documents: state.documents.documents.filter(
+            (d) => d.folder_id === folderId && !d.parent_id
+        )
+    }))
 
     return (
         <TransitionOpacity>
@@ -165,6 +175,22 @@ function Folder() {
                                     </AddDocumentButton>
                                 </Flex>
                                 <Separator />
+                                {!!subfolders.length &&
+                                    subfolders.map((folder) => (
+                                        <Button
+                                            key={folder.id}
+                                            appearance="secondary"
+                                            icon={<FolderIcon />}
+                                            onClick={() => {
+                                                router.push(
+                                                    `/folder/${folder.id}`
+                                                )
+                                            }}
+                                        >
+                                            {folder.name}
+                                        </Button>
+                                    ))}
+
                                 {documents
                                     ?.sort((a, b) => {
                                         switch (sortOrder) {
@@ -221,7 +247,7 @@ function Folder() {
                             </DocumentList>
                         </>
                     )}
-                    {!folder && !isFolderLoading && (
+                    {!folder && !isLoadingFolder && (
                         <Typography.Text>
                             Désolé, ce dossier n&apos;existe pas. S&apos;il
                             existait avant, cela signifie qu&apos;il a été
@@ -265,47 +291,6 @@ const FolderTitle = styled.div`
 
 const DocumentList = styled(Flex)`
     margin-top: 20px;
-`
-
-const DocumentListItem = styled(Flex)`
-    border-radius: 5px;
-    padding: 5px 15px 5px 5px;
-    transition: background-color ease-out 100ms;
-
-    &:hover {
-        background-color: var(--color-n50);
-        cursor: pointer;
-    }
-
-    & button {
-        opacity: 0;
-        transition: opacity ease-out 100ms;
-    }
-
-    &:hover button {
-        opacity: 1;
-    }
-`
-
-const DocumentIcon = styled.div`
-    width: 32px;
-    height: 44px;
-    border: 1px solid var(--color-n300);
-    border-radius: 4px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(200,200,200)' width='21' height='32'%3E%3Cg%3E%3Crect width='25' height='2' y='0'/%3E%3Crect width='25' height='2' y='4'/%3E%3Crect width='15' height='2' y='8'/%3E%3Crect width='30' height='2' y='14'/%3E%3Crect width='20' height='2' y='18'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center center;
-`
-
-const DocumentTitle = styled.span`
-    font-weight: 500;
-    font-size: 1em;
-    color: var(--color-n800);
-`
-
-const DocumentMeta = styled.span`
-    font-size: 0.9em;
-    color: var(--color-n600);
 `
 
 export const getServerSideProps = withPageAuth()

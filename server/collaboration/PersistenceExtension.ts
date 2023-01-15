@@ -28,7 +28,7 @@ export default class PersistenceExtension implements Extension {
 
         const { data: document, error } = await supabaseClientWithAuth(session)
             .from("documents")
-            .select("text, state")
+            .select("state")
             .eq("id", documentId)
             .single()
 
@@ -59,7 +59,7 @@ export default class PersistenceExtension implements Extension {
     }: onStoreDocumentPayload) {
         const documentId = documentName.split(".").pop()
         const { user, permission, session } = context
-        if (!permission.includes("edit")) {
+        if (permission !== "edit") {
             return
         }
 

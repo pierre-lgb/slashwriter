@@ -149,7 +149,7 @@ const StyledText = styled.div<{
     small: boolean
     align: "left" | "center" | "right" | "justify"
 }>`
-    font-size: 1rem;
+    font-size: 0.95rem;
     line-height: 1.6rem;
     text-align: ${({ align }) => align};
 
@@ -184,7 +184,7 @@ const StyledText = styled.div<{
     ${({ small }) =>
         small &&
         css`
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         `};
 
     ${({ tag }) => {

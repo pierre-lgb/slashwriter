@@ -1,5 +1,5 @@
 import { Plugin, PluginKey } from "prosemirror-state"
-import { documentsApi } from "src/services/documents"
+import * as documentsApi from "src/api/documents"
 import store from "src/store"
 import { ySyncPluginKey } from "y-prosemirror"
 
@@ -112,11 +112,10 @@ export const Subdocument = Node.create({
                                     (node) => {
                                         if (node.type.name === "subdocument") {
                                             store.dispatch(
-                                                documentsApi.endpoints.deleteDocument.initiate(
-                                                    {
-                                                        id: node.attrs.docId
-                                                    }
-                                                )
+                                                documentsApi.updateDocument({
+                                                    id: node.attrs.docId,
+                                                    deleted: true
+                                                })
                                             )
                                         }
                                     }

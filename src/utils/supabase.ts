@@ -1,7 +1,4 @@
 import { GetServerSidePropsContext } from "next"
-import Router from "next/router"
-import api from "src/services"
-import store from "src/store"
 
 import {
     createBrowserSupabaseClient,
@@ -63,7 +60,6 @@ export const withoutPageAuth =
 export const supabaseClient = createBrowserSupabaseClient()
 export const signOut = () => {
     supabaseClient.auth.signOut()
-    store.dispatch(api.util.resetApiState())
 }
 
 export { useUser } from "@supabase/auth-helpers-react"

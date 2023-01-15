@@ -245,14 +245,14 @@ const blocks = [
     {
         name: "Document",
         description: "Un document intégré",
-        aliases: ["subpage", "embeddedpage", "subdocument", "document"],
+        aliases: ["subpage", "embededpage", "subdocument", "document", "page"],
         command: ({ editor, range }) => {
-            const navigationStore = store.getState().navigation
+            const documentId = Router.query.docId
 
             supabaseClient
                 .from("documents")
                 .insert({
-                    parent: navigationStore.activeDocumentId
+                    parent_id: documentId
                 })
                 .select("id")
                 .then(({ data, error }) => {
@@ -269,9 +269,7 @@ const blocks = [
                         .insertSubdocument(docId)
                         .run()
 
-                    Router.push(
-                        `${Router.asPath.split(/\/[^/]*$/)[0]}/${docId}`
-                    )
+                    Router.push(`/doc/${docId}`)
                 })
         },
         icon: <DocumentIcon />

@@ -1,4 +1,4 @@
-import { KeyboardEvent, useLayoutEffect, useMemo, useState } from "react"
+import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
 import styled from "styled-components"
 import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
@@ -119,6 +119,8 @@ export default function SlashwriterEditor(props: {
         remoteProvider.connect()
 
         return () => {
+            setRemoteSynced(false)
+            setLocalSynced(false)
             remoteProvider.destroy()
             localProvider.destroy()
         }
@@ -170,10 +172,7 @@ export default function SlashwriterEditor(props: {
                     user: userCursor
                 })
             ],
-            onCreate({ editor }) {
-                // Autofocus
-                editor.commands.focus()
-            },
+
             editable
         },
         [documentId, editable, remoteProvider]
@@ -254,6 +253,12 @@ export default function SlashwriterEditor(props: {
 
     const isSynced = isLocalSynced || isRemoteSynced
 
+    useEffect(() => {
+        if (isSynced) {
+            titleEditor.commands.focus()
+        }
+    }, [isSynced])
+
     return (
         <>
             <Container className="editorContainer">
@@ -268,7 +273,12 @@ export default function SlashwriterEditor(props: {
                 )}
                 <div
                     style={
-                        !isSynced ? { opacity: 0, pointerEvents: "none" } : null
+                        !isSynced
+                            ? {
+                                  display: "none",
+                                  pointerEvents: "none"
+                              }
+                            : null
                     }
                 >
                     <TitleEditor

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router"
 import {
     RiCommandLine as CommandIcon,
+    RiEqualizerLine as SettingsIcon,
     RiFileList3Line as ChangelogIcon,
     RiLogoutBoxRLine as LogoutIcon,
     RiUser3Line as ProfileIcon
@@ -18,8 +19,8 @@ function AccountMenu({ children }) {
             content={(instance) => (
                 <Container column gap={4}>
                     <Menu.Item
-                        icon={<ProfileIcon />}
-                        title="Profil"
+                        icon={<SettingsIcon />}
+                        title="Paramètres"
                         onClick={() => router.push("/settings")}
                         menu={instance}
                     />

@@ -139,9 +139,9 @@ const SelectTrigger = styled(SelectPrimitive.SelectTrigger)<{
     border-radius: 4px;
     padding: ${({ size }) =>
         ({
-            small: "0.4rem 0.6rem",
-            medium: "0.5rem 0.8rem",
-            large: "0.6rem 1rem"
+            small: "0.3rem 0.6rem",
+            medium: "0.4rem 0.8rem",
+            large: "0.5rem 1rem"
         }[size])};
 
     font-size: 0.9rem;

@@ -24,7 +24,7 @@ interface ButtonProps {
 }
 
 export default forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-    props,
+    props: ButtonProps,
     ref
 ) {
     const {
@@ -91,13 +91,13 @@ const ButtonComponent = styled.button<{
         iconOnly
             ? {
                   small: "0.3rem",
-                  medium: "0.5rem",
-                  large: "0.6rem"
+                  medium: "0.4rem",
+                  large: "0.5rem"
               }[size]
             : {
                   small: "0.3rem 0.6rem",
-                  medium: "0.5rem 1rem",
-                  large: "0.6rem 1.4rem"
+                  medium: "0.4rem 0.8rem",
+                  large: "0.5rem 1rem"
               }[size]};
     color: ${({ appearance }) =>
         appearance === "primary" ? "var(--color-white)" : "var(--color-n800)"};
