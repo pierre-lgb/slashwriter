@@ -147,6 +147,26 @@ CREATE TRIGGER on_insert_document
 
 
 
+-- Trigger on document updated
+CREATE OR REPLACE FUNCTION handle_update_document()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public
+AS $$
+BEGIN
+  NEW.updated_at := timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_update_document ON documents;
+CREATE TRIGGER on_update_document
+  BEFORE UPDATE OF state ON documents
+  FOR EACH ROW
+  EXECUTE PROCEDURE handle_update_document();
+
+
+
 CREATE OR REPLACE FUNCTION update_subdocuments_on_temp_delete_document()
 RETURNS TRIGGER 
 LANGUAGE plpgsql
