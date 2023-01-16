@@ -2,12 +2,11 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { ReactNode, useMemo } from "react"
 import {
-    RiFolder3Line as FolderIcon,
+    RiFolder2Line as FolderIcon,
     RiHeartFill as FavoriteFillIcon,
     RiHeartLine as FavoriteIcon,
-    RiMenuFoldLine as CloseMenuIcon,
-    RiMenuUnfoldLine as OpenMenuIcon,
     RiMoreFill as MoreIcon,
+    RiSideBarLine as SidebarIcon,
     RiUserLine as UserIcon
 } from "react-icons/ri"
 import * as documentsApi from "src/api/documents"
@@ -104,14 +103,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                                 dispatch(toggleSidebar())
                             }}
                             appearance="text"
-                            icon={
-                                sidebarOpen ? (
-                                    <CloseMenuIcon />
-                                ) : (
-                                    <OpenMenuIcon />
-                                )
-                            }
-                            size="large"
+                            icon={<SidebarIcon size={20} />}
                         />
                     </ToggleSidebarButtonContainer>
                 )}
@@ -121,13 +113,7 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                             dispatch(toggleMobileSidebar())
                         }}
                         appearance="secondary"
-                        icon={
-                            mobileSidebarOpen ? (
-                                <CloseMenuIcon />
-                            ) : (
-                                <OpenMenuIcon />
-                            )
-                        }
+                        icon={<SidebarIcon />}
                     />
                 </MobileToggleSidebarButtonContainer>
 
@@ -255,7 +241,7 @@ const Container = styled.div`
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    border-bottom: 1px solid var(--color-n300);
+    /* border-bottom: 1px solid var(--color-n300); */
 
     @media (max-width: 768px) {
         .breadcrumbs {

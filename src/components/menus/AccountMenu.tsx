@@ -42,6 +42,7 @@ function AccountMenu({ children }) {
                         title="Déconnexion"
                         onClick={() => signOut()}
                         menu={instance}
+                        style={{ color: "var(--color-red)" }}
                     />
                 </Container>
             )}
@@ -52,7 +53,11 @@ function AccountMenu({ children }) {
 }
 
 const Container = styled(Flex)`
-    width: 250px;
+    width: 300px;
+    border-radius: 8px;
+    padding: 1rem;
+
+    background-color: rgba(250, 250, 250, 0.85);
 `
 
 export default AccountMenu

@@ -1,15 +1,17 @@
 import { useRouter } from "next/router"
 import { useEffect, useMemo } from "react"
 import {
+    RiArrowDownSLine as ExpandDownIcon,
     RiDeleteBin7Line as TrashIcon,
     RiFileTextLine as DocumentIcon,
-    RiHome2Line as HomeIcon,
+    RiHome4Line as HomeIcon,
     RiQuestionLine as HelpIcon,
     RiSearchLine as SearchIcon,
-    RiShareLine as ShareIcon
+    RiShareForwardLine as ShareIcon
 } from "react-icons/ri"
 import Flex from "src/components/Flex"
 import Separator from "src/components/Separator"
+import Button from "src/components/ui/Button"
 import Loader from "src/components/ui/Loader"
 import Typography from "src/components/ui/Typography"
 import { useAppDispatch, useAppSelector } from "src/store"
@@ -86,7 +88,7 @@ export default function Sidebar() {
                         }}
                     />
                 </Section>
-                <Separator />
+                {/* <Separator /> */}
                 <Section
                     style={{
                         flex: "1 1 auto",
@@ -98,7 +100,16 @@ export default function Sidebar() {
                     {!!favorites?.length && (
                         <Flex column gap={2} style={{ flexShrink: 0 }}>
                             <SectionTitle>
-                                Favoris <Badge>{favorites?.length}</Badge>
+                                <Flex as="span" align="center" gap={10}>
+                                    Favoris
+                                    <Count>{favorites?.length}</Count>
+                                </Flex>
+                                <Button
+                                    appearance="text"
+                                    size="medium"
+                                    style={{ padding: "2px" }}
+                                    icon={<ExpandDownIcon />}
+                                />
                             </SectionTitle>
                             {favorites.map(({ id, title }) => (
                                 <SidebarItem.Link
@@ -113,7 +124,16 @@ export default function Sidebar() {
 
                     <Flex auto column gap={2}>
                         <SectionTitle>
-                            Dossiers <Badge>{folders?.length}</Badge>
+                            <Flex as="span" align="center" gap={10}>
+                                Dossiers
+                                <Count>{folders?.length}</Count>
+                            </Flex>
+                            <Button
+                                appearance="text"
+                                size="medium"
+                                style={{ padding: "2px" }}
+                                icon={<ExpandDownIcon />}
+                            />
                         </SectionTitle>
                         {(isLoadingFolders || isLoadingDocuments) && <Loader />}
                         {(foldersError || documentsError) && (
@@ -133,7 +153,7 @@ export default function Sidebar() {
                         )}
                     </Flex>
                 </Section>
-                <Separator />
+                {/* <Separator /> */}
                 <Section>
                     <SidebarItem.Link
                         icon={<TrashIcon />}
@@ -183,7 +203,7 @@ const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
     flex-shrink: 0;
     overflow: auto;
 
-    background-color: var(--color-white);
+    background-color: var(--color-n75);
     margin-left: ${({ open }) => `${open ? 0 : -300}px`};
     transition: all ease-out 0.25s;
     z-index: 25;
@@ -202,27 +222,25 @@ const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
 const Section = styled.div`
     display: flex;
     gap: 2px;
-    padding: 16px 20px;
+    padding: 1rem;
     flex-direction: column;
     flex-shrink: 0;
 `
 
 const SectionTitle = styled.h3`
-    font-size: 0.9em;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 400;
     margin: 0 0 5px 0;
-    color: var(--color-n500);
+    color: var(--color-n600);
     flex-shrink: 0;
     display: flex;
     justify-content: space-between;
+    /* text-transform: uppercase; */
 `
 
-const Badge = styled.span`
-    background-color: var(--color-n100);
-    padding: 5px;
-    font-size: 0.8em;
-    font-weight: 600;
-    color: var(--color-n700);
+const Count = styled.span`
+    font-size: 0.95em;
+    font-weight: 400;
+    color: var(--color-n500);
     border-radius: 5px;
-    font-family: "JetBrains Mono", monospace;
 `

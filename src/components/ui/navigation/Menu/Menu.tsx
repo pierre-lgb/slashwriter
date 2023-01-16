@@ -22,7 +22,7 @@ export default function Menu(props: MenuProps) {
             arrow={false}
             trigger="click"
             interactive
-            theme="light-border"
+            theme="light-border no-padding"
             animation="shift-away"
             content={content(instance)}
             onCreate={setInstance}
@@ -38,8 +38,8 @@ Menu.Separator = MenuSeparator
 Menu.Item = MenuItem
 
 const StyledTippy = styled(Tippy)`
-    border-radius: 5px;
     font-size: 0.9em;
+    border-radius: 8px;
 
     & > div {
         padding: 6px;

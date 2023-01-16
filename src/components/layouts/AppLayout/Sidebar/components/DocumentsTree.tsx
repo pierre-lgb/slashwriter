@@ -1,7 +1,4 @@
-import { RiFolder3Line as FolderIcon } from "react-icons/ri"
-import Flex from "src/components/Flex"
-import { useAppSelector } from "src/store"
-import styled from "styled-components"
+import { RiFolder2Line as FolderIcon } from "react-icons/ri"
 
 import SidebarItem from "./SidebarItem"
 

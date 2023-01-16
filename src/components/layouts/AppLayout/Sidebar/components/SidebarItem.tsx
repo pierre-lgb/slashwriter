@@ -45,20 +45,22 @@ export function SidebarLink(props: SidebarLinkProps) {
 
 const Container = styled(Flex)<{ active?: boolean }>`
     border-radius: 4px;
-    padding: 2px;
+    padding: 3px;
     color: var(--color-n700);
     border: none;
-    font-size: 1em;
+    font-size: 0.95rem;
+    font-weight: 400;
     background: none;
     transition: background-color ease-out 50ms, box-shadow ease-out 200ms;
     outline: none;
     cursor: pointer;
     flex-shrink: 0;
+    font-weight: 500;
 
     ${(props) =>
         props.active &&
         css`
-            background: var(--color-n100);
+            background: var(--color-n200);
             color: var(--color-black);
         `}
 
@@ -66,13 +68,17 @@ const Container = styled(Flex)<{ active?: boolean }>`
         ${({ active }) =>
             !active &&
             css`
-                background-color: var(--color-n75);
+                background-color: var(--color-n100);
             `}
     }
 `
 
 const Title = styled(Flex)`
+    display: inline;
     font-size: 0.9em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `
 
 const IconContainer = styled(Flex)`
@@ -80,6 +86,7 @@ const IconContainer = styled(Flex)`
     height: 25px;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 
     & > svg {
         font-size: 1.15em;

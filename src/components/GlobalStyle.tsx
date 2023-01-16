@@ -21,13 +21,13 @@ const GlobalStyle = createGlobalStyle`
     --color-n50: #fbfbfb;
     --color-n75: #f9f9f9;
     --color-n100: #f4f4f4;
-    --color-n200: #edeff5;
-    --color-n300: #e6e8f0;
+    --color-n200: #ebebeb;
+    --color-n300: #e6e8ec;
     --color-n400: #d8dae5;
     --color-n500: #c1c4d6;
     --color-n600: #8f95b2;
-    --color-n700: #696969;
-    --color-n800: #474747;
+    --color-n700: #676768;
+    --color-n800: #37383A;
     --color-n900: #101820;
 
     /* Blue */
@@ -60,6 +60,9 @@ body {
     min-height: 100vh;
 
     -webkit-print-color-adjust: exact !important;
+    -webkit-font-smoothing: antialiased;
+    font-variant-numeric: lining-nums;
+    font-feature-settings: "lnum";
 }
 
 a {

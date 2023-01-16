@@ -83,13 +83,14 @@ const BreadcrumbsItem = styled.li<{ active: boolean }>`
 
     // icons
     svg {
-        font-size: 1.15rem;
-        /* flex-shrink: 0; */
+        font-size: 1rem;
+        flex-shrink: 0;
     }
 `
 
 const BreadcrumbsSeparator = styled.li`
     display: inline-flex;
+    align-items: center;
     user-select: none;
     margin: 0 0.5rem;
     color: var(--color-n400);
