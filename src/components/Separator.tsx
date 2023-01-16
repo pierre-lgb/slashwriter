@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components"
 
 export default styled.hr`
     border-width: 0 0 thin;

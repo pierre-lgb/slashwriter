@@ -32,10 +32,11 @@ export default function MenuItem(props: MenuItemProps) {
 
 const Wrapper = styled(Flex)<{ active?: boolean }>`
     border-radius: 4px;
-    padding: 2px 6px 2px 2px;
+    padding: 0.2rem 0.5rem;
     color: var(--color-n700);
     border: none;
     font-size: 1em;
+    font-weight: 500;
     background: none;
     transition: background-color ease-out 50ms;
 

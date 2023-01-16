@@ -46,6 +46,14 @@ function AccountMenu({ children }) {
                     />
                 </Container>
             )}
+            popperOptions={{
+                modifiers: [
+                    {
+                        name: "preventOverflow",
+                        enabled: false
+                    }
+                ]
+            }}
         >
             {children}
         </Menu>
@@ -53,9 +61,9 @@ function AccountMenu({ children }) {
 }
 
 const Container = styled(Flex)`
-    width: 300px;
+    width: 280px;
     border-radius: 8px;
-    padding: 1rem;
+    padding: 0.5rem;
 
     background-color: rgba(250, 250, 250, 0.85);
 `

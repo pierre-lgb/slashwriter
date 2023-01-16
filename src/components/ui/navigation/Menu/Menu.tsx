@@ -27,6 +27,7 @@ export default function Menu(props: MenuProps) {
             content={content(instance)}
             onCreate={setInstance}
             appendTo="parent"
+            followCursor={false}
             {...rest}
         >
             {children}
@@ -40,8 +41,4 @@ Menu.Item = MenuItem
 const StyledTippy = styled(Tippy)`
     font-size: 0.9em;
     border-radius: 8px;
-
-    & > div {
-        padding: 6px;
-    }
 `

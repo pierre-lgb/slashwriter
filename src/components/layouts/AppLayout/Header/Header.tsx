@@ -215,24 +215,6 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
     )
 }
 
-function getDocumentPath(documentId: string, folders: any[], documents: any[]) {
-    const document = (documents || []).find((d) => d.id === documentId)
-
-    if (!document) return []
-
-    let path = [document]
-    let parent = documents.find((d) => d.id === document.parent)
-
-    while (parent) {
-        path.unshift(parent)
-        if (parent.parent === null) break
-
-        parent = documents.find((d) => d.id === parent.parent)
-    }
-
-    return path
-}
-
 const Container = styled.div`
     height: 60px;
     padding: 0 20px;
@@ -241,7 +223,7 @@ const Container = styled.div`
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    /* border-bottom: 1px solid var(--color-n300); */
+    border-bottom: 1px solid var(--color-n300);
 
     @media (max-width: 768px) {
         .breadcrumbs {

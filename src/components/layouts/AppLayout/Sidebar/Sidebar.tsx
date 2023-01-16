@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
     RiArrowDownSLine as ExpandDownIcon,
     RiDeleteBin7Line as TrashIcon,
@@ -27,6 +27,9 @@ import SidebarItem from "./components/SidebarItem"
 export default function Sidebar() {
     const router = useRouter()
     const user = useUser()
+
+    const [documentsTreeExpanded, setDocumentsTreeExpanded] = useState(true)
+    const [favoritesExpanded, setFavoritesExpanded] = useState(true)
 
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
         (store) => store.ui
@@ -88,72 +91,74 @@ export default function Sidebar() {
                         }}
                     />
                 </Section>
-                {/* <Separator /> */}
                 <Section
                     style={{
                         flex: "1 1 auto",
                         flexShrink: "initial",
                         overflow: "auto",
-                        gap: 20
+                        gap: 10
                     }}
                 >
                     {!!favorites?.length && (
                         <Flex column gap={2} style={{ flexShrink: 0 }}>
-                            <SectionTitle>
+                            <SectionHeader
+                                onClick={() =>
+                                    setFavoritesExpanded((prev) => !prev)
+                                }
+                            >
                                 <Flex as="span" align="center" gap={10}>
                                     Favoris
                                     <Count>{favorites?.length}</Count>
                                 </Flex>
-                                <Button
-                                    appearance="text"
-                                    size="medium"
-                                    style={{ padding: "2px" }}
-                                    icon={<ExpandDownIcon />}
-                                />
-                            </SectionTitle>
-                            {favorites.map(({ id, title }) => (
-                                <SidebarItem.Link
-                                    key={id}
-                                    href={`/doc/${id}`}
-                                    icon={<DocumentIcon />}
-                                    title={title || "Sans titre"}
-                                />
-                            ))}
+                                <ExpandButton expanded={favoritesExpanded} />
+                            </SectionHeader>
+                            <SectionContent expanded={favoritesExpanded}>
+                                {favorites.map(({ id, title }) => (
+                                    <SidebarItem.Link
+                                        key={id}
+                                        href={`/doc/${id}`}
+                                        icon={<DocumentIcon />}
+                                        title={title || "Sans titre"}
+                                    />
+                                ))}
+                            </SectionContent>
                         </Flex>
                     )}
 
                     <Flex auto column gap={2}>
-                        <SectionTitle>
+                        <SectionHeader
+                            onClick={() =>
+                                setDocumentsTreeExpanded((prev) => !prev)
+                            }
+                        >
                             <Flex as="span" align="center" gap={10}>
                                 Dossiers
                                 <Count>{folders?.length}</Count>
                             </Flex>
-                            <Button
-                                appearance="text"
-                                size="medium"
-                                style={{ padding: "2px" }}
-                                icon={<ExpandDownIcon />}
-                            />
-                        </SectionTitle>
-                        {(isLoadingFolders || isLoadingDocuments) && <Loader />}
-                        {(foldersError || documentsError) && (
-                            <Typography.Text type="danger" small>
-                                Une erreur est survenue. <br />
-                                Voir la console.
-                            </Typography.Text>
-                        )}
-                        {folders && documents && (
-                            <>
-                                <DocumentsTree
-                                    folders={folders}
-                                    documents={documents}
-                                />
-                                <AddFolderButton />
-                            </>
-                        )}
+                            <ExpandButton expanded={documentsTreeExpanded} />
+                        </SectionHeader>
+                        <SectionContent expanded={documentsTreeExpanded}>
+                            {(isLoadingFolders || isLoadingDocuments) && (
+                                <Loader />
+                            )}
+                            {(foldersError || documentsError) && (
+                                <Typography.Text type="danger" small>
+                                    Une erreur est survenue. <br />
+                                    Voir la console.
+                                </Typography.Text>
+                            )}
+                            {folders && documents && (
+                                <>
+                                    <DocumentsTree
+                                        folders={folders}
+                                        documents={documents}
+                                    />
+                                    <AddFolderButton />
+                                </>
+                            )}
+                        </SectionContent>
                     </Flex>
                 </Section>
-                {/* <Separator /> */}
                 <Section>
                     <SidebarItem.Link
                         icon={<TrashIcon />}
@@ -221,13 +226,12 @@ const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
 
 const Section = styled.div`
     display: flex;
-    gap: 2px;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     flex-direction: column;
     flex-shrink: 0;
 `
 
-const SectionTitle = styled.h3`
+const SectionHeader = styled.h3`
     font-size: 0.85rem;
     font-weight: 400;
     margin: 0 0 5px 0;
@@ -235,7 +239,15 @@ const SectionTitle = styled.h3`
     flex-shrink: 0;
     display: flex;
     justify-content: space-between;
-    /* text-transform: uppercase; */
+    cursor: pointer;
+`
+
+const SectionContent = styled.div<{ expanded?: boolean }>`
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: ${({ expanded }) => (expanded ? undefined : 0)};
+    overflow: hidden;
 `
 
 const Count = styled.span`
@@ -244,3 +256,19 @@ const Count = styled.span`
     color: var(--color-n500);
     border-radius: 5px;
 `
+
+const ExpandButton = ({ expanded }) => (
+    <Button
+        appearance="text"
+        size="medium"
+        style={{ padding: "2px" }}
+        icon={
+            <ExpandDownIcon
+                style={{
+                    transform: expanded ? "rotateZ(0deg)" : "rotateZ(-90deg)",
+                    transition: "0.3s"
+                }}
+            />
+        }
+    />
+)
