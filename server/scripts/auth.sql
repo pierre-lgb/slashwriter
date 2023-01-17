@@ -51,10 +51,18 @@ LANGUAGE plpgsql
 SECURITY DEFINER SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM profiles WHERE id = OLD.id;
-    DELETE FROM shares WHERE owner_id = OLD.id;
+    -- Disable all triggers for the tables that are being affected
+    EXECUTE 'SET session_replication_role = replica';
+
+    -- Perform the deletion
     DELETE FROM documents WHERE owner_id = OLD.id;
+    DELETE FROM shares WHERE owner_id = OLD.id;
+    DELETE FROM realtime_events WHERE user_id = OLD.id;
     DELETE FROM folders WHERE owner_id = OLD.id;
+    DELETE FROM profiles WHERE id = OLD.id;
+
+    -- Re-enable all triggers for the tables that were affected
+    EXECUTE 'SET session_replication_role = DEFAULT';
     RETURN OLD;
 END;
 $$;
