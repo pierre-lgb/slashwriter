@@ -229,6 +229,7 @@ const Section = styled.div`
     padding: 0.75rem 1rem;
     flex-direction: column;
     flex-shrink: 0;
+    gap: 2px;
 `
 
 const SectionHeader = styled.h3`
