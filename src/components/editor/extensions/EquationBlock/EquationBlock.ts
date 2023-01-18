@@ -83,17 +83,5 @@ export default Node.create({
                     })
                 }
         }
-    },
-
-    addInputRules() {
-        return [
-            nodeInputRule({
-                find: inputRegex,
-                type: this.type,
-                getAttributes: (match) => ({
-                    katex: match[1].replaceAll("$", "")
-                })
-            })
-        ]
     }
 })
