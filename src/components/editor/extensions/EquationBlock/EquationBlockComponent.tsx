@@ -67,7 +67,7 @@ export default function EquationComponent(props: NodeViewProps) {
             arrow={false}
             interactive
             appendTo={"parent"}
-            visible={editMode}
+            visible={editMode && editor.isEditable}
             onShown={() => {
                 textAreaRef.current.focus()
                 textAreaRef.current.select()

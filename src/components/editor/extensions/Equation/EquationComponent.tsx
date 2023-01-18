@@ -66,7 +66,7 @@ export default function EquationComponent(props: NodeViewProps) {
                 textAreaRef.current.focus()
                 textAreaRef.current.select()
             }}
-            visible={editMode}
+            visible={editMode && editor.isEditable}
             animation="shift-away"
             duration={[200, 0]}
             content={

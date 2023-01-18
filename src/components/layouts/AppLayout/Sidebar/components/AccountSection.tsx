@@ -38,13 +38,14 @@ const Container = styled(Flex)`
     }
 `
 
-const Avatar = styled(Image)`
+const Avatar = styled.img`
     border-radius: 50%;
 `
 
 const StyledEmail = styled.span`
     font-size: 0.9em;
-    color: var(--color-n700);
+    font-weight: 500;
+    color: var(--color-n600);
     flex-grow: 1;
     white-space: nowrap;
     overflow: hidden;
