@@ -134,7 +134,7 @@ const StyledTitle = styled.div<{ level: 1 | 2 | 3 | 4 | 5 }>`
         ({
             1: "3rem",
             2: "2.25rem",
-            3: "1.5rem",
+            3: "1.75rem",
             4: "1.125rem",
             5: "1rem"
         }[level])};

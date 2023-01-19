@@ -63,7 +63,7 @@ function AccountMenu({ children }) {
 const Container = styled(Flex)`
     width: 280px;
     border-radius: 8px;
-    padding: 0.5rem;
+    padding: 1rem;
 
     background-color: rgba(250, 250, 250, 0.85);
 `

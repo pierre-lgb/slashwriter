@@ -6,13 +6,13 @@ import { Instance as TippyInstance } from "tippy.js"
 interface MenuItemProps {
     title: string
     icon: ReactNode
-    onClick: MouseEventHandler<HTMLButtonElement>
+    onClick?: MouseEventHandler<HTMLButtonElement>
     menu: TippyInstance
     [x: string]: any
 }
 
 export default function MenuItem(props: MenuItemProps) {
-    const { menu, onClick, icon, title, ...otherProps } = props
+    const { menu, onClick = () => {}, icon, title, ...otherProps } = props
     return (
         <Wrapper
             gap={10}
@@ -35,7 +35,7 @@ const Wrapper = styled(Flex)<{ active?: boolean }>`
     padding: 0.2rem 0.5rem;
     color: var(--color-n700);
     border: none;
-    font-size: 1em;
+    font-size: 0.9rem;
     font-weight: 500;
     background: none;
     transition: background-color ease-out 50ms;
