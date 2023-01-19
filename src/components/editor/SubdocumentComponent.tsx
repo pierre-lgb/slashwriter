@@ -1,17 +1,37 @@
 import moment from "moment"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { useAppSelector } from "src/store"
-import { supabaseClient, useUser } from "src/utils/supabase"
+import * as documentsApi from "src/api/documents"
+import { useAppDispatch, useAppSelector } from "src/store"
+import { supabaseClient } from "src/utils/supabase"
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
-import DocumentLink from "../../components/DocumentLink"
+import DocumentLink from "../DocumentLink"
 
 export default function SubdocumentComponent(props: NodeViewProps) {
     const { docId } = props.node.attrs
+    const router = useRouter()
     const [document, setDocument] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        if (docId === "create_new") {
+            dispatch(
+                documentsApi.insertDocument({ parent_id: router.query.docId })
+            ).then((res: any) => {
+                if (res.payload) {
+                    props.updateAttributes({ docId: res.payload.id })
+                    router.push(`/doc/${res.payload.id}`)
+                    return
+                }
+
+                alert("Impossible de créer le document intégré")
+                props.deleteNode()
+            })
+        }
+    }, [docId])
 
     // Try to get the title from query cache
     const { cacheDocument } = useAppSelector((state) => ({
@@ -26,7 +46,7 @@ export default function SubdocumentComponent(props: NodeViewProps) {
                 updated_at: cacheDocument.updated_at
             })
             setLoading(false)
-        } else {
+        } else if (docId !== "create_new") {
             // Otherwise try to fetch it (for shared documents)
             supabaseClient
                 .from("documents")
@@ -46,8 +66,6 @@ export default function SubdocumentComponent(props: NodeViewProps) {
                 })
         }
     }, [docId, cacheDocument])
-
-    const router = useRouter()
 
     return (
         <NodeViewWrapper

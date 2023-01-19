@@ -8,6 +8,7 @@ import { Extension, textInputRule } from "@tiptap/core"
 
 export default Extension.create({
     name: "shortcuts",
+    priority: 500,
 
     addInputRules() {
         return [

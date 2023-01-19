@@ -43,7 +43,7 @@ const Avatar = styled.img`
 `
 
 const StyledEmail = styled.span`
-    font-size: 0.9em;
+    font-size: 0.85em;
     font-weight: 500;
     color: var(--color-n600);
     flex-grow: 1;

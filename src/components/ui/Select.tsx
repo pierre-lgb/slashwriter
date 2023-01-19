@@ -26,7 +26,7 @@ function Option(props: OptionProps) {
 
 const SelectItem = styled(SelectPrimitive.Item)`
     all: unset;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     color: var(--color-n800);
     border-radius: 3px;
@@ -144,7 +144,7 @@ const SelectTrigger = styled(SelectPrimitive.SelectTrigger)<{
             large: "0.5rem 1rem"
         }[size])};
 
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     background-color: var(--color-white);
     border: ${({ borderless }) =>
         borderless ? "1px solid transparent" : "1px solid var(--color-n400)"};

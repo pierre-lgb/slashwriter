@@ -1,7 +1,7 @@
 import moment from "moment"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     RiAddLine as AddIcon,
     RiDeleteBin7Line as DeleteIcon,
@@ -19,7 +19,7 @@ import Button from "src/components/ui/Button"
 import Menu from "src/components/ui/navigation/Menu"
 import Typography from "src/components/ui/Typography"
 import { useAppDispatch, useAppSelector } from "src/store"
-import { withPageAuth } from "src/utils/supabase"
+import { supabaseClient, withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
 import Table from "@mui/material/Table"
@@ -94,6 +94,9 @@ function Folder() {
     )
     const [order, setOrder] = useState<"desc" | "asc">("asc")
 
+    const [textPreviews, setTextPreviews] = useState({})
+    const [loadingTextPreviews, setLoadingTextPreviews] = useState(true)
+
     const { folder, isLoadingFolder } = useAppSelector((state) => ({
         folder: state.folders.folders.find((f) => f.id === folderId),
         isLoadingFolder: state.folders.isLoading
@@ -105,11 +108,51 @@ function Folder() {
         )
     }))
 
-    const { documents } = useAppSelector((state) => ({
+    const { documents, isLoadingDocuments } = useAppSelector((state) => ({
         documents: state.documents.documents.filter(
             (d) => d.folder_id === folderId && !d.parent_id
-        )
+        ),
+        isLoadingDocuments: state.documents.isLoading
     }))
+
+    useEffect(() => {
+        if (folderId && documents.length) {
+            setLoadingTextPreviews(true)
+
+            supabaseClient
+                .from("documents")
+                .select("id, text_preview")
+                .in(
+                    "id",
+                    documents.map((d) => d.id)
+                )
+                .then(({ data, error }) => {
+                    if (error) {
+                        console.error(error)
+                        return
+                    }
+
+                    setTextPreviews(
+                        (data || []).reduce((acc, curr) => {
+                            acc[curr.id] = curr.text_preview
+                            return acc
+                        }, {})
+                    )
+                    setLoadingTextPreviews(false)
+                })
+        }
+    }, [folderId, documents.length])
+
+    const handleDeleteDocument = (documentId) => {
+        if (confirm("Envoyer ce document dans la corbeille ?")) {
+            dispatch(
+                documentsApi.updateDocument({
+                    id: documentId,
+                    deleted: true
+                })
+            )
+        }
+    }
 
     return (
         <TransitionOpacity>
@@ -132,16 +175,10 @@ function Folder() {
                                 </AddDocumentButton>
                             </div>
                             <DocumentListWrapper>
-                                <Table
-                                    sx={{
-                                        tableLayout: "fixed",
-                                        borderSpacing: "0 0.25rem",
-                                        borderCollapse: "separate"
-                                    }}
-                                >
+                                <Table sx={{ tableLayout: "fixed" }}>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell width="80%">
+                                            <TableCell>
                                                 <TableSortLabel
                                                     active={orderBy === "title"}
                                                     direction={order}
@@ -161,7 +198,7 @@ function Folder() {
                                             </TableCell>
                                             <TableCell
                                                 width="35%"
-                                                className="updated_atHeaderCell"
+                                                className="updatedAtHeaderCell"
                                             >
                                                 <TableSortLabel
                                                     active={
@@ -231,8 +268,11 @@ function Folder() {
                                                             "background-color 0.2s",
                                                         cursor: "pointer"
                                                     }}
-                                                    component={Link}
-                                                    href={`/doc/${document.id}`}
+                                                    onClick={() => {
+                                                        router.push(
+                                                            `/doc/${document.id}`
+                                                        )
+                                                    }}
                                                 >
                                                     <TableCell
                                                         sx={{
@@ -248,7 +288,9 @@ function Folder() {
                                                         }}
                                                     >
                                                         <DocumentIcon />
-                                                        <Typography.Text
+                                                        <Flex
+                                                            column
+                                                            justify="center"
                                                             style={{
                                                                 overflow:
                                                                     "hidden",
@@ -258,14 +300,29 @@ function Folder() {
                                                                     "nowrap"
                                                             }}
                                                         >
-                                                            {document.title}
-                                                        </Typography.Text>
+                                                            <Typography.Text className="documentTitle">
+                                                                {document.title ||
+                                                                    "Document sans titre"}
+                                                            </Typography.Text>
+                                                            <Typography.Text
+                                                                small
+                                                                className="documentTextPreview"
+                                                            >
+                                                                {loadingTextPreviews
+                                                                    ? "..."
+                                                                    : textPreviews[
+                                                                          document
+                                                                              .id
+                                                                      ] ||
+                                                                      "Document vide"}
+                                                            </Typography.Text>
+                                                        </Flex>
                                                     </TableCell>
-                                                    <TableCell
-                                                        width={10}
-                                                        className="updated_atCell"
-                                                    >
-                                                        <Typography.Text type="secondary">
+                                                    <TableCell className="updatedAtCell">
+                                                        <Typography.Text
+                                                            type="secondary"
+                                                            className="documentUpdatedAt"
+                                                        >
                                                             {moment(
                                                                 new Date(
                                                                     document.updated_at
@@ -281,7 +338,11 @@ function Folder() {
                                                             ).format("HH:mm")}
                                                         </Typography.Text>
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                        }}
+                                                    >
                                                         <Menu
                                                             content={(
                                                                 instance
@@ -302,27 +363,11 @@ function Folder() {
                                                                         menu={
                                                                             instance
                                                                         }
-                                                                        onClick={() => {
-                                                                            if (
-                                                                                confirm(
-                                                                                    "Êtes-vous certain de vouloir supprimer ce dossier ?"
-                                                                                )
-                                                                            ) {
-                                                                                dispatch(
-                                                                                    foldersApi.updateFolder(
-                                                                                        {
-                                                                                            id: folderId,
-                                                                                            deleted:
-                                                                                                true
-                                                                                        }
-                                                                                    )
-                                                                                )
-
-                                                                                router.push(
-                                                                                    "/home"
-                                                                                )
-                                                                            }
-                                                                        }}
+                                                                        onClick={() =>
+                                                                            handleDeleteDocument(
+                                                                                document.id
+                                                                            )
+                                                                        }
                                                                         style={{
                                                                             color: "var(--color-red)"
                                                                         }}
@@ -337,9 +382,10 @@ function Folder() {
                                                                 onClick={(e) =>
                                                                     e.preventDefault()
                                                                 }
-                                                            >
-                                                                <MoreIcon />
-                                                            </Button>
+                                                                icon={
+                                                                    <MoreIcon />
+                                                                }
+                                                            />
                                                         </Menu>
                                                     </TableCell>
                                                 </TableRow>
@@ -347,108 +393,6 @@ function Folder() {
                                     </TableBody>
                                 </Table>
                             </DocumentListWrapper>
-
-                            {/* <DocumentList column gap={5}>
-                                <Flex
-                                    align="center"
-                                    justify="space-between"
-                                    gap={10}
-                                >
-                                    <Select
-                                        value={sortOrder}
-                                        onValueChange={(value) => {
-                                            setSortOrder(value)
-                                        }}
-                                    >
-                                        <Select.Option value="a-z">
-                                            De A à Z
-                                        </Select.Option>
-                                        <Select.Option value="z-a">
-                                            De Z à A
-                                        </Select.Option>
-                                        <Select.Option value="recent">
-                                            Récents
-                                        </Select.Option>
-                                    </Select>
-
-                                    <AddDocumentButton
-                                        folderId={folderId}
-                                        appearance="primary"
-                                    >
-                                        Nouveau
-                                    </AddDocumentButton>
-                                </Flex>
-                                <Separator />
-                                {!!subfolders.length &&
-                                    subfolders.map((folder) => (
-                                        <Button
-                                            key={folder.id}
-                                            appearance="secondary"
-                                            icon={<FolderIcon />}
-                                            onClick={() => {
-                                                router.push(
-                                                    `/folder/${folder.id}`
-                                                )
-                                            }}
-                                        >
-                                            {folder.name}
-                                        </Button>
-                                    ))}
-
-                                {documents
-                                    ?.sort((a, b) => {
-                                        switch (sortOrder) {
-                                            case "a-z":
-                                                return (
-                                                    a.title || ""
-                                                ).localeCompare(b.title || "")
-                                            case "z-a":
-                                                return (
-                                                    b.title || ""
-                                                ).localeCompare(a.title || "")
-                                            case "recent":
-                                                return (
-                                                    new Date(
-                                                        b.updated_at
-                                                    ).getTime() -
-                                                    new Date(
-                                                        a.updated_at
-                                                    ).getTime()
-                                                )
-
-                                            case "old":
-                                                return (
-                                                    new Date(
-                                                        a.updated_at
-                                                    ).getTime() -
-                                                    new Date(
-                                                        b.updated_at
-                                                    ).getTime()
-                                                )
-                                        }
-                                    })
-                                    .map((document, index) => (
-                                        <DocumentLink
-                                            href={`/doc/${document.id}`}
-                                            key={index}
-                                            title={
-                                                document.title || "Sans titre"
-                                            }
-                                            status={`Modifié le ${moment(
-                                                new Date(document.updated_at)
-                                            ).format("DD/MM/YYYY")} à ${moment(
-                                                new Date(document.updated_at)
-                                            ).format("HH:mm")}`}
-                                            actions={
-                                                <Flex align="center">
-                                                    <DeleteDocumentButton
-                                                        documentId={document.id}
-                                                    />
-                                                </Flex>
-                                            }
-                                        />
-                                    ))}
-                            </DocumentList> */}
                         </>
                     )}
                     {!folder && !isLoadingFolder && (
@@ -506,6 +450,7 @@ const DocumentIcon = styled.div`
 `
 
 const DocumentListWrapper = styled.div`
+    margin-top: 20px;
     td {
         border: none;
     }
@@ -513,7 +458,23 @@ const DocumentListWrapper = styled.div`
     td,
     th {
         font-family: inherit;
+        font-size: 0.9rem;
         padding: 0.5rem;
+
+        .documentTextPreview {
+            font-weight: 400;
+            color: var(--color-n600);
+        }
+
+        .documentUpdatedAt {
+            color: var(--color-n600);
+            font-size: 0.8rem;
+        }
+
+        .documentTitle,
+        .documentTextPreview {
+            line-height: 1.2rem;
+        }
     }
 
     span {
@@ -525,15 +486,11 @@ const DocumentListWrapper = styled.div`
     display: flex;
 
     @media screen and (max-width: 450px) {
-        .updated_atCell,
-        .updated_atHeaderCell {
+        .updatedAtCell,
+        .updatedAtHeaderCell {
             display: none;
         }
     }
-`
-
-const DocumentList = styled(Flex)`
-    margin-top: 20px;
 `
 
 export const getServerSideProps = withPageAuth()

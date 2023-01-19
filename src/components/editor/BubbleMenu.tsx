@@ -14,9 +14,12 @@ import {
 import Button from "src/components/ui/Button"
 import styled from "styled-components"
 
+import { CellSelection } from "@tiptap/prosemirror-tables"
 import { BubbleMenu as TiptapBubbleMenu, Editor, isNodeSelection } from "@tiptap/react"
 
-import { isCellSelection } from "../extensions/Table/utilities/isCellSelection"
+function isCellSelection(value: unknown): value is CellSelection {
+    return value instanceof CellSelection
+}
 
 interface BubbleMenuProps {
     editor: Editor

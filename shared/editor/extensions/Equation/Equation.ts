@@ -1,8 +1,6 @@
 import { Node, nodeInputRule, wrappingInputRule } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 
-import EquationComponent from "./EquationComponent"
-
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
         equation: {
@@ -19,6 +17,7 @@ export interface EquationOptions {
      * Custom HTML attributes that should be added to the rendered HTML tag.
      */
     HTMLAttributes: Record<string, any>
+    Component: any
 }
 
 export const inputRegex = /(?:^|\s)((?:\$\$)((?:[^$]+))(?:\$\$))$/
@@ -28,7 +27,8 @@ export default Node.create({
 
     addOptions() {
         return {
-            HTMLAttributes: {}
+            HTMLAttributes: {},
+            Component: null
         }
     },
 
@@ -71,7 +71,7 @@ export default Node.create({
     },
 
     addNodeView() {
-        return ReactNodeViewRenderer(EquationComponent)
+        return ReactNodeViewRenderer(this.options.Component)
     },
 
     addCommands() {

@@ -3,11 +3,8 @@ import { yDocToProsemirrorJSON } from "y-prosemirror"
 import * as Y from "yjs"
 
 import { Extension, onLoadDocumentPayload, onStoreDocumentPayload } from "@hocuspocus/server"
-import { getSchema } from "@tiptap/core"
-import Document from "@tiptap/extension-document"
-import Heading from "@tiptap/extension-heading"
-import Text from "@tiptap/extension-text"
 
+import editorSchema from "../../shared/editor/schema"
 import { supabaseClientWithAuth } from "../utils"
 
 export default class PersistenceExtension implements Extension {
@@ -68,15 +65,24 @@ export default class PersistenceExtension implements Extension {
         )
 
         const title = Node.fromJSON(
-            getSchema([Document, Text, Heading]),
+            editorSchema,
             yDocToProsemirrorJSON(ydoc, "title")
         ).textContent
+
+        const docNode = Node.fromJSON(
+            editorSchema,
+            yDocToProsemirrorJSON(ydoc, "default")
+        )
+
+        const text_preview = docNode
+            .textBetween(1, docNode.nodeSize - 3, " ")
+            .slice(0, 100)
 
         const state = Y.encodeStateAsUpdate(ydoc)
 
         const { error } = await supabaseClientWithAuth(session)
             .from("documents")
-            .update({ title, state })
+            .update({ title, state, text_preview })
             .eq("id", documentId)
 
         if (error) {

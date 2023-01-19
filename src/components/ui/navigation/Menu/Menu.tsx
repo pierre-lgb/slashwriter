@@ -27,7 +27,6 @@ export default function Menu(props: MenuProps) {
             content={content(instance)}
             onCreate={setInstance}
             appendTo="parent"
-            followCursor={false}
             {...rest}
         >
             {children}

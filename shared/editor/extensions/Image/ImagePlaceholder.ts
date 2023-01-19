@@ -1,6 +1,9 @@
 import { CommandProps, mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react"
 
-import ImagePlaceholderComponent from "./ImagePlaceholderComponent"
+export interface ImagePlaceholderOptions {
+    HTMLAttributes: Record<string, any>
+    Component: any
+}
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
@@ -13,8 +16,15 @@ declare module "@tiptap/core" {
     }
 }
 
-export default Node.create({
+export default Node.create<ImagePlaceholderOptions>({
     name: "imagePlaceholder",
+
+    addOptions() {
+        return {
+            HTMLAttributes: {},
+            Component: null
+        }
+    },
 
     group: "block",
 
@@ -29,7 +39,7 @@ export default Node.create({
     },
 
     addNodeView() {
-        return ReactNodeViewRenderer(ImagePlaceholderComponent)
+        return ReactNodeViewRenderer(this.options.Component)
     },
 
     addCommands() {

@@ -1,7 +1,7 @@
 import moment from "moment"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { RiSearchLine as SearchIcon } from "react-icons/ri"
-import DocumentLink from "src/components/editor/components/DocumentLink"
+import DocumentLink from "src/components/DocumentLink"
 import Flex from "src/components/Flex"
 import Input from "src/components/ui/Input"
 import Loader from "src/components/ui/Loader"

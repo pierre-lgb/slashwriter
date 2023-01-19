@@ -1,4 +1,28 @@
 import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useState } from "react"
+import Details from "shared/editor/extensions/@tiptap-pro/Details"
+import Emoji from "shared/editor/extensions/@tiptap-pro/Emoji"
+import Callout from "shared/editor/extensions/Callout"
+import CodeBlock from "shared/editor/extensions/CodeBlock"
+import Collaboration from "shared/editor/extensions/Collaboration"
+import CollaborationCursor from "shared/editor/extensions/CollaborationCursor"
+import DragAndDrop from "shared/editor/extensions/DragAndDrop"
+import Equation from "shared/editor/extensions/Equation"
+import EquationBlock from "shared/editor/extensions/EquationBlock"
+import HorizontalRule from "shared/editor/extensions/HorizontalRule"
+import Image from "shared/editor/extensions/Image"
+import ImagePlaceholder from "shared/editor/extensions/Image/ImagePlaceholder"
+import Shortcuts from "shared/editor/extensions/Shortcuts"
+import SlashCommands from "shared/editor/extensions/SlashCommands"
+import Subdocument from "shared/editor/extensions/Subdocument"
+import Table from "shared/editor/extensions/Table"
+import TableCell from "shared/editor/extensions/TableCell"
+import TableHeader from "shared/editor/extensions/TableHeader"
+import TableRow from "shared/editor/extensions/TableRow"
+import TaskItem from "shared/editor/extensions/TaskItem"
+import TaskList from "shared/editor/extensions/TaskList"
+import TrailingNode from "shared/editor/extensions/TrailingNode"
+import * as documentsApi from "src/api/documents"
+import { useAppDispatch } from "src/store"
 import styled from "styled-components"
 import { IndexeddbPersistence } from "y-indexeddb"
 import * as Y from "yjs"
@@ -30,30 +54,15 @@ import { EditorContent, useEditor } from "@tiptap/react"
 
 import Flex from "../Flex"
 import Loader from "../ui/Loader"
-import BlockMenu from "./components/BlockMenu"
-import BubbleMenu from "./components/BubbleMenu"
-import CalloutEmojiMenu from "./components/CalloutEmojiMenu"
-import Details from "./extensions/@tiptap-pro/Details"
-import Emoji from "./extensions/@tiptap-pro/Emoji"
-import Callout from "./extensions/Callout"
-import CodeBlock from "./extensions/CodeBlock"
-import Collaboration from "./extensions/Collaboration"
-import CollaborationCursor from "./extensions/CollaborationCursor"
-import DragAndDrop from "./extensions/DragAndDrop"
-import Equation from "./extensions/Equation"
-import EquationBlock from "./extensions/EquationBlock"
-import HorizontalRule from "./extensions/HorizontalRule"
-import Image from "./extensions/Image"
-import Shortcuts from "./extensions/Shortcuts"
-import SlashCommands from "./extensions/SlashCommands"
-import Subdocument from "./extensions/Subdocument"
-import Table from "./extensions/Table"
-import TableCell from "./extensions/TableCell"
-import TableHeader from "./extensions/TableHeader"
-import TableRow from "./extensions/TableRow"
-import TaskItem from "./extensions/TaskItem"
-import TaskList from "./extensions/TaskList"
-import TrailingNode from "./extensions/TrailingNode"
+import BlockMenu from "./BlockMenu"
+import BubbleMenu from "./BubbleMenu"
+import CalloutEmojiMenu from "./CalloutEmojiMenu"
+import emojiSuggestionConfig from "./EmojiList/suggestion"
+import EquationBlockComponent from "./EquationBlockComponent"
+import EquationComponent from "./EquationComponent"
+import ImageComponent from "./ImageComponent"
+import ImagePlaceholderComponent from "./ImagePlaceholderComponent"
+import SubdocumentComponent from "./SubdocumentComponent"
 
 function getRandomName() {
     const NAMES = ["Anonymous", "Toad", "Yoshi", "Luma", "Boo"]
@@ -71,6 +80,7 @@ export default function SlashwriterEditor(props: {
     editable?: boolean
 }) {
     const { documentId, user, editable = true } = props
+    const dispatch = useAppDispatch()
 
     const ydoc = useMemo(() => new Y.Doc(), [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -196,9 +206,25 @@ export default function SlashwriterEditor(props: {
                 ListItem,
                 TaskList,
                 TaskItem,
-                Image,
+                Image.configure({
+                    Component: ImageComponent
+                }),
+                ImagePlaceholder.configure({
+                    Component: ImagePlaceholderComponent
+                }),
                 HorizontalRule,
-                Subdocument,
+                Subdocument.configure({
+                    Component: SubdocumentComponent,
+                    onDeleteSubdocument: (id) => {
+                        console.log("Delete subdocument", id)
+                        dispatch(
+                            documentsApi.updateDocument({
+                                id,
+                                deleted: true
+                            })
+                        )
+                    }
+                }),
                 Details,
                 Youtube,
                 Callout,
@@ -207,9 +233,15 @@ export default function SlashwriterEditor(props: {
                 TableHeader,
                 TableRow,
                 Table,
-                Emoji,
-                Equation,
-                EquationBlock,
+                Emoji.configure({
+                    suggestion: emojiSuggestionConfig
+                }),
+                Equation.configure({
+                    Component: EquationComponent
+                }),
+                EquationBlock.configure({
+                    Component: EquationBlockComponent
+                }),
 
                 // Format
                 Bold,

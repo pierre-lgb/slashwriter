@@ -147,8 +147,8 @@ const InputComponent = styled.input<{
         }[inputSize])};
     font-size: ${({ inputSize }) =>
         ({
-            small: "0.8rem",
-            medium: "0.9rem",
+            small: "0.75rem",
+            medium: "0.85rem",
             large: "1rem"
         }[inputSize])};
 

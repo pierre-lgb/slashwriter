@@ -1,12 +1,8 @@
 import { Plugin, PluginKey } from "prosemirror-state"
-import * as documentsApi from "src/api/documents"
-import store from "src/store"
 import { ySyncPluginKey } from "y-prosemirror"
 
 import { CommandProps, mergeAttributes, Node } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
-
-import SubdocumentComponent from "./SubdocumentComponent"
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
@@ -19,10 +15,31 @@ declare module "@tiptap/core" {
     }
 }
 
-export const Subdocument = Node.create({
+interface SubdocumentProps {
+    HTMLAttributes: Record<string, any>
+    Component: any
+
+    /**
+     * Event triggered when a subdocument node is removed.
+     * Can be used to remove the subdocument from the database as well.
+     * @param id The id of the deleted subdocument
+     * @returns
+     */
+    onDeleteSubdocument: (id: string) => any
+}
+
+export const Subdocument = Node.create<SubdocumentProps>({
     name: "subdocument",
 
     group: "block",
+
+    addOptions() {
+        return {
+            Component: null,
+            HTMLAttributes: {},
+            onDeleteSubdocument: () => {}
+        }
+    },
 
     addAttributes() {
         return {
@@ -45,7 +62,7 @@ export const Subdocument = Node.create({
     },
 
     addNodeView() {
-        return ReactNodeViewRenderer(SubdocumentComponent)
+        return ReactNodeViewRenderer(this.options.Component)
     },
 
     addCommands() {
@@ -111,11 +128,8 @@ export const Subdocument = Node.create({
                                     oldEnd,
                                     (node) => {
                                         if (node.type.name === "subdocument") {
-                                            store.dispatch(
-                                                documentsApi.updateDocument({
-                                                    id: node.attrs.docId,
-                                                    deleted: true
-                                                })
+                                            this.options.onDeleteSubdocument(
+                                                node.attrs.docId
                                             )
                                         }
                                     }

@@ -201,13 +201,7 @@ const blocks = [
         description: "Une équation LaTeX en bloc",
         aliases: ["equation", "tex", "math", "katex", "latex", "block"],
         command: ({ editor, range }) => {
-            editor
-                .chain()
-                .focus()
-                .deleteRange(range)
-                .setEquationBlock()
-                // .setNodeSelection(range.from)
-                .run()
+            editor.chain().focus().deleteRange(range).setEquationBlock().run()
         },
         icon: <EquationIcon />
     },
@@ -247,30 +241,12 @@ const blocks = [
         description: "Un document intégré",
         aliases: ["subpage", "embededpage", "subdocument", "document", "page"],
         command: ({ editor, range }) => {
-            const documentId = Router.query.docId
-
-            supabaseClient
-                .from("documents")
-                .insert({
-                    parent_id: documentId
-                })
-                .select("id")
-                .then(({ data, error }) => {
-                    if (error) {
-                        console.error(error)
-                        return alert("Impossible de créer la page intégrée")
-                    }
-
-                    const docId = data[0].id
-                    editor
-                        .chain()
-                        .focus()
-                        .deleteRange(range)
-                        .insertSubdocument(docId)
-                        .run()
-
-                    Router.push(`/doc/${docId}`)
-                })
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .insertSubdocument("create_new")
+                .run()
         },
         icon: <DocumentIcon />
     }

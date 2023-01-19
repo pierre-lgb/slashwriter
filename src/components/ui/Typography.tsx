@@ -149,7 +149,7 @@ const StyledText = styled.div<{
     small: boolean
     align: "left" | "center" | "right" | "justify"
 }>`
-    font-size: 0.95rem;
+    font-size: ${({ small }) => (small ? "0.8rem" : "0.9rem")};
     line-height: 1.6rem;
     text-align: ${({ align }) => align};
 
@@ -181,12 +181,6 @@ const StyledText = styled.div<{
             text-decoration: line-through;
         `};
 
-    ${({ small }) =>
-        small &&
-        css`
-            font-size: 0.85rem;
-        `};
-
     ${({ tag }) => {
         if (tag === "mark") {
             return css`
@@ -206,7 +200,7 @@ const StyledText = styled.div<{
         }
         if (tag === "strong") {
             return css`
-                font-weight: 500;
+                font-weight: 600;
             `
         }
 

@@ -248,7 +248,7 @@ const SectionContent = styled.div<{ expanded?: boolean }>`
     flex-direction: column;
     gap: 2px;
     max-height: ${({ expanded }) => (expanded ? undefined : 0)};
-    overflow: hidden;
+    overflow: ${({ expanded }) => (expanded ? undefined : "hidden")};
 `
 
 const Count = styled.span`

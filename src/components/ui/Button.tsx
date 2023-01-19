@@ -84,9 +84,9 @@ const ButtonComponent = styled.button<{
     iconOnly: boolean
 }>`
     font-family: inherit;
-    font-weight: inherit;
+    font-weight: 500;
     font-size: ${({ size }) =>
-        ({ small: "0.8rem", medium: "0.9rem", large: "1rem" }[size])};
+        ({ small: "0.75rem", medium: "0.85rem", large: "1rem" }[size])};
     padding: ${({ size, iconOnly }) =>
         iconOnly
             ? {

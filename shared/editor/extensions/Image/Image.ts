@@ -1,7 +1,8 @@
+import { ReactElement } from "react"
+
 import { mergeAttributes, Node, nodeInputRule } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 
-import ImageComponent from "./ImageComponent"
 import ImagePlaceholder from "./ImagePlaceholder"
 
 /**
@@ -12,6 +13,7 @@ import ImagePlaceholder from "./ImagePlaceholder"
 export interface ImageOptions {
     allowBase64: boolean
     HTMLAttributes: Record<string, any>
+    Component: any
 }
 
 declare module "@tiptap/core" {
@@ -38,7 +40,8 @@ export const Image = Node.create<ImageOptions>({
     addOptions() {
         return {
             allowBase64: true,
-            HTMLAttributes: {}
+            HTMLAttributes: {},
+            Component: null
         }
     },
 
@@ -88,7 +91,7 @@ export const Image = Node.create<ImageOptions>({
     },
 
     addNodeView() {
-        return ReactNodeViewRenderer(ImageComponent)
+        return ReactNodeViewRenderer(this.options.Component)
     },
 
     addCommands() {
@@ -116,9 +119,5 @@ export const Image = Node.create<ImageOptions>({
                 }
             })
         ]
-    },
-
-    addExtensions() {
-        return [ImagePlaceholder]
     }
 })

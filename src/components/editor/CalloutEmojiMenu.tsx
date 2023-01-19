@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { FixedSizeList } from "react-window"
 import tippy, { Instance } from "tippy.js"
 
 import { Editor } from "@tiptap/react"

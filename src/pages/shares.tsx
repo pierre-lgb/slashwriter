@@ -1,7 +1,7 @@
 import moment from "moment"
 import { useEffect, useState } from "react"
 import { RiShareForwardLine as ShareIcon } from "react-icons/ri"
-import DocumentLink from "src/components/editor/components/DocumentLink"
+import DocumentLink from "src/components/DocumentLink"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import Separator from "src/components/Separator"
