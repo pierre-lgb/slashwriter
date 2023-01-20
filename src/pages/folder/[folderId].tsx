@@ -290,7 +290,8 @@ function Folder() {
             sortable: true,
             field: "updated_at",
             type: "date",
-            width: "35%",
+            align: "right",
+            width: "30%",
             hideOnSmallScreens: true,
             getCellContent: (item) => (
                 <Typography.Text type="secondary" small>

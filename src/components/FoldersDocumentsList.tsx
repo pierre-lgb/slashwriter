@@ -63,6 +63,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                 <TableCell
                                     key={index}
                                     width={column.width}
+                                    align={column.align}
                                     sx={{
                                         display:
                                             column.hideOnSmallScreens &&
@@ -122,7 +123,10 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                             column.hideOnSmallScreens &&
                                             matchesSmallScreen
                                         ) ? (
-                                            <TableCell key={index}>
+                                            <TableCell
+                                                key={index}
+                                                align={column.align}
+                                            >
                                                 {index === 0 ? (
                                                     <Flex gap={10}>
                                                         <WrappedFolderIcon />
@@ -165,7 +169,10 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                             column.hideOnSmallScreens &&
                                             matchesSmallScreen
                                         ) ? (
-                                            <TableCell key={index}>
+                                            <TableCell
+                                                key={index}
+                                                align={column.align}
+                                            >
                                                 {index === 0 ? (
                                                     <Flex gap={10}>
                                                         <DocumentIcon />
