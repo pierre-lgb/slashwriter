@@ -136,7 +136,9 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                                     style={{ padding: "0.2rem 0.4rem" }}
                                 >
                                     <FolderIcon />
-                                    <span>{folder.name || "Sans nom"}</span>
+                                    <span>
+                                        {folder.name.trim() || "Sans nom"}
+                                    </span>
                                 </Flex>
                             </Link>
                         ))}
@@ -161,8 +163,8 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                                     )}
                                     <span>
                                         {(item.type === "document"
-                                            ? item.title
-                                            : item.name) || "Sans titre"}
+                                            ? item.title.trim()
+                                            : item.name.trim()) || "Sans titre"}
                                     </span>
                                 </Flex>
                             </Link>

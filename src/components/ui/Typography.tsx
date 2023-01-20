@@ -21,6 +21,8 @@ interface TextProps {
     strikethrough?: boolean
     small?: boolean
     align?: "left" | "center" | "right" | "justify"
+    weight?: number
+    lineHeight?: number
 }
 
 interface LinkProps {
@@ -67,7 +69,9 @@ function Text(props: TextProps) {
         underline = false,
         strikethrough = false,
         small = false,
-        align = "left"
+        align = "left",
+        weight = 400,
+        lineHeight = "1.6rem"
     } = props
 
     const tag =
@@ -85,6 +89,8 @@ function Text(props: TextProps) {
             strikethrough={strikethrough}
             small={small}
             align={align}
+            weight={weight}
+            lineHeight={lineHeight}
         >
             {children}
         </StyledText>
@@ -148,10 +154,18 @@ const StyledText = styled.div<{
     strikethrough: boolean
     small: boolean
     align: "left" | "center" | "right" | "justify"
+    weight: number
+    lineHeight: number
 }>`
-    font-size: ${({ small }) => (small ? "0.8rem" : "0.9rem")};
-    line-height: 1.6rem;
+    font-size: ${({ small }) => (small ? "0.8rem" : "0.95rem")};
+    line-height: ${({ lineHeight }) => lineHeight};
     text-align: ${({ align }) => align};
+
+    ${({ tag, weight }) =>
+        !(tag === "strong") &&
+        css`
+            font-weight: ${weight};
+        `}
 
     color: ${({ type }) =>
         ({

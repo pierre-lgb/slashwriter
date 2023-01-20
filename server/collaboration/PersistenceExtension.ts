@@ -78,6 +78,8 @@ export default class PersistenceExtension implements Extension {
             .textBetween(1, docNode.nodeSize - 3, " ")
             .slice(0, 100)
 
+        console.log("TEXT_PREVIEW", text_preview)
+
         const state = Y.encodeStateAsUpdate(ydoc)
 
         const { error } = await supabaseClientWithAuth(session)

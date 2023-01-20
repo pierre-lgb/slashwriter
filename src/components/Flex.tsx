@@ -9,10 +9,11 @@ interface FlexProps {
     align?: CSSProperties["alignItems"]
     justify?: CSSProperties["justifyContent"]
     gap?: number
+    inline?: boolean
 }
 
 const Flex = styled.div<FlexProps>`
-    display: flex;
+    display: ${({ inline }) => (inline ? "inline-flex" : "flex")};
     flex: ${({ auto }) => (auto ? "1 1 auto" : "initial")};
     flex-direction: ${({ column, reverse }) =>
         (column ? "column" : "row") + (reverse ? "-reverse" : "")};

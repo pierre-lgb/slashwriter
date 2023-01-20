@@ -14,7 +14,7 @@ export default function CardButton(props: CardButtonProps) {
     return (
         <Button onClick={props.onClick}>
             <IconContainer>{props.icon}</IconContainer>
-            <Flex column align="flex-start">
+            <Flex column>
                 <Title>{props.title}</Title>
                 <Description>{props.description}</Description>
             </Flex>
@@ -36,6 +36,16 @@ const Button = styled.button`
     gap: 0.5rem;
     width: 100%;
     height: 100%;
+    text-align: left;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    * {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
     &:hover {
         background-color: var(--color-n100);
@@ -43,10 +53,12 @@ const Button = styled.button`
 `
 
 const IconContainer = styled.div`
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.5rem;
+    flex-shrink: 0;
+
     svg {
         width: 1.25rem;
         height: 1.25rem;
@@ -56,11 +68,12 @@ const IconContainer = styled.div`
 
 const Title = styled.span`
     font-weight: 500;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
 `
 
 const Description = styled.span`
     font-weight: 400;
     font-size: 0.8rem;
+    line-height: 1.5;
     color: var(--color-n700);
 `
