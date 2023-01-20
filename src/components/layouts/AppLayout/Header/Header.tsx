@@ -129,7 +129,12 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                                 href={`/folder/${folder.id}`}
                                 legacyBehavior
                             >
-                                <Flex as="a" align="center" gap={10}>
+                                <Flex
+                                    as="a"
+                                    align="center"
+                                    gap={10}
+                                    style={{ padding: "0.2rem 0.4rem" }}
+                                >
                                     <FolderIcon />
                                     <span>{folder.name || "Sans nom"}</span>
                                 </Flex>
@@ -145,7 +150,12 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                                 }/${item.id}`}
                                 legacyBehavior
                             >
-                                <Flex as="a" align="center" gap={10}>
+                                <Flex
+                                    as="a"
+                                    align="center"
+                                    gap={10}
+                                    style={{ padding: "0.2rem 0.4rem" }}
+                                >
                                     {item.type === "folder" && (
                                         <FolderIcon style={{ flexShrink: 0 }} />
                                     )}

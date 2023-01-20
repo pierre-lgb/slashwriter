@@ -35,7 +35,7 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
                               style={{ userSelect: "none" }}
                               key="ellipsis"
                           >
-                              …
+                              ...
                           </Typography.Text>,
                           ...items.slice(
                               items.length - (maxItems - 1),
@@ -62,7 +62,7 @@ const BreadcrumbsItem = styled.li<{ active: boolean }>`
     color: ${({ active }) =>
         active ? "var(--color-n900)" : "var(--color-n600)"};
     font-weight: ${({ active }) => (active ? 500 : 400)};
-    padding: 0.2rem 0.4rem;
+    padding: 0;
     border-radius: 4px;
     transition: all ease-out 0.2s;
     cursor: pointer;

@@ -4,6 +4,7 @@ import Bold from "@tiptap/extension-bold"
 import BulletList from "@tiptap/extension-bullet-list"
 import Code from "@tiptap/extension-code"
 import Document from "@tiptap/extension-document"
+import HardBreak from "@tiptap/extension-hard-break"
 import Heading from "@tiptap/extension-heading"
 import Highlight from "@tiptap/extension-highlight"
 import Italic from "@tiptap/extension-italic"
@@ -62,6 +63,7 @@ const editorSchema = getSchema([
     Emoji,
     Equation,
     EquationBlock,
+    HardBreak,
 
     // Format
     Bold,

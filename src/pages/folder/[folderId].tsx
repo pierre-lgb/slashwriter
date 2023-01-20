@@ -3,15 +3,16 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import {
-    RiAddLine as AddIcon,
     RiDeleteBin7Line as DeleteIcon,
     RiEdit2Line as RenameIcon,
+    RiFileAddLine as AddDocumentIcon,
     RiFolder2Line as FolderIcon,
+    RiFolderAddLine as AddFolderIcon,
     RiMoreLine as MoreIcon
 } from "react-icons/ri"
 import * as documentsApi from "src/api/documents"
 import * as foldersApi from "src/api/folders"
-import AddDocumentButton from "src/components/AddDocumentButton"
+import CardButton from "src/components/CardButton"
 import Flex from "src/components/Flex"
 import AppLayout from "src/components/layouts/AppLayout"
 import TransitionOpacity from "src/components/TransitionOpacity"
@@ -22,6 +23,7 @@ import { useAppDispatch, useAppSelector } from "src/store"
 import { supabaseClient, withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
+import Grid from "@mui/material/Grid"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -108,15 +110,16 @@ function Folder() {
         )
     }))
 
-    const { documents, isLoadingDocuments } = useAppSelector((state) => ({
-        documents: state.documents.documents.filter(
+    const { documents } = useAppSelector((state) => state.documents)
+
+    const { subdocuments } = useAppSelector((state) => ({
+        subdocuments: state.documents.documents.filter(
             (d) => d.folder_id === folderId && !d.parent_id
-        ),
-        isLoadingDocuments: state.documents.isLoading
+        )
     }))
 
     useEffect(() => {
-        if (folderId && documents.length) {
+        if (folderId && subdocuments.length) {
             setLoadingTextPreviews(true)
 
             supabaseClient
@@ -124,7 +127,7 @@ function Folder() {
                 .select("id, text_preview")
                 .in(
                     "id",
-                    documents.map((d) => d.id)
+                    subdocuments.map((d) => d.id)
                 )
                 .then(({ data, error }) => {
                     if (error) {
@@ -141,7 +144,7 @@ function Folder() {
                     setLoadingTextPreviews(false)
                 })
         }
-    }, [folderId, documents.length])
+    }, [folderId, subdocuments.length])
 
     const handleDeleteDocument = (documentId) => {
         if (confirm("Envoyer ce document dans la corbeille ?")) {
@@ -153,6 +156,57 @@ function Folder() {
             )
         }
     }
+
+    const handleDeleteFolder = (folderId) => {
+        if (confirm("Envoyer ce dossier dans la corbeille ?")) {
+            dispatch(
+                foldersApi.updateFolder({
+                    id: folderId,
+                    deleted: true
+                })
+            )
+        }
+    }
+
+    const handleAddDocument = async ({ folderId }) => {
+        const res = (await dispatch(
+            documentsApi.insertDocument({ folder_id: folderId })
+        )) as any
+
+        if (res.payload) {
+            router.push(`/doc/${res.payload.id}`)
+        }
+    }
+
+    const handleAddFolder = async ({ folderId }) => {
+        const folderName = prompt("Nom du dossier :")
+        if (!folderName) return
+        dispatch(
+            foldersApi.insertFolder({ name: folderName, parent_id: folderId })
+        )
+    }
+
+    const handleSortItems = (a, b) => {
+        if (orderBy === "title") {
+            return (
+                (a.title || "").localeCompare(b.title || "") *
+                (order === "asc" ? 1 : -1)
+            )
+        }
+
+        if (orderBy === "updated_at") {
+            return (
+                (new Date(b.updated_at).getTime() -
+                    new Date(a.updated_at).getTime()) *
+                (order === "asc" ? 1 : -1)
+            )
+        }
+    }
+
+    const stringifyDate = (date) =>
+        `${moment(new Date(date)).format("DD/MM/YYYY")} à ${moment(
+            new Date(date)
+        ).format("HH:mm")}`
 
     return (
         <TransitionOpacity>
@@ -169,11 +223,34 @@ function Folder() {
                                     <DeleteFolderButton folderId={folderId} />
                                 </Flex>
                             </FolderTitle>
-                            <div>
-                                <AddDocumentButton folderId={folderId}>
-                                    Créer un document
-                                </AddDocumentButton>
-                            </div>
+                            <Grid
+                                padding="none"
+                                container
+                                spacing={2}
+                                width="100%"
+                            >
+                                <Grid item width={300}>
+                                    <CardButton
+                                        title="Nouveau document"
+                                        description="Créer un nouveau document vierge"
+                                        icon={<AddDocumentIcon />}
+                                        onClick={() =>
+                                            handleAddDocument({ folderId })
+                                        }
+                                    />
+                                </Grid>
+                                <Grid item width={300}>
+                                    <CardButton
+                                        title="Nouveau dossier"
+                                        description="Créer un sous-dossier"
+                                        icon={<AddFolderIcon />}
+                                        onClick={() =>
+                                            handleAddFolder({ folderId })
+                                        }
+                                    />
+                                </Grid>
+                            </Grid>
+
                             <DocumentListWrapper>
                                 <Table sx={{ tableLayout: "fixed" }}>
                                     <TableHead>
@@ -223,35 +300,183 @@ function Folder() {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {(documents || [])
-                                            .sort((a, b) => {
-                                                if (orderBy === "title") {
-                                                    return (
-                                                        (
-                                                            a.title || ""
-                                                        ).localeCompare(
-                                                            b.title || ""
-                                                        ) *
-                                                        (order === "asc"
-                                                            ? 1
-                                                            : -1)
-                                                    )
-                                                }
+                                        {!!subfolders?.length && (
+                                            <TableRow>
+                                                <TableCell
+                                                    style={{
+                                                        paddingTop: "1rem"
+                                                    }}
+                                                >
+                                                    <Typography.Text type="secondary">
+                                                        Sous-dossiers
+                                                    </Typography.Text>
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                        {(subfolders || [])
+                                            .sort(handleSortItems)
+                                            .map((folder) => {
+                                                const subdocumentsCount =
+                                                    documents.filter(
+                                                        (d) =>
+                                                            d.folder_id ===
+                                                            folder.id
+                                                    ).length
 
-                                                if (orderBy === "updated_at") {
-                                                    return (
-                                                        (new Date(
-                                                            b.updated_at
-                                                        ).getTime() -
-                                                            new Date(
-                                                                a.updated_at
-                                                            ).getTime()) *
-                                                        (order === "asc"
-                                                            ? 1
-                                                            : -1)
-                                                    )
-                                                }
-                                            })
+                                                return (
+                                                    <TableRow
+                                                        key={folder.id}
+                                                        sx={{
+                                                            ":hover": {
+                                                                background:
+                                                                    "var(--color-n75)"
+                                                            },
+                                                            borderTopLeftRadius:
+                                                                "0.5rem",
+                                                            borderBottomLeftRadius:
+                                                                "0.5rem",
+                                                            transition:
+                                                                "background-color 0.2s",
+                                                            cursor: "pointer"
+                                                        }}
+                                                        onClick={() => {
+                                                            router.push(
+                                                                `/folder/${folder.id}`
+                                                            )
+                                                        }}
+                                                    >
+                                                        <TableCell
+                                                            sx={{
+                                                                fontWeight: 500,
+                                                                borderTopLeftRadius:
+                                                                    "0.5rem",
+                                                                borderBottomLeftRadius:
+                                                                    "0.5rem",
+                                                                display: "flex",
+                                                                alignItems:
+                                                                    "center",
+                                                                gap: "0.5rem"
+                                                            }}
+                                                        >
+                                                            <Flex
+                                                                align="center"
+                                                                justify="center"
+                                                                style={{
+                                                                    width: 32,
+                                                                    height: 44
+                                                                }}
+                                                            >
+                                                                <FolderIcon
+                                                                    size={24}
+                                                                />
+                                                            </Flex>
+                                                            <Flex
+                                                                column
+                                                                justify="center"
+                                                                style={{
+                                                                    overflow:
+                                                                        "hidden",
+                                                                    textOverflow:
+                                                                        "ellipsis",
+                                                                    whiteSpace:
+                                                                        "nowrap"
+                                                                }}
+                                                            >
+                                                                <Typography.Text className="itemTitle">
+                                                                    {folder.title ||
+                                                                        "Dossier sans nom"}
+                                                                </Typography.Text>
+                                                                <Typography.Text
+                                                                    small
+                                                                    className="itemSubText"
+                                                                >
+                                                                    {
+                                                                        subdocumentsCount
+                                                                    }{" "}
+                                                                    document
+                                                                    {subdocumentsCount >=
+                                                                    2
+                                                                        ? "s"
+                                                                        : ""}
+                                                                </Typography.Text>
+                                                            </Flex>
+                                                        </TableCell>
+                                                        <TableCell className="updatedAtCell">
+                                                            <Typography.Text
+                                                                type="secondary"
+                                                                className="itemUpdatedAt"
+                                                            >
+                                                                {stringifyDate(
+                                                                    folder.updated_at
+                                                                )}
+                                                            </Typography.Text>
+                                                        </TableCell>
+                                                        <TableCell
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                            }}
+                                                        >
+                                                            <Menu
+                                                                content={(
+                                                                    instance
+                                                                ) => (
+                                                                    <Flex
+                                                                        column
+                                                                        style={{
+                                                                            minWidth: 175,
+                                                                            padding:
+                                                                                "0.25rem"
+                                                                        }}
+                                                                    >
+                                                                        <Menu.Item
+                                                                            icon={
+                                                                                <DeleteIcon />
+                                                                            }
+                                                                            title="Supprimer"
+                                                                            menu={
+                                                                                instance
+                                                                            }
+                                                                            onClick={() =>
+                                                                                handleDeleteFolder(
+                                                                                    folder.id
+                                                                                )
+                                                                            }
+                                                                            style={{
+                                                                                color: "var(--color-red)"
+                                                                            }}
+                                                                        />
+                                                                    </Flex>
+                                                                )}
+                                                                placement="bottom-end"
+                                                            >
+                                                                <Button
+                                                                    size="small"
+                                                                    appearance="text"
+                                                                    onClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        e.preventDefault()
+                                                                    }
+                                                                    icon={
+                                                                        <MoreIcon />
+                                                                    }
+                                                                />
+                                                            </Menu>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            })}
+                                        <TableRow>
+                                            <TableCell
+                                                style={{ paddingTop: "1rem" }}
+                                            >
+                                                <Typography.Text type="secondary">
+                                                    Documents
+                                                </Typography.Text>
+                                            </TableCell>
+                                        </TableRow>
+                                        {(subdocuments || [])
+                                            .sort(handleSortItems)
                                             .map((document) => (
                                                 <TableRow
                                                     key={document.id}
@@ -300,13 +525,13 @@ function Folder() {
                                                                     "nowrap"
                                                             }}
                                                         >
-                                                            <Typography.Text className="documentTitle">
+                                                            <Typography.Text className="itemTitle">
                                                                 {document.title ||
                                                                     "Document sans titre"}
                                                             </Typography.Text>
                                                             <Typography.Text
                                                                 small
-                                                                className="documentTextPreview"
+                                                                className="itemSubText"
                                                             >
                                                                 {loadingTextPreviews
                                                                     ? "..."
@@ -321,21 +546,11 @@ function Folder() {
                                                     <TableCell className="updatedAtCell">
                                                         <Typography.Text
                                                             type="secondary"
-                                                            className="documentUpdatedAt"
+                                                            className="itemUpdatedAt"
                                                         >
-                                                            {moment(
-                                                                new Date(
-                                                                    document.updated_at
-                                                                )
-                                                            ).format(
-                                                                "DD/MM/YYYY"
-                                                            )}{" "}
-                                                            à{" "}
-                                                            {moment(
-                                                                new Date(
-                                                                    document.updated_at
-                                                                )
-                                                            ).format("HH:mm")}
+                                                            {stringifyDate(
+                                                                document.updated_at
+                                                            )}
                                                         </Typography.Text>
                                                     </TableCell>
                                                     <TableCell
@@ -427,6 +642,7 @@ const FolderTitle = styled.div`
     align-items: center;
     font-weight: 600;
     gap: 20px;
+    margin-bottom: 20px;
 
     & button {
         opacity: 0;
@@ -461,19 +677,19 @@ const DocumentListWrapper = styled.div`
         font-size: 0.9rem;
         padding: 0.5rem;
 
-        .documentTextPreview {
+        .itemTitle,
+        .itemSubText {
+            line-height: 1.2rem;
+        }
+
+        .itemSubText {
             font-weight: 400;
             color: var(--color-n600);
         }
 
-        .documentUpdatedAt {
+        .itemUpdatedAt {
             color: var(--color-n600);
             font-size: 0.8rem;
-        }
-
-        .documentTitle,
-        .documentTextPreview {
-            line-height: 1.2rem;
         }
     }
 
