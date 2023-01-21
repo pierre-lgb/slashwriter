@@ -135,6 +135,7 @@ export default function Home() {
                         folders={recentFolders || []}
                         documents={recentDocuments || []}
                         columns={columns}
+                        loading={isLoadingDocuments || isLoadingFolders}
                         foldersLabel="Dossiers récents"
                         documentsLabel="Documents récents"
                     />
