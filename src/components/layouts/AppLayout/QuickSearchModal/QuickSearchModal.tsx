@@ -151,6 +151,7 @@ export default function QuickSearchModal() {
             onCancel={closeModal}
             onConfirm={closeModal}
             placement="top"
+            padding="1rem"
         >
             <Flex column gap={20}>
                 <Input

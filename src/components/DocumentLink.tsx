@@ -59,6 +59,7 @@ export default function DocumentLink(props: DocumentLinkProps) {
 const Container = styled.div`
     display: flex;
     align-items: center;
+    justify-items: center;
     border-radius: 5px;
     gap: 0.5rem;
     padding: 5px 15px 5px 5px;
@@ -94,14 +95,15 @@ const DocumentIcon = styled.div`
 const DocumentTitle = styled.span`
     color: var(--color-n800);
     font-weight: 500;
+    font-size: 0.95rem;
     max-width: 90%;
     padding-bottom: 1px;
-    line-height: 1;
     text-overflow: ellipsis;
     overflow: hidden;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    line-height: 1.2;
 `
 
 const Badge = styled.span`
@@ -116,8 +118,9 @@ const Badge = styled.span`
 `
 
 const DocumentStatus = styled.span`
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: var(--color-n600);
     text-overflow: ellipsis;
     overflow: hidden;
+    line-height: 1.2;
 `

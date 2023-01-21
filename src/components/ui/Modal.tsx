@@ -17,6 +17,7 @@ interface ModalProps {
     onConfirm?: any
     closeButton?: any
     placement?: "center" | "top"
+    padding?: string
 }
 
 export default function Modal(props: ModalProps) {
@@ -30,7 +31,8 @@ export default function Modal(props: ModalProps) {
         onCancel,
         onConfirm,
         closeButton,
-        placement = "center"
+        placement = "center",
+        padding = "1.5rem"
     } = props
 
     const [open, setOpen] = useState(!!visible)
@@ -96,6 +98,7 @@ export default function Modal(props: ModalProps) {
                                 e.stopPropagation()
                             }}
                             placement={placement}
+                            padding={padding}
                         >
                             <ModalTitle>{title}</ModalTitle>
                             {description && (
@@ -171,27 +174,6 @@ const ModalContainer = styled(motion.div)`
     pointer-events: none;
 `
 
-const ModalComponent = styled.div<{ placement: "center" | "top" }>`
-    display: inline-block;
-    background: var(--color-white);
-    text-align: left;
-    overflow: hidden;
-    vertical-align: middle;
-    border: 1px solid var(--color-n300);
-    border-radius: 0.5rem;
-    position: absolute;
-    top: ${({ placement }) => (placement === "center" ? "50%" : "10%")};
-    left: 50%;
-    transform: ${({ placement }) =>
-        placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)"};
-    width: 36rem;
-    padding: 1.5rem;
-    pointer-events: all;
-    max-height: 95vh;
-    max-width: 95vw;
-    overflow: auto;
-`
-
 const ModalTitle = styled.h1`
     margin: 0 0 5px 0;
     font-size: 1.25rem;
@@ -208,9 +190,7 @@ const ModalDescription = styled.div`
     margin-bottom: 20px;
 `
 
-const ModalContent = styled.div`
-    margin: 10px 0;
-`
+const ModalContent = styled.div``
 
 const ModalFooter = styled.div`
     display: flex;
@@ -227,4 +207,28 @@ const CloseButtonContainer = styled.div`
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;
+`
+
+const ModalComponent = styled.div<{
+    placement: "center" | "top"
+    padding: string
+}>`
+    display: inline-block;
+    background: var(--color-white);
+    text-align: left;
+    overflow: hidden;
+    vertical-align: middle;
+    border: 1px solid var(--color-n300);
+    border-radius: 0.5rem;
+    position: absolute;
+    top: ${({ placement }) => (placement === "center" ? "50%" : "10%")};
+    left: 50%;
+    transform: ${({ placement }) =>
+        placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)"};
+    width: 36rem;
+    padding: ${({ padding }) => padding};
+    pointer-events: all;
+    max-height: 95vh;
+    max-width: 95vw;
+    overflow: auto;
 `
