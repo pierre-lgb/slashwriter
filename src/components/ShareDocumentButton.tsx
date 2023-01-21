@@ -5,7 +5,7 @@ import {
     RiCheckLine as CheckedIcon,
     RiCloseLine as CrossIcon,
     RiLinkM as LinkIcon,
-    RiShareLine as ShareIcon,
+    RiShareForwardLine as ShareIcon,
     RiUserAddLine as AddUserIcon
 } from "react-icons/ri"
 import Flex from "src/components/Flex"
