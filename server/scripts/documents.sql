@@ -36,6 +36,7 @@ SELECT * from (
     SELECT 
         d.id,
         d.title,
+        d.text_preview,
         (CASE 
             WHEN s.user_permissions ? uid()::text THEN 
                 s.user_permissions->>uid()::text
@@ -57,6 +58,7 @@ CREATE OR REPLACE VIEW documents_shared_by_user AS
     SELECT 
         d.id,
         d.title,
+        d.text_preview,
         d.folder_id,
         (s.anyone_permission IN ('read', 'edit') OR FALSE) AS public,
         s.created_at AS share_created_at

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { RiShareForwardLine as ShareIcon } from "react-icons/ri"
 import DocumentLink from "src/components/DocumentLink"
 import Flex from "src/components/Flex"
+import FoldersDocumentsList from "src/components/FoldersDocumentsList"
 import AppLayout from "src/components/layouts/AppLayout"
 import Separator from "src/components/Separator"
 import TransitionOpacity from "src/components/TransitionOpacity"
@@ -10,19 +11,19 @@ import Button from "src/components/ui/Button"
 import Loader from "src/components/ui/Loader"
 import Typography from "src/components/ui/Typography"
 import { useAppSelector } from "src/store"
+import stringifyDate from "src/utils/stringifyDate"
 import { supabaseClient, withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
 function Shares() {
     const [tab, setTab] = useState("sharedWithUser")
-    const [isError, setIsError] = useState(false)
+    const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [sharedDocuments, setSharedDocuments] = useState([])
 
-    const { folders } = useAppSelector((state) => state.folders)
-    console.log(sharedDocuments)
     useEffect(() => {
         setIsLoading(true)
+        setError(null)
         supabaseClient
             .from(
                 tab === "sharedWithUser"
@@ -35,108 +36,122 @@ function Shares() {
                     setSharedDocuments(data)
                 } else {
                     console.error(error)
-                    setIsError(true)
+                    setError(error.message)
                 }
                 setIsLoading(false)
             })
     }, [tab])
 
+    const columns = [
+        {
+            label: "Titre",
+            sortable: true,
+            field: "title",
+            type: "string",
+            getCellContent: (item) => {
+                return (
+                    <Flex column>
+                        <Typography.Text weight={500}>
+                            {item.title.trim() || "Sans titre"}
+                        </Typography.Text>
+                        <Typography.Text
+                            type="secondary"
+                            lineHeight={1.2}
+                            small
+                        >
+                            {item.text_preview?.trim() || "Document vide"}
+                        </Typography.Text>
+                    </Flex>
+                )
+            }
+        },
+        ...(tab === "sharedWithUser"
+            ? [
+                  {
+                      label: "Partagé par",
+                      sortable: true,
+                      field: "owner_email",
+                      type: "string",
+                      align: "right",
+                      width: "30%",
+                      hideOnSmallScreens: true,
+                      getCellContent: (item) => (
+                          <Typography.Text type="secondary" small>
+                              {item.owner_email}
+                          </Typography.Text>
+                      )
+                  },
+                  {
+                      label: "Permission",
+                      align: "right",
+                      width: 100,
+                      hideOnSmallScreens: true,
+                      getCellContent: (item) => (
+                          <Typography.Text type="secondary" small code>
+                              {item.permission === "read" ? "Lire" : "Modifier"}
+                          </Typography.Text>
+                      )
+                  }
+              ]
+            : [
+                  {
+                      label: "Partagé le",
+                      sortable: true,
+                      field: "share_created_at",
+                      type: "date",
+                      align: "right",
+                      width: "30%",
+                      hideOnSmallScreens: true,
+                      getCellContent: (item) => (
+                          <Typography.Text type="secondary" small>
+                              {stringifyDate(item.share_created_at)}
+                          </Typography.Text>
+                      )
+                  },
+                  {
+                      label: "Statut",
+                      align: "right",
+                      hideOnSmallScreens: true,
+                      width: 100,
+                      getCellContent: (item) => (
+                          <Typography.Text type="secondary" small code>
+                              {item.public ? "Public" : "Privé"}
+                          </Typography.Text>
+                      )
+                  }
+              ])
+    ]
+
     return (
         <TransitionOpacity>
             <Container>
                 <Content>
-                    <Typography.Title>Partages</Typography.Title>
+                    <Typography.Title level={3}>Partages</Typography.Title>
 
                     <Flex auto column>
-                        <Flex auto gap={10}>
+                        <Flex auto>
                             <Button
                                 active={tab === "sharedWithUser"}
                                 onClick={() => setTab("sharedWithUser")}
-                                appearance="text"
+                                appearance="secondary"
                             >
                                 Partagé avec moi
                             </Button>
                             <Button
                                 active={tab === "sharedByUser"}
                                 onClick={() => setTab("sharedByUser")}
-                                appearance="text"
+                                appearance="secondary"
                             >
                                 Mes partages
                             </Button>
                         </Flex>
-                        <Separator />
-                        {isLoading && (
-                            <Flex
-                                align="center"
-                                justify="center"
-                                style={{ marginTop: 20 }}
-                            >
-                                <Loader />
-                            </Flex>
-                        )}
 
-                        {isError && (
-                            <Flex
-                                align="center"
-                                justify="center"
-                                style={{ marginTop: 20 }}
-                            >
-                                <Typography.Text type="danger">
-                                    Une erreur est survenue.
-                                </Typography.Text>
-                            </Flex>
-                        )}
-
-                        {!isLoading && !sharedDocuments.length && (
-                            <Flex
-                                align="center"
-                                justify="center"
-                                style={{ marginTop: 20 }}
-                            >
-                                <Typography.Text type="secondary">
-                                    Aucun élement à afficher.
-                                </Typography.Text>
-                            </Flex>
-                        )}
-
-                        {!isLoading &&
-                            sharedDocuments.map((document, index) =>
-                                tab === "sharedWithUser" ? (
-                                    <DocumentLink
-                                        title={document.title || "Sans titre"}
-                                        href={`/doc/${document.id}`}
-                                        status={`Partagé par ${document.owner_username} (${document.owner_email})`}
-                                        badge={
-                                            document.permission === "read"
-                                                ? "Lecteur"
-                                                : "Éditeur"
-                                        }
-                                        key={index}
-                                    />
-                                ) : (
-                                    <DocumentLink
-                                        title={document.title || "Sans titre"}
-                                        href={`/doc/${document.id}`}
-                                        status={`
-                                        ${
-                                            folders?.find(
-                                                (folder) =>
-                                                    folder.id ===
-                                                    document.folder_id
-                                            )?.name
-                                        } · Partagé le ${moment(
-                                            new Date(document.share_created_at)
-                                        ).format("DD/MM/YYYY")} à ${moment(
-                                            new Date(document.share_created_at)
-                                        ).format("HH:mm")}
-                                        `}
-                                        badge={
-                                            document.public ? "Public" : null
-                                        }
-                                        key={index}
-                                    />
-                                )
-                            )}
+                        <FoldersDocumentsList
+                            documents={sharedDocuments}
+                            columns={columns}
+                            loading={isLoading}
+                            error={error}
+                        />
                     </Flex>
                 </Content>
             </Container>
@@ -149,12 +164,12 @@ Shares.Title = "Partages"
 Shares.Icon = <ShareIcon />
 
 const Container = styled.div`
-    padding: 100px 25px;
+    padding: 50px 25px;
 `
 
 const Content = styled.div`
     margin: 25px auto;
-    max-width: 700px;
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
     gap: 20px;

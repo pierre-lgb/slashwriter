@@ -20,17 +20,11 @@ import Button from "src/components/ui/Button"
 import Menu from "src/components/ui/navigation/Menu"
 import Typography from "src/components/ui/Typography"
 import { useAppDispatch, useAppSelector } from "src/store"
+import stringifyDate from "src/utils/stringifyDate"
 import { supabaseClient, withPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
 import Grid from "@mui/material/Grid"
-import Table from "@mui/material/Table"
-import TableBody from "@mui/material/TableBody"
-import TableCell from "@mui/material/TableCell"
-import TableHead from "@mui/material/TableHead"
-import TableRow from "@mui/material/TableRow"
-import TableSortLabel from "@mui/material/TableSortLabel"
-import useMediaQuery from "@mui/material/useMediaQuery"
 import Tippy from "@tippyjs/react"
 
 function DeleteFolderButton({ folderId }) {
@@ -242,11 +236,6 @@ function Folder() {
             foldersApi.insertFolder({ name: folderName, parent_id: folderId })
         )
     }
-
-    const stringifyDate = (date) =>
-        `${moment(new Date(date)).format("DD/MM/YYYY")} à ${moment(
-            new Date(date)
-        ).format("HH:mm")}`
 
     const columns = [
         {

@@ -12,16 +12,19 @@ import TableSortLabel from "@mui/material/TableSortLabel"
 import useMediaQuery from "@mui/material/useMediaQuery"
 
 import Flex from "./Flex"
+import Loader from "./ui/Loader"
 import Typography from "./ui/Typography"
 
 export interface FoldersDocumentsListProps {
+    columns: any[]
     folders?: any[]
     documents?: any[]
-    columns: any[]
+    loading?: boolean
+    error?: string
 }
 
 export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
-    const { folders, documents, columns } = props
+    const { folders, documents, columns, loading, error } = props
 
     const router = useRouter()
 
@@ -39,15 +42,15 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
 
         if (type === "string") {
             return (
-                (a.title || "").localeCompare(b.title || "") *
+                (a[orderBy] || "").localeCompare(b[orderBy] || "") *
                 (order === "asc" ? 1 : -1)
             )
         }
 
         if (type === "date") {
             return (
-                (new Date(b.updated_at).getTime() -
-                    new Date(a.updated_at).getTime()) *
+                (new Date(b[orderBy]).getTime() -
+                    new Date(a[orderBy]).getTime()) *
                 (order === "asc" ? 1 : -1)
             )
         }
@@ -59,18 +62,13 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                 <TableHead>
                     <TableRow>
                         {columns.map((column, index) => {
-                            return (
+                            return !(
+                                column.hideOnSmallScreens && matchesSmallScreen
+                            ) ? (
                                 <TableCell
                                     key={index}
                                     width={column.width}
                                     align={column.align}
-                                    sx={{
-                                        display:
-                                            column.hideOnSmallScreens &&
-                                            matchesSmallScreen
-                                                ? "none"
-                                                : undefined
-                                    }}
                                 >
                                     {column.sortable ? (
                                         <TableSortLabel
@@ -91,12 +89,13 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                         column.label
                                     )}
                                 </TableCell>
-                            )
+                            ) : null
                         })}
                     </TableRow>
                 </TableHead>
+
                 <TableBody>
-                    {!!folders?.length && (
+                    {!loading && !error && !!folders?.length && (
                         <>
                             <TableRow>
                                 <TableCell style={{ paddingTop: "1rem" }}>
@@ -142,7 +141,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                             ))}
                         </>
                     )}
-                    {!!documents?.length && (
+                    {!loading && !error && !!documents?.length && (
                         <>
                             <TableRow>
                                 <TableCell style={{ paddingTop: "1rem" }}>
@@ -190,6 +189,32 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                     )}
                 </TableBody>
             </Table>
+            {!loading && !error && !folders?.length && !documents?.length && (
+                <Flex align="center" justify="center" style={{ marginTop: 20 }}>
+                    <Typography.Text type="secondary">
+                        Aucun élement à afficher.
+                    </Typography.Text>
+                </Flex>
+            )}
+
+            {loading && (
+                <Flex
+                    align="center"
+                    justify="center"
+                    style={{ marginTop: 20, width: "100%" }}
+                >
+                    <Loader />
+                </Flex>
+            )}
+
+            {error && (
+                <Flex align="center" justify="center" style={{ marginTop: 20 }}>
+                    <Typography.Text type="danger" align="center">
+                        Une erreur est survenue. <br />
+                        {error}
+                    </Typography.Text>
+                </Flex>
+            )}
         </Wrapper>
     )
 }
@@ -250,14 +275,6 @@ const Wrapper = styled.div`
         font-size: 0.9rem;
         padding: 0.5rem;
     }
-
-    /* span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    } */
-
-    width: "100%";
-    display: flex;
 
     @media screen and (max-width: 450px) {
         .updatedAtCell,

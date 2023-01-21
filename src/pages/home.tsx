@@ -25,7 +25,7 @@ export default function Home() {
         <TransitionOpacity>
             <Container>
                 <Content>
-                    <Typography.Title>Accueil</Typography.Title>
+                    <Typography.Title level={3}>Accueil</Typography.Title>
                     <pre>{JSON.stringify(documents, null, 2)}</pre>
                     <pre>{JSON.stringify(folders, null, 2)}</pre>
                     <pre>{JSON.stringify(user, null, 2)}</pre>
@@ -40,12 +40,12 @@ Home.Title = "Accueil"
 Home.Icon = <HomeIcon />
 
 const Container = styled.div`
-    padding: 100px 25px;
+    padding: 50px 25px;
 `
 
 const Content = styled.div`
     margin: 25px auto;
-    max-width: 700px;
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
 `
