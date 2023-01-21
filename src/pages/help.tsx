@@ -10,7 +10,7 @@ function Help() {
         <TransitionOpacity>
             <Container>
                 <Content>
-                    <Typography.Title>Aide</Typography.Title>
+                    <Typography.Title level={3}>Aide</Typography.Title>
                 </Content>
             </Container>
         </TransitionOpacity>
@@ -22,12 +22,12 @@ Help.Title = "Aide"
 Help.Icon = <HelpIcon />
 
 const Container = styled.div`
-    padding: 100px 25px;
+    padding: 50px 25px;
 `
 
 const Content = styled.div`
     margin: 25px auto;
-    max-width: 700px;
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
 `

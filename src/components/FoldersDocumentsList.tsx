@@ -21,10 +21,20 @@ export interface FoldersDocumentsListProps {
     documents?: any[]
     loading?: boolean
     error?: string
+    foldersLabel?: string
+    documentsLabel?: string
 }
 
 export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
-    const { folders, documents, columns, loading, error } = props
+    const {
+        folders,
+        documents,
+        columns,
+        loading,
+        error,
+        documentsLabel = "Documents",
+        foldersLabel = "Dossiers"
+    } = props
 
     const router = useRouter()
 
@@ -75,12 +85,15 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                             active={orderBy === column.field}
                                             direction={order}
                                             onClick={() => {
-                                                setOrderBy(column.field)
                                                 setOrder((prev) =>
-                                                    prev === "asc"
-                                                        ? "desc"
+                                                    orderBy === column.field
+                                                        ? prev === "asc"
+                                                            ? "desc"
+                                                            : "asc"
                                                         : "asc"
                                                 )
+
+                                                setOrderBy(column.field)
                                             }}
                                         >
                                             {column.label}
@@ -100,7 +113,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                             <TableRow>
                                 <TableCell style={{ paddingTop: "1rem" }}>
                                     <Typography.Text type="secondary">
-                                        Dossiers
+                                        {foldersLabel}
                                     </Typography.Text>
                                 </TableCell>
                             </TableRow>
@@ -146,7 +159,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                             <TableRow>
                                 <TableCell style={{ paddingTop: "1rem" }}>
                                     <Typography.Text type="secondary">
-                                        Documents
+                                        {documentsLabel}
                                     </Typography.Text>
                                 </TableCell>
                             </TableRow>
@@ -249,6 +262,7 @@ const ListItem = styled(TableRow)`
     * {
         overflow: hidden;
         text-overflow: ellipsis;
+        transition: opacity 0.2s;
     }
 `
 

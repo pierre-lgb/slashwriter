@@ -10,7 +10,7 @@ function Trash() {
         <TransitionOpacity>
             <Container>
                 <Content>
-                    <Typography.Title>Corbeille</Typography.Title>
+                    <Typography.Title level={3}>Corbeille</Typography.Title>
                 </Content>
             </Container>
         </TransitionOpacity>
@@ -22,12 +22,12 @@ Trash.Title = "Corbeille"
 Trash.Icon = <TrashIcon />
 
 const Container = styled.div`
-    padding: 100px 25px;
+    padding: 50px 25px;
 `
 
 const Content = styled.div`
     margin: 25px auto;
-    max-width: 700px;
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
 `

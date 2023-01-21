@@ -263,6 +263,9 @@ function Folder() {
                             type="secondary"
                             lineHeight={1.2}
                             small
+                            style={{
+                                opacity: loadingTextPreviews ? 0 : 1
+                            }}
                         >
                             {item.type === "folder"
                                 ? `${subdocumentsCount} Document${
@@ -351,6 +354,7 @@ function Folder() {
                                 folders={subfolders || []}
                                 documents={subdocuments || []}
                                 columns={columns}
+                                foldersLabel="Sous-dossiers"
                             />
                         </>
                     )}
