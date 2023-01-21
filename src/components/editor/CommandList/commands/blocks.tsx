@@ -18,8 +18,6 @@ import {
     RiTable2 as TableIcon
 } from "react-icons/ri"
 import { TbMath as EquationInlineIcon } from "react-icons/tb"
-import store from "src/store"
-import { supabaseClient } from "src/utils/supabase"
 
 const blocks = [
     {

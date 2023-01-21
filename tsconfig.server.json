@@ -8,6 +8,8 @@
       "noEmit": false,
     },
     "include": [
-      "server/**/*.ts"
-    ]
+      "server/**/*.ts",
+      "shared"
+    ],
+    
   }

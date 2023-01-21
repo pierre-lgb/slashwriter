@@ -1,20 +1,19 @@
 import { Extension } from "@tiptap/core"
 import Suggestion from "@tiptap/suggestion"
 
-import suggestionConfig from "./suggestion"
+const defaultSuggestionConfig = {
+    char: "/",
+    command: ({ editor, range, props }) => {
+        props.command({ editor, range })
+    }
+}
 
 export default Extension.create({
     name: "SlashCommands",
 
     addOptions() {
         return {
-            suggestion: {
-                char: "/",
-                command: ({ editor, range, props }) => {
-                    props.command({ editor, range })
-                },
-                ...suggestionConfig
-            }
+            suggestion: {}
         }
     },
 
@@ -22,6 +21,7 @@ export default Extension.create({
         return [
             Suggestion({
                 editor: this.editor,
+                ...defaultSuggestionConfig,
                 ...this.options.suggestion
             })
         ]

@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import Flex from "src/components/Flex"
 import styled, { css } from "styled-components"
 
-export default forwardRef(function CommandsList(props: any, ref) {
+export default forwardRef(function CommandList(props: any, ref) {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const menuRef = useRef<HTMLDivElement>()
 

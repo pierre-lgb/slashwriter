@@ -4,8 +4,8 @@ import { findParentNode } from "@tiptap/core"
 import { ReactRenderer } from "@tiptap/react"
 import { SuggestionOptions } from "@tiptap/suggestion"
 
+import CommandList from "./CommandList"
 import commands from "./commands"
-import CommandsList from "./CommandsList"
 
 function filterItems(items, query) {
     const filteredItems = {}
@@ -63,7 +63,7 @@ const suggestionConfig: Partial<SuggestionOptions> = {
 
         return {
             onStart: (props) => {
-                component = new ReactRenderer(CommandsList, {
+                component = new ReactRenderer(CommandList, {
                     props,
                     editor: props.editor
                 })

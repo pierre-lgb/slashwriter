@@ -57,6 +57,7 @@ import Loader from "../ui/Loader"
 import BlockMenu from "./BlockMenu"
 import BubbleMenu from "./BubbleMenu"
 import CalloutEmojiMenu from "./CalloutEmojiMenu"
+import slashCommandsSuggestionConfig from "./CommandList/suggestion"
 import emojiSuggestionConfig from "./EmojiList/suggestion"
 import EquationBlockComponent from "./EquationBlockComponent"
 import EquationComponent from "./EquationComponent"
@@ -265,7 +266,9 @@ export default function SlashwriterEditor(props: {
                     color: "#BFE5F4",
                     class: "drop-cursor"
                 }),
-                SlashCommands,
+                SlashCommands.configure({
+                    suggestion: slashCommandsSuggestionConfig
+                }),
                 Placeholder.configure({
                     placeholder: "Commencez à écrire ici..."
                 }),
