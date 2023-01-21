@@ -8,15 +8,23 @@ import { Extension, textInputRule } from "@tiptap/core"
 
 export default Extension.create({
     name: "shortcuts",
-    priority: 500,
 
     addInputRules() {
         return [
             textInputRule({ find: /-- $/, replace: "— " }),
             textInputRule({ find: /\.{3}$/, replace: "…" }),
-            textInputRule({ find: /←> $/, replace: "↔" }),
+            textInputRule({ find: /←-$/, replace: "⟵" }),
             textInputRule({ find: /<-$/, replace: "←" }),
+            textInputRule({ find: /-->$/, replace: "⟶" }),
             textInputRule({ find: /->$/, replace: "→" }),
+            textInputRule({ find: /⟵>$/, replace: "⟷" }),
+            textInputRule({ find: /←>$/, replace: "🡘" }),
+            textInputRule({ find: /⇐=$/, replace: "⟸" }),
+            textInputRule({ find: /<=$/, replace: "⇐" }),
+            textInputRule({ find: /==>$/, replace: "⟹" }),
+            textInputRule({ find: /=>$/, replace: "⇒" }),
+            textInputRule({ find: /⇐>$/, replace: "⇔" }),
+            textInputRule({ find: /⟸>$/, replace: "⟺" }),
             textInputRule({ find: /\(c\)$/, replace: "©" }),
             textInputRule({ find: /\(tm\)$/, replace: "™" }),
             textInputRule({ find: /\(r\)$/, replace: "®" }),
