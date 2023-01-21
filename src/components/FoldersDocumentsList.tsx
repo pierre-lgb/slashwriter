@@ -110,7 +110,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                 <TableBody>
                     {!loading && !error && !!folders?.length && (
                         <>
-                            <TableRow>
+                            <TableRow style={{ animation: "fade-in 0.5s" }}>
                                 <TableCell style={{ paddingTop: "1rem" }}>
                                     <Typography.Text type="secondary">
                                         {foldersLabel}
@@ -156,7 +156,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                     )}
                     {!loading && !error && !!documents?.length && (
                         <>
-                            <TableRow>
+                            <TableRow style={{ animation: "fade-in 0.5s" }}>
                                 <TableCell style={{ paddingTop: "1rem" }}>
                                     <Typography.Text type="secondary">
                                         {documentsLabel}
@@ -264,6 +264,8 @@ const ListItem = styled(TableRow)`
         text-overflow: ellipsis;
         transition: opacity 0.2s;
     }
+
+    animation: fade-in 0.5s;
 `
 
 const DocumentIcon = styled.div`

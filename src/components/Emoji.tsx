@@ -18,15 +18,6 @@ export default function Emoji({ emoji, ...props }) {
 }
 
 const StyledSpan = styled.span`
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
     animation: fade-in 0.2s;
 
     & > img {
