@@ -1,4 +1,4 @@
-![Teaser](.github/slashwriter-teaser.gif)
+https://user-images.githubusercontent.com/83542054/227054132-b9f0d190-47f2-497e-890d-19e3c8ac2ea5.mp4
 
 **Slashwriter** is a tool for creating, organizing, and sharing documents online. Its block-based collaborative editor, which is easy to use, is designed to help you create high-quality documents while saving you time.
 
