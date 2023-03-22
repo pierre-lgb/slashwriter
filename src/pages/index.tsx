@@ -1,6 +1,10 @@
 import Head from "next/head"
+import Image from "next/image"
 import Link from "next/link"
+import { RiGithubFill } from "react-icons/ri"
 import Flex from "src/components/Flex"
+import Button from "src/components/ui/Button"
+import Typography from "src/components/ui/Typography"
 import { withoutPageAuth } from "src/utils/supabase"
 import styled from "styled-components"
 
@@ -16,19 +20,106 @@ function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Main align="center" justify="center">
-                <Link href="/auth">Connexion</Link>
-            </Main>
+            <Header>
+                <Image
+                    src="/assets/logo.svg"
+                    width={180}
+                    height={50}
+                    alt="logo"
+                    id="logo"
+                />
+                <nav>
+                    <Link href="https://slashwriter.fly.dev/doc/1ce53e87-bbf3-4676-b657-2212a8f4ba74">
+                        Démo
+                    </Link>
+                    <Link href="/auth">Connexion</Link>
+                </nav>
+            </Header>
+            <Hero>
+                <Typography.Title
+                    level={1}
+                    style={{ textAlign: "center", maxWidth: 500 }}
+                >
+                    Prise de notes simple et élégante.
+                </Typography.Title>
+                <Typography.Text
+                    align="center"
+                    style={{ fontSize: "1.2rem", maxWidth: 300 }}
+                >
+                    Créez, organisez et partagez vos notes avec Slashwriter.
+                </Typography.Text>
+                <Flex
+                    gap={10}
+                    style={{ flexWrap: "wrap", justifyContent: "center" }}
+                >
+                    <Link
+                        target="_blank"
+                        href="https://slashwriter.fly.dev/doc/1ce53e87-bbf3-4676-b657-2212a8f4ba74"
+                    >
+                        <Button size="large">Essayer la démo</Button>
+                    </Link>
+                    <Link
+                        target="_blank"
+                        href="https://github.com/pierre-lgb/slashwriter"
+                    >
+                        <Button
+                            appearance="secondary"
+                            size="large"
+                            icon={<RiGithubFill />}
+                        >
+                            Code source
+                        </Button>
+                    </Link>
+                </Flex>
+
+                <img
+                    src="/assets/slashwriter-mockup.png"
+                    alt="cover"
+                    id="cover"
+                />
+            </Hero>
         </Container>
     )
 }
 
 const Container = styled.div`
     padding: 2rem;
+    min-width: 300px;
 `
 
-const Main = styled(Flex)`
-    height: 100%;
+const Header = styled.header`
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    @media screen and (max-width: 550px) {
+        #logo {
+            display: none;
+        }
+
+        justify-content: center;
+    }
+`
+
+const Hero = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 50px;
+    gap: 20px;
+
+    #cover {
+        width: 100%;
+        @media screen and (max-width: 550px) {
+            width: 140%;
+        }
+    }
 `
 
 export const getServerSideProps = withoutPageAuth()
