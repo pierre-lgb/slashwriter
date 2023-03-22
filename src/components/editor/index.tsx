@@ -345,7 +345,7 @@ const Container = styled.div`
     }
 
     .ProseMirror {
-        padding: 25px calc((100% - (700px)) / 2);
+        padding: 25px calc((100% - (750px)) / 2);
         outline: none;
 
         /* Collaboration cursor */
@@ -420,7 +420,7 @@ const TitleEditor = styled(EditorContent)`
 
 const ContentEditor = styled(EditorContent)`
     .ProseMirror {
-        font-size: 1em;
+        font-size: 0.95em;
         line-height: 1.6rem;
 
         /**
@@ -474,7 +474,7 @@ const ContentEditor = styled(EditorContent)`
         }
 
         mark {
-            background-color: rgb(248, 231, 30) !important;
+            background-color: rgb(248, 231, 30, 0.4) !important;
         }
 
         /**
