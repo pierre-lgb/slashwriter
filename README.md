@@ -32,22 +32,21 @@ To run Slashwriter locally, you need :
 
 -   Node.js
 -   PostgreSQL
--   Supabase CLI (+ a Supabase account), which itself requires Docker
+-   Supabase CLI, which itself requires Docker
 
 ### Steps to follow :
 
 1. Download repository
 2. In the repository's root directory, run `yarn install`
 3. Start Supabase locally:
-    - Run `supabase login` (or `npx supabase login` if supabase-cli has been installed with npm) and enter your access token.
     - Run `supabase init` (or `npx supabase init` if supabase-cli has been installed with npm)
-    - Run `supabase start` (or `npx supabase start` if supabase-cli has been installed with npm)
+    - Run `supabase start` (or `npx supabase start` if supabase-cli has been installed with npm). Don't forget to start Docker.
 4. Setup environment variables: duplicate `.env.development`, rename it `.env.local` and set the `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` environment variables to the URLs logged in the console after running `supabase start`:
     ```
     NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
     NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
     ```
-5. Run the following command:
+5. Run the following command (set --dbname to your local database URL):
     ```cmd
     cd server/scripts && psql --single-transaction --variable ON_ERROR_STOP=1 --file tables.sql --file auth.sql --file rpc.sql --file folders.sql --file documents.sql --file shares.sql --file cron.sql --file realtime.sql --file storage.sql --dbname "postgresql://postgres:postgres@localhost:54322/postgres" && cd ../..
     ```
