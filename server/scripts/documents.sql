@@ -1,45 +1,27 @@
 -- +------------------------------------------+
 -- |                 DOCUMENTS                |
 -- +------------------------------------------+
-CREATE TABLE IF NOT EXISTS documents (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
-    title TEXT DEFAULT '' NOT NULL,
-    owner_id UUID REFERENCES auth.users DEFAULT uid() NOT NULL,
-    folder_id UUID REFERENCES folders (id) NOT NULL,
-    parent_id UUID REFERENCES documents (id) ON DELETE CASCADE,
-    share_settings UUID,
-    state BYTEA,
-    text_preview TEXT,
-    favorite BOOLEAN DEFAULT false NOT NULL,
-    deleted BOOLEAN DEFAULT false NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now()) NOT NULL,
-    deleted_at TIMESTAMP WITH TIME ZONE
-);
-
-
 
 DROP VIEW IF EXISTS user_documents_tree;
-CREATE VIEW user_documents_tree AS 
-SELECT id, title, folder_id, parent_id, favorite, updated_at
+CREATE VIEW user_documents_tree
+WITH (security_invoker) 
+as SELECT id, title, folder_id, parent_id, favorite, updated_at
 FROM documents
-WHERE owner_id = uid() AND NOT deleted
+WHERE owner_id = auth.uid() AND NOT deleted
 ORDER BY updated_at desc;
-
-ALTER VIEW user_documents_tree OWNER TO authenticated;
-
 
 
 DROP VIEW IF EXISTS documents_shared_with_user;
-CREATE VIEW documents_shared_with_user AS
-SELECT * from (
+CREATE VIEW documents_shared_with_user
+WITH (security_invoker)
+as SELECT * from (
     SELECT 
         d.id,
         d.title,
         d.text_preview,
         (CASE 
-            WHEN s.user_permissions ? uid()::text THEN 
-                s.user_permissions->>uid()::text
+            WHEN s.user_permissions ? auth.uid()::text THEN 
+                s.user_permissions->>auth.uid()::text
             ELSE 
                 NULL
         END) AS permission,
@@ -54,8 +36,9 @@ SELECT * from (
 WHERE permission IS NOT NULL;
 
 DROP VIEW IF EXISTS documents_shared_by_user;
-CREATE OR REPLACE VIEW documents_shared_by_user AS
-    SELECT 
+CREATE OR REPLACE VIEW documents_shared_by_user
+WITH (security_invoker)
+as SELECT 
         d.id,
         d.title,
         d.text_preview,
@@ -64,11 +47,8 @@ CREATE OR REPLACE VIEW documents_shared_by_user AS
         s.created_at AS share_created_at
     FROM documents d
     JOIN shares s ON s.id = d.share_settings
-    WHERE d.owner_id = uid() AND s.document_id = d.id;
+    WHERE d.owner_id = auth.uid() AND s.document_id = d.id;
 
-
-
--- Row level security
 ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Documents INSERT policy" ON documents;
@@ -101,27 +81,6 @@ CREATE POLICY "Documents DELETE policy" ON documents
 
 
 
--- Automatically set the folder_id to the parent's one 
--- whenever parent_id is specified
-CREATE OR REPLACE FUNCTION set_folder_id_on_insert()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.parent_id IS NOT NULL THEN
-        SELECT folder_id INTO NEW.folder_id
-        FROM documents
-        WHERE id = NEW.parent_id;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS set_folder_id_on_insert ON documents;
-CREATE TRIGGER set_folder_id_on_insert
-    BEFORE INSERT ON documents
-    FOR EACH ROW
-    EXECUTE FUNCTION set_folder_id_on_insert();
-
-
 
 -- Trigger on document inserted
 CREATE OR REPLACE FUNCTION handle_insert_document()
@@ -132,9 +91,15 @@ AS $$
 BEGIN
     -- When a subdocument is inserted, in inherits some props from its parent
     IF NEW.parent_id IS NOT NULL THEN
-        NEW.folder_id := (SELECT d.folder_id FROM documents d WHERE d.id = NEW.parent_id);
-        NEW.owner_id := (SELECT d.owner_id FROM documents d WHERE d.id = NEW.parent_id);
-        NEW.share_settings := (SELECT d.share_settings FROM documents d WHERE d.id = NEW.parent_id);
+        IF NEW.folder_id IS NULL THEN 
+            NEW.folder_id := (SELECT d.folder_id FROM documents d WHERE d.id = NEW.parent_id);
+        END IF;
+        IF NEW.owner_id IS NULL THEN 
+            NEW.owner_id := (SELECT d.owner_id FROM documents d WHERE d.id = NEW.parent_id);
+        END IF;
+        IF NEW.share_settings IS NULL THEN 
+            NEW.share_settings := (SELECT d.share_settings FROM documents d WHERE d.id = NEW.parent_id);
+        END IF;
     END IF;
 
     RETURN NEW;
@@ -168,7 +133,8 @@ CREATE TRIGGER on_update_document
   EXECUTE PROCEDURE handle_update_document();
 
 
-
+-- Whenever a document is temporarily deleted (`deleted` column set to true), 
+-- temporarily delete all the and subdocuments as well.
 CREATE OR REPLACE FUNCTION update_subdocuments_on_temp_delete_document()
 RETURNS TRIGGER 
 LANGUAGE plpgsql
@@ -195,26 +161,6 @@ CREATE TRIGGER update_subdocuments_on_temp_delete_document
     AFTER UPDATE OF deleted ON documents
     FOR EACH ROW WHEN (pg_trigger_depth() < 1)
     EXECUTE PROCEDURE update_subdocuments_on_temp_delete_document();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 -- Log documents updates in the "realtime_updates" table

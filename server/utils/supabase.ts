@@ -2,7 +2,12 @@ import { createClient, Session } from "@supabase/supabase-js"
 
 export const supabaseClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+        auth: {
+            persistSession: false
+        }
+    }
 )
 
 // https://github.com/supabase/auth-helpers/blob/main/packages/shared/src/utils/cookies.ts

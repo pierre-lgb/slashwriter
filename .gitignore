@@ -38,9 +38,9 @@ yarn-error.log*
 /dist
 ~*
 package-lock.json
-yarn.lock
 .dockerignore
 Dockerfile
 fly.toml
 
+/supabase
 @tiptap-pro/

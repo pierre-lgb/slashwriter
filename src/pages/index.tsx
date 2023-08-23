@@ -94,11 +94,8 @@ function Home() {
                                 En écrivant{" "}
                                 <Typography.Text code small>
                                     /
-                                </Typography.Text>{" "}
-                                dans l'éditeur, une liste de commandes apparaît
-                                pour vous permettre de rapidement ajouter des
-                                titres, des images, des tableaux et bien plus
-                                encore, sans avoir à chercher dans des menus.
+                                </Typography.Text>
+                                {` dans l'éditeur, une liste de commandes apparaît pour vous permettre de rapidement ajouter des titres, des images, des tableaux et bien plus encore, sans avoir à chercher dans des menus.`}
                             </Typography.Text>
                         </FeatureDetails>
                     </Feature>
@@ -114,11 +111,11 @@ function Home() {
                                 Éditeur Collaboratif
                             </Typography.Title>
                             <Typography.Text>
-                                Slashwriter permet de travailler en
+                                {`Slashwriter permet de travailler en
                                 collaboration sur des documents en temps réel.
                                 Vous pouvez inviter d'autres utilisateurs à
                                 modifier ou commenter votre document, et voir
-                                leurs modifications en temps réel.
+                                leurs modifications en temps réel.`}
                             </Typography.Text>
                         </FeatureDetails>
                     </Feature>
@@ -134,11 +131,11 @@ function Home() {
                                 Pages intégrées
                             </Typography.Title>
                             <Typography.Text>
-                                Slashwriter permet d'organiser vos documents en
-                                utilisant des sous-documents intégrés. Cela
+                                {`Slashwriter permet d'organiser vos documents
+                                en utilisant des sous-documents intégrés. Cela
                                 permet de rendre la navigation et la lecture
                                 plus aisées, en évitant de devoir faire défiler
-                                un document long et complexe.
+                                un document long et complexe.`}
                             </Typography.Text>
                         </FeatureDetails>
                     </Feature>
@@ -277,7 +274,7 @@ const FeatureImage = styled.div`
     height: 300px;
     background-color: #eeeeee;
     background-size: cover;
-    background-position: bottom;
+    background-position: left bottom;
     flex-shrink: 0;
     border: 15px solid #fff;
     border-radius: 0.125rem;

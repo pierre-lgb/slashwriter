@@ -1,32 +1,15 @@
 -- +------------------------------------------+
 -- |                  FOLDERS                 |
 -- +------------------------------------------+
-CREATE TABLE IF NOT EXISTS folders (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY NOT NULL,
-    name TEXT DEFAULT '' NOT NULL,
-    owner_id UUID REFERENCES auth.users DEFAULT uid() NOT NULL,
-    parent_id UUID REFERENCES folders (id) ON DELETE CASCADE,
-    color TEXT DEFAULT '#8F95B2' NOT NULL,
-    deleted BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now()) NOT NULL,
-    deleted_at TIMESTAMP with TIME ZONE
-);
-
-
 
 DROP VIEW IF EXISTS user_folders_tree;
-CREATE VIEW user_folders_tree AS 
-SELECT id, name, parent_id, color, updated_at
+CREATE VIEW user_folders_tree
+WITH (security_invoker) 
+as SELECT id, name, parent_id, color, updated_at
 FROM folders
-WHERE owner_id = uid() AND NOT deleted
+WHERE owner_id = auth.uid() AND NOT deleted
 ORDER BY updated_at desc;
 
-ALTER VIEW user_documents_tree OWNER TO authenticated;
-
-
-
--- Row level security
 ALTER TABLE folders ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Folders INSERT policy" ON folders;
@@ -95,8 +78,8 @@ CREATE TRIGGER handle_folder_update
     FOR EACH ROW
     EXECUTE FUNCTION log_folder_update();
 
-
-
+-- Whenever a folder is temporarily deleted (`deleted` column set to true), 
+-- temporarily delete all the subfolders and subdocuments as well.
 CREATE OR REPLACE FUNCTION update_subitems_on_temp_delete_folder()
 RETURNS TRIGGER 
 LANGUAGE plpgsql

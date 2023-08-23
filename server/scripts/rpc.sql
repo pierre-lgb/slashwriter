@@ -1,3 +1,5 @@
+-- Returns the user permission ('none', 'read' or 'edit') on a document based on
+-- the document's share settings.
 CREATE OR REPLACE FUNCTION get_user_permission_for_document(document_id uuid, user_id uuid, document documents)
 RETURNS TEXT
 LANGUAGE plpgsql

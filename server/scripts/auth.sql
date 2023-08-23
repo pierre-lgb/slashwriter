@@ -1,18 +1,6 @@
 -- +------------------------------------------+
--- |                 PROFILES                 |
+-- |                   AUTH                   |
 -- +------------------------------------------+
-CREATE TABLE IF NOT EXISTS profiles (
-    id UUID REFERENCES auth.users NOT NULL,
-    username TEXT UNIQUE NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    avatar_url TEXT,
-
-    PRIMARY KEY (id),
-    UNIQUE (username),
-    CONSTRAINT username_length CHECK (char_length(username) >= 3)
-);
-
-
 
 -- Trigger on auth user created
 CREATE OR REPLACE FUNCTION handle_new_user()
@@ -92,3 +80,9 @@ CREATE TRIGGER on_auth_user_updated
   AFTER UPDATE OF email ON auth.users
   FOR EACH ROW
   EXECUTE PROCEDURE handle_update_user();
+
+DROP POLICY IF EXISTS "Profiles SELECT policy" ON profiles;
+CREATE POLICY "Profiles SELECT policy" ON profiles
+  AS PERMISSIVE FOR SELECT
+  TO public
+  USING (true)
