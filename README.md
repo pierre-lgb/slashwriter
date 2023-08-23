@@ -56,4 +56,4 @@ To run Slashwriter locally, you need :
 
 ### Stopping Supabase
 
-To stop supabase server, run `supabase stop` (or `npx supabase start` if supabase-cli has been installed with npm)
+To stop supabase server, run `supabase stop` (or `npx supabase stop` if supabase-cli has been installed with npm)
