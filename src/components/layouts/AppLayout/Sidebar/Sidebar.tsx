@@ -49,6 +49,15 @@ export default function Sidebar() {
         error: documentsError
     } = useAppSelector((store) => store.documents)
 
+    useEffect(() => {
+        if (foldersError) {
+            console.error(foldersError)
+        }
+        if (documentsError) {
+            console.error(documentsError)
+        }
+    }, [foldersError, documentsError])
+
     const favorites = useMemo(
         () => documents?.filter((d) => d.favorite),
         [documents]
@@ -133,7 +142,12 @@ export default function Sidebar() {
                         >
                             <Flex as="span" align="center" gap={10}>
                                 Dossiers
-                                <Count>{folders?.length}</Count>
+                                <Count>
+                                    {
+                                        folders?.filter((f) => !f.parent_id)
+                                            .length
+                                    }
+                                </Count>
                             </Flex>
                             <ExpandButton expanded={documentsTreeExpanded} />
                         </SectionHeader>
