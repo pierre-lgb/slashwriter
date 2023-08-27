@@ -1,5 +1,5 @@
 const datasetFR = {
-    Personnes: [
+    "Personnes & Émotions": [
         { unicode: "😀", tags: ["sourire"], shortcode: "grinning" },
         { unicode: "😃", tags: ["sourire"], shortcode: "smiley" },
         { unicode: "😄", tags: ["sourire"], shortcode: "smile" },

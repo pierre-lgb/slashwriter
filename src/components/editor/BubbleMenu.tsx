@@ -12,10 +12,15 @@ import {
     RiUnderline as UnderlineIcon
 } from "react-icons/ri"
 import Button from "src/components/ui/Button"
-import styled from "styled-components"
 
 import { CellSelection } from "@tiptap/prosemirror-tables"
-import { BubbleMenu as TiptapBubbleMenu, Editor, isNodeSelection } from "@tiptap/react"
+import {
+    BubbleMenu as TiptapBubbleMenu,
+    Editor,
+    isNodeSelection
+} from "@tiptap/react"
+
+import styles from "./BubbleMenu.module.scss"
 
 function isCellSelection(value: unknown): value is CellSelection {
     return value instanceof CellSelection
@@ -27,8 +32,7 @@ interface BubbleMenuProps {
 
 export default function BubbleMenu(props: BubbleMenuProps) {
     const { editor } = props
-
-    const menuRef = useRef<HTMLDivElement>()
+    const menuRef = useRef<HTMLDivElement>(null)
 
     /**
      * Keep track of whether the user is selecting with the mouse
@@ -94,7 +98,7 @@ export default function BubbleMenu(props: BubbleMenuProps) {
             }}
         >
             {isSelecting ? null : (
-                <Container ref={menuRef}>
+                <div className={styles.bubbleMenu} ref={menuRef}>
                     <Button
                         icon={<BoldIcon size={16} />}
                         appearance="text"
@@ -194,19 +198,8 @@ export default function BubbleMenu(props: BubbleMenuProps) {
                         }}
                         active={editor.isActive("link")}
                     />
-                </Container>
+                </div>
             )}
         </TiptapBubbleMenu>
     )
 }
-
-const Container = styled.div`
-    padding: 0.25rem;
-    display: flex;
-    gap: 0.25rem;
-
-    &:empty {
-        display: none;
-        pointer-events: none;
-    }
-`

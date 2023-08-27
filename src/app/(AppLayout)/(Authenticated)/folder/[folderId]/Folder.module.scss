@@ -1,0 +1,27 @@
+.container {
+    padding: 50px 25px;
+
+    .content {
+        margin: 25px auto;
+        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .folderTitle {
+        display: inline-flex;
+        align-items: center;
+        font-weight: 600;
+        gap: 20px;
+        margin-bottom: 20px;
+
+        & button {
+            opacity: 0;
+            transition: opacity ease-out 100ms;
+        }
+
+        &:hover button {
+            opacity: 1;
+        }
+    }
+}

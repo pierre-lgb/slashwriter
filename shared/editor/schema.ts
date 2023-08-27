@@ -27,6 +27,7 @@ import Equation from "./extensions/Equation"
 import EquationBlock from "./extensions/EquationBlock"
 import HorizontalRule from "./extensions/HorizontalRule"
 import Image from "./extensions/Image"
+import ImagePlaceholder from "./extensions/Image/ImagePlaceholder"
 import Subdocument from "./extensions/Subdocument"
 import Table from "./extensions/Table"
 import TableCell from "./extensions/TableCell"
@@ -35,7 +36,7 @@ import TableRow from "./extensions/TableRow"
 import TaskItem from "./extensions/TaskItem"
 import TaskList from "./extensions/TaskList"
 
-const editorSchema = getSchema([
+export default getSchema([
     // Nodes
     Document,
     Text,
@@ -50,6 +51,7 @@ const editorSchema = getSchema([
     TaskList,
     TaskItem,
     Image,
+    ImagePlaceholder,
     HorizontalRule,
     Subdocument,
     Details,
@@ -76,5 +78,3 @@ const editorSchema = getSchema([
     Subscript,
     Superscript
 ])
-
-export default editorSchema

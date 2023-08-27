@@ -1,0 +1,85 @@
+.modalOverlayContainer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    .modalOverlay {
+        position: absolute;
+        inset: 0;
+        background: var(--color-black);
+        opacity: 0.5;
+    }
+}
+
+.modalContainer {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    min-height: 100vh;
+    display: flex;
+    pointer-events: none;
+
+    .modal {
+        display: inline-block;
+        background: var(--color-white);
+        text-align: left;
+        overflow: hidden;
+        vertical-align: middle;
+        border: 1px solid var(--color-n300);
+        border-radius: 0.5rem;
+        position: absolute;
+        left: 50%;
+        width: 36rem;
+        pointer-events: all;
+        max-height: 95vh;
+        max-width: 95vw;
+        overflow: auto;
+
+        &.centerPlacement {
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        &.topPlacement {
+            top: 10%;
+            transform: translateX(-50%);
+        }
+    }
+
+    .modalTitle {
+        margin: 0 0 5px 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    .modalDescription {
+        font-size: 0.9rem;
+        color: var(--color-n700);
+        margin-bottom: 20px;
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    .modalFooter {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+        gap: 10px;
+    
+        &:empty {
+            display: none;
+        }
+    }
+
+    .closeButtonContainer {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+    }
+}

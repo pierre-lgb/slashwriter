@@ -1,0 +1,57 @@
+.equationBlock {
+    display: block;
+    text-align: center;
+    padding: 0.05rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    caret-color: rgb(55, 53, 47);
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    margin: 0 0.1rem;
+
+    :global(.base) {
+        margin: 2px 0;
+    }
+
+    & > div {
+        margin: 1rem 0;
+    }
+
+    &.empty {
+        color: var(--color-n600);
+        background-color: var(--color-n100);
+    }
+
+    &.error {
+        color: var(--color-red);
+        background-color: var(--color-n100);
+    }
+
+    &:not(.error, .empty) * {
+        font-family: KaTeX_Main, Times New Roman, serif;
+    }
+
+    &.selected {
+        background-color: rgba(150, 170, 220, 0.2);
+    }
+}
+
+.equationTextarea {
+    font-family: "JetBrains Mono", monospace;
+    outline: none;
+    resize: none;
+    font-size: 0.95rem;
+    border: none;
+    margin: none;
+    height: 200px;
+    width: 400px;
+    max-width: calc(100vw - 20px);
+    margin: 0;
+    border-radius: 4px;
+    padding: 0.5rem;
+    background-color: var(--color-n50);
+
+    * {
+        transition: all 0.1s;
+    }
+}

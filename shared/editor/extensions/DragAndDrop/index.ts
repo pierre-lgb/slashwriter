@@ -1,3 +1,1 @@
-import { DragAndDrop } from "./DragAndDrop"
-
-export default DragAndDrop
+export { DragAndDrop as default } from "./DragAndDrop"

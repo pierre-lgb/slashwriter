@@ -12,9 +12,9 @@ interface CalloutEmojiMenuProps {
 export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
     const { editor } = props
     const { view } = editor
-    const emojiPickerRef = useRef<EmojiPickerHandle>()
+    const emojiPickerRef = useRef<EmojiPickerHandle>(null)
 
-    const popup = useRef<Instance>()
+    const popup = useRef<Instance | null>()
     const calloutPos = useRef(-1)
 
     const handleClickEmoji = useCallback(
@@ -30,10 +30,10 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
             calloutPos.current = pos
             editor.commands.focus(pos)
 
-            popup.current.setProps({
+            popup.current?.setProps({
                 getReferenceClientRect: () => target.getBoundingClientRect()
             })
-            popup.current.show()
+            popup.current?.show()
         },
         [view]
     )
@@ -50,30 +50,32 @@ export default function CalloutEmojiMenu(props: CalloutEmojiMenuProps) {
     useEffect(() => {
         if (emojiPickerRef.current) {
             const { containerElement } = emojiPickerRef.current
+            if (!containerElement) return
+
             containerElement.remove()
             containerElement.style.visibility = "visible"
-        }
 
-        popup.current = tippy(view.dom, {
-            getReferenceClientRect: null,
-            content: emojiPickerRef.current.containerElement,
-            appendTo: view.dom.parentElement,
-            trigger: "manual",
-            hideOnClick: true,
-            interactive: true,
-            arrow: false,
-            placement: "right-start",
-            animation: "shift-away",
-            theme: "light-border no-padding",
-            maxWidth: 500,
-            onShown: () => {
-                emojiPickerRef.current?.searchInputElement?.focus()
-            },
-            onHidden: () => {
-                emojiPickerRef.current?.scrollTo(0)
-                emojiPickerRef.current?.setQuery("")
-            }
-        })
+            popup.current = tippy(view.dom, {
+                getReferenceClientRect: null,
+                content: containerElement,
+                appendTo: view.dom.parentElement!,
+                trigger: "manual",
+                hideOnClick: true,
+                interactive: true,
+                arrow: false,
+                placement: "right-start",
+                animation: "shift-away",
+                theme: "light-border no-padding",
+                maxWidth: 500,
+                onShown: () => {
+                    emojiPickerRef.current?.searchInputElement?.focus()
+                },
+                onHidden: () => {
+                    emojiPickerRef.current?.scrollTo(0)
+                    emojiPickerRef.current?.setQuery("")
+                }
+            })
+        }
 
         return () => {
             popup.current?.destroy()

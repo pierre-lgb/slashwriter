@@ -1,0 +1,79 @@
+.inputContainer {
+    position: relative;
+    
+    .input {
+        display: block;
+        width: 100%;
+        border-style: solid;
+        border-width: 1px;
+        border-color: var(--color-n400);
+        border-radius: 4px;
+        transition: all ease-out 0.2s;
+        background-color: var(--color-white);
+        color: var(--color-n800);
+        outline: none;
+
+        &.small {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+        }
+
+        &.medium {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        &.large {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        
+        &.error {
+            border-color: var(--color-red);
+        }
+        
+        &.withIcon {
+            padding-left: 2.25rem;
+        }
+
+        &.readOnly {
+            color: var(--color-n600);
+        }
+
+        &.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        &.borderless {
+            border-color: transparent;
+            box-shadow: none;
+        }
+        
+        &:focus {
+            box-shadow: 0 0 0 2px rgba(150, 150, 150, 0.1);
+        }
+    }
+
+    .inputIconContainer {
+        position: absolute;
+        inset: 0 auto 0 0;
+        padding-left: 0.75rem;
+        display: flex;
+        align-items: center;
+        pointer-events: none;
+
+        svg {
+            color: var(--color-n600);
+            font-size: 1.1rem;
+        }
+    }
+
+    .inputActionsContainer {
+        position: absolute;
+        inset: 0 0 0 auto;
+        align-items: center;
+        gap: 0.2rem;
+    }
+}
+

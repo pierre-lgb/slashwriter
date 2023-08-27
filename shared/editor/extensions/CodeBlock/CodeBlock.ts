@@ -1,9 +1,17 @@
 import hljs from "highlight.js/lib/common"
-import { getHighlightDecorations, highlightPlugin } from "prosemirror-highlightjs"
+import {
+    getHighlightDecorations,
+    highlightPlugin
+} from "prosemirror-highlightjs"
 import { Plugin, PluginKey, Selection, TextSelection } from "prosemirror-state"
 import { DecorationSet } from "prosemirror-view"
 
-import { findParentNode, mergeAttributes, Node, textblockTypeInputRule } from "@tiptap/core"
+import {
+    findParentNode,
+    mergeAttributes,
+    Node,
+    textblockTypeInputRule
+} from "@tiptap/core"
 
 /**
  * Extension based on:
@@ -145,9 +153,15 @@ export default Node.create({
                     return false
                 }
 
-                const { start, node } = findParentNode(
+                const parentNode = findParentNode(
                     (node) => node.type.name === "codeBlock"
                 )(selection)
+
+                if (!parentNode) {
+                    return false
+                }
+
+                const { start, node } = parentNode
 
                 return this.editor.commands.setTextSelection({
                     from: start,
@@ -278,7 +292,7 @@ export default Node.create({
                             doc,
                             hljs,
                             ["codeBlock"],
-                            () => undefined
+                            () => null
                         )
 
                         return DecorationSet.create(doc, content)
@@ -292,7 +306,7 @@ export default Node.create({
                             tr.doc,
                             hljs,
                             ["codeBlock"],
-                            () => undefined
+                            () => null
                         )
 
                         return DecorationSet.create(tr.doc, content)

@@ -2,15 +2,16 @@ import Router from "next/router"
 import { useCallback, useRef, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { RiImage2Line as ImageIcon } from "react-icons/ri"
-import Flex from "src/components/Flex"
+import { useSupabase } from "src/components/supabase/SupabaseProvider"
 import Button from "src/components/ui/Button"
+import Flex from "src/components/ui/Flex"
 import Input from "src/components/ui/Input"
 import Loader from "src/components/ui/Loader"
-import { supabaseClient } from "src/utils/supabase"
-import styled from "styled-components"
 import { v4 as uuidv4 } from "uuid"
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
+
+import styles from "./ImagePlaceholderComponent.module.scss"
 
 function isValidURL(url: string) {
     const URLRegExp = new RegExp(
@@ -27,8 +28,10 @@ function isValidURL(url: string) {
 
 export default function ImagePlaceholderComponent(props: NodeViewProps) {
     const [uploading, setUploading] = useState(false)
-    const urlInputRef = useRef<HTMLInputElement>()
+    const urlInputRef = useRef<HTMLInputElement | null>(null)
     const { deleteNode, getPos, editor } = props
+
+    const { supabaseClient } = useSupabase()
 
     const insertImage = useCallback(
         (attrs) => {
@@ -104,43 +107,42 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
 
     return (
         <NodeViewWrapper
-            className={
-                props.selected
-                    ? "ProseMirror-selectednode imagePlaceholder"
-                    : "imagePlaceholder"
-            }
+            className={`${
+                props.selected ? "ProseMirror-selectednode" : ""
+            } imagePlaceholder`}
         >
-            <PlaceholderContainer>
+            <div className={styles.placeholderContainer}>
                 {uploading ? (
                     <Loader />
                 ) : (
                     <>
-                        <Flex column align="center" gap={5} {...getRootProps()}>
+                        <div className={styles.dropzone} {...getRootProps()}>
                             <input {...getInputProps()} />
                             <ImageIcon color="inherit" size={24} />
                             {isDragActive ? (
-                                <PlaceholderText>
-                                    {"Déposez l'image ici"}
-                                </PlaceholderText>
+                                <div className={styles.placeholderText}>
+                                    {"Drop the image here"}
+                                </div>
                             ) : (
-                                <PlaceholderText>
-                                    {"Glissez et déposez l'image ici, "}
+                                <div className={styles.placeholderText}>
+                                    {"Drag and drop an image here, "}
                                     <br />
-                                    {"ou cliquez pour sélectionner un fichier"}
-                                </PlaceholderText>
+                                    {"or click to select a file."}
+                                </div>
                             )}
-                        </Flex>
-                        <PlaceholderText>- ou -</PlaceholderText>
+                        </div>
+                        <div className={styles.placeholderText}>- or -</div>
                         <Input
-                            placeholder="Entrez l'URL de l'image"
+                            placeholder="Enter image URL"
                             inputRef={urlInputRef}
                             actions={
                                 <Button
                                     appearance="secondary"
                                     onClick={() => {
-                                        const url = urlInputRef.current.value
+                                        const url =
+                                            urlInputRef.current?.value || ""
                                         if (!isValidURL(url)) {
-                                            alert("URL invalide.")
+                                            alert("Invalid URL.")
                                             return
                                         }
 
@@ -153,39 +155,13 @@ export default function ImagePlaceholderComponent(props: NodeViewProps) {
                                         deleteNode()
                                     }}
                                 >
-                                    Importer
+                                    Import
                                 </Button>
                             }
                         />
                     </>
                 )}
-            </PlaceholderContainer>
+            </div>
         </NodeViewWrapper>
     )
 }
-
-const PlaceholderContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: var(--color-n50);
-    border: 1px solid var(--color-n300);
-    height: 170px;
-    padding: 1rem;
-    color: var(--color-n700);
-    cursor: pointer;
-    gap: 0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-
-    &:hover {
-        background-color: var(--color-n100);
-    }
-`
-
-const PlaceholderText = styled.div`
-    text-align: center;
-    font-size: 0.95rem;
-    user-select: none;
-    line-height: 120%;
-`

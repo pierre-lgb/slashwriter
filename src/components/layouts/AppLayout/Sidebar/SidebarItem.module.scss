@@ -1,0 +1,51 @@
+.sidebarItem {
+    border-radius: 4px;
+    padding: 3px;
+    color: var(--color-n700);
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 400;
+    background: none;
+    transition: background-color ease-out 50ms, box-shadow ease-out 200ms;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-weight: 500;
+    gap: 10px;
+
+    :global {
+        animation: fade-in .25s;
+    }
+
+    &.active {
+        background: var(--color-n200);
+        color: var(--color-black);
+    }
+
+    &:hover:not(.active), &:focus:not(.active) {
+        background-color: var(--color-n100);
+    }
+
+    .title {
+        display: flex;
+        font-size: 0.9em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .iconContainer {
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        & > svg {
+            font-size: 1.15em;
+        }
+    }
+}

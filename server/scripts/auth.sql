@@ -15,12 +15,12 @@ BEGIN
       VALUES (NEW.id, split_part(NEW.email, '@', 1), NEW.email);
     
     INSERT INTO folders (owner_id, name)
-      VALUES (NEW.id, 'Bienvenue');
+      VALUES (NEW.id, 'Welcome');
 
     SELECT f.id INTO folder_id FROM folders f WHERE owner_id = new.id;
     
     INSERT INTO documents (owner_id, folder_id, title, state)
-      VALUES (new.id, folder_id, 'Bienvenue sur Slashwriter', get_welcome_document_state());
+      VALUES (new.id, folder_id, 'Welcome to Slashwriter', get_welcome_document_state());
 
     RETURN NEW;
 end;
@@ -39,9 +39,6 @@ LANGUAGE plpgsql
 SECURITY DEFINER SET search_path = public
 AS $$
 BEGIN
-    -- Disable all triggers for the tables that are being affected
-    EXECUTE 'SET session_replication_role = replica';
-
     -- Perform the deletion
     DELETE FROM documents WHERE owner_id = OLD.id;
     DELETE FROM shares WHERE owner_id = OLD.id;
@@ -49,8 +46,6 @@ BEGIN
     DELETE FROM folders WHERE owner_id = OLD.id;
     DELETE FROM profiles WHERE id = OLD.id;
 
-    -- Re-enable all triggers for the tables that were affected
-    EXECUTE 'SET session_replication_role = DEFAULT';
     RETURN OLD;
 END;
 $$;

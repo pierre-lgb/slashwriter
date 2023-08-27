@@ -1,0 +1,140 @@
+.button {
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    border-radius: 4px;
+    outline: none;
+    transition: all ease-out 0.2s;
+
+    &.small {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+
+        &.iconOnly {
+            padding: 0.3rem;
+        }
+    }
+
+    &.medium {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+
+        &.iconOnly {
+            padding: 0.5rem;
+        }
+    }
+
+    &.large {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+
+        &.iconOnly {
+            padding: 0.7rem;
+        }
+    }
+
+    &.primary {
+        color: var(--color-white);
+        background-color: var(--color-black);
+        border: 1px solid transparent;
+
+        &.active {
+            background-color: var(--color-n800);
+        }
+
+        &.danger {
+            color: var(--color-white);
+            background-color: var(--color-red);
+            border: 1px solid transparent;
+        }
+
+        &:hover {
+            background-color: var(--color-n800);
+
+            &.danger {
+                background-color: var(--color-r500);
+            }
+        }
+    }
+
+    &.secondary {
+        color: var(--color-n800);
+        background-color: var(--color-white);
+        border: 1px solid var(--color-n400);
+
+        &.active {
+            background-color: var(--color-n200);
+        }
+
+        &.danger {
+            color: var(--color-red);
+            background-color: none;
+            border: 1px solid var(--color-red)
+        }
+
+        &:hover {
+            background-color: var(--color-n200);
+
+            &.danger {
+                background-color: var(--color-r50);
+            }
+        }
+    }
+
+    &.text {
+        color: var(--color-n800);
+        background-color: transparent;
+        border: 1px solid transparent;
+
+        &.active {
+            background-color: var(--color-n200);
+        }
+
+        &.danger {
+            color: var(--color-red);
+            background-color: none;
+            border: 1px solid transparent;
+        }
+
+        &:hover {
+            background-color: var(--color-n200);
+
+            &.danger {
+                background-color: var(--color-r50);
+            }
+        }
+    }
+
+    &.block {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    &.disabled {
+        opacity: 0.75;
+        cursor: not-allowed;
+    }
+}
+
+.iconContainer {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+
+    &.small {
+        & > svg { font-size: 0.8rem; }
+    }
+
+    &.medium {
+        & > svg { font-size: 1rem; }
+    }
+
+    &.large {
+        & > svg { font-size: 1.2rem; }
+    }
+}

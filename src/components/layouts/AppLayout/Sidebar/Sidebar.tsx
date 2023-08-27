@@ -1,4 +1,6 @@
-import { useRouter } from "next/router"
+"use client"
+
+import { usePathname } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import {
     RiArrowDownSLine as ExpandDownIcon,
@@ -9,33 +11,31 @@ import {
     RiSearchLine as SearchIcon,
     RiShareForwardLine as ShareIcon
 } from "react-icons/ri"
-import Flex from "src/components/Flex"
-import Separator from "src/components/Separator"
+import { useSupabase } from "src/components/supabase/SupabaseProvider"
 import Button from "src/components/ui/Button"
+import Flex from "src/components/ui/Flex"
 import Loader from "src/components/ui/Loader"
 import Typography from "src/components/ui/Typography"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { closeMobileSidebar, openQuicksearch } from "src/store/ui"
-import { useUser } from "src/utils/supabase"
-import styled, { css } from "styled-components"
 
-import AccountSection from "./components/AccountSection"
-import AddFolderButton from "./components/AddFolderButton"
-import DocumentsTree from "./components/DocumentsTree"
-import SidebarItem from "./components/SidebarItem"
+import AccountSection from "./AccountSection"
+import AddFolderButton from "./AddFolderButton"
+import DocumentsTree from "./DocumentsTree"
+import styles from "./Sidebar.module.scss"
+import SidebarItem from "./SidebarItem"
 
 export default function Sidebar() {
-    const router = useRouter()
-    const user = useUser()
+    const { session } = useSupabase()
+    const pathname = usePathname()
 
     const [documentsTreeExpanded, setDocumentsTreeExpanded] = useState(true)
     const [favoritesExpanded, setFavoritesExpanded] = useState(true)
 
+    const dispatch = useAppDispatch()
     const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
         (store) => store.ui
     )
-
-    const dispatch = useAppDispatch()
 
     const {
         folders,
@@ -65,42 +65,44 @@ export default function Sidebar() {
 
     useEffect(() => {
         dispatch(closeMobileSidebar())
-    }, [router.asPath, dispatch])
+    }, [pathname, dispatch])
 
     return (
         <>
-            <Backdrop
+            <div
                 onClick={() => dispatch(closeMobileSidebar())}
-                visible={mobileSidebarOpen}
-            />
-            <SidebarComponent
-                column
-                open={sidebarOpen && !!user}
-                mobileOpen={mobileSidebarOpen && !!user}
-                className="sidebar"
+                className={`${styles.backdrop} ${
+                    mobileSidebarOpen ? styles.visible : ""
+                }`}
+            ></div>
+            <div
+                className={`${styles.sidebar} ${
+                    sidebarOpen && session ? styles.open : ""
+                } ${mobileSidebarOpen && session ? styles.mobileOpen : ""}`}
             >
-                <AccountSection user={user} />
+                <AccountSection user={session?.user} />
 
-                <Section>
+                <div className={styles.section}>
                     <SidebarItem.Link
                         icon={<HomeIcon />}
-                        title="Accueil"
+                        title="Home"
                         href="/home"
                     />
                     <SidebarItem.Link
                         icon={<ShareIcon />}
-                        title="Partages"
+                        title="Shares"
                         href="/shares"
                     />
                     <SidebarItem.Button
                         icon={<SearchIcon />}
-                        title="Rechercher"
+                        title="Search"
                         onClick={() => {
                             dispatch(openQuicksearch())
                         }}
                     />
-                </Section>
-                <Section
+                </div>
+                <div
+                    className={styles.section}
                     style={{
                         flex: "1 1 auto",
                         flexShrink: "initial",
@@ -110,18 +112,25 @@ export default function Sidebar() {
                 >
                     {!!favorites?.length && (
                         <Flex column gap={2} style={{ flexShrink: 0 }}>
-                            <SectionHeader
+                            <div
+                                className={styles.sectionHeader}
                                 onClick={() =>
                                     setFavoritesExpanded((prev) => !prev)
                                 }
                             >
-                                <Flex as="span" align="center" gap={10}>
-                                    Favoris
-                                    <Count>{favorites?.length}</Count>
+                                <Flex align="center" gap={10}>
+                                    <span>Favorites</span>
+                                    <div className={styles.count}>
+                                        {favorites?.length}
+                                    </div>
                                 </Flex>
                                 <ExpandButton expanded={favoritesExpanded} />
-                            </SectionHeader>
-                            <SectionContent expanded={favoritesExpanded}>
+                            </div>
+                            <div
+                                className={`${styles.sectionContent} ${
+                                    favoritesExpanded ? styles.expanded : ""
+                                }`}
+                            >
                                 {favorites.map(({ id, title }) => (
                                     <SidebarItem.Link
                                         key={id}
@@ -130,35 +139,39 @@ export default function Sidebar() {
                                         title={title || "Sans titre"}
                                     />
                                 ))}
-                            </SectionContent>
+                            </div>
                         </Flex>
                     )}
 
                     <Flex auto column gap={2}>
-                        <SectionHeader
+                        <div
+                            className={styles.sectionHeader}
                             onClick={() =>
                                 setDocumentsTreeExpanded((prev) => !prev)
                             }
                         >
-                            <Flex as="span" align="center" gap={10}>
-                                Dossiers
-                                <Count>
+                            <Flex align="center" gap={10}>
+                                <span>Folders</span>
+                                <div className={styles.count}>
                                     {
                                         folders?.filter((f) => !f.parent_id)
                                             .length
                                     }
-                                </Count>
+                                </div>
+                                {(isLoadingFolders || isLoadingDocuments) && (
+                                    <Loader />
+                                )}
                             </Flex>
                             <ExpandButton expanded={documentsTreeExpanded} />
-                        </SectionHeader>
-                        <SectionContent expanded={documentsTreeExpanded}>
-                            {(isLoadingFolders || isLoadingDocuments) && (
-                                <Loader />
-                            )}
+                        </div>
+                        <div
+                            className={`${styles.sectionContent} ${
+                                documentsTreeExpanded ? styles.expanded : ""
+                            }`}
+                        >
                             {(foldersError || documentsError) && (
                                 <Typography.Text type="danger" small>
-                                    Une erreur est survenue. <br />
-                                    Voir la console.
+                                    Une erreur est survenue. Voir la console.
                                 </Typography.Text>
                             )}
                             {folders && documents && (
@@ -170,107 +183,26 @@ export default function Sidebar() {
                                     <AddFolderButton />
                                 </>
                             )}
-                        </SectionContent>
+                        </div>
                     </Flex>
-                </Section>
-                <Section>
+                </div>
+                <div className={styles.section}>
                     <SidebarItem.Link
                         icon={<TrashIcon />}
-                        title="Corbeille"
+                        title="Trash"
                         href="/trash"
                     />
 
                     <SidebarItem.Link
                         icon={<HelpIcon />}
-                        title="Aide"
+                        title="Help"
                         href="/help"
                     />
-                </Section>
-            </SidebarComponent>
+                </div>
+            </div>
         </>
     )
 }
-
-const Backdrop = styled.div<{ visible: boolean }>`
-    display: none;
-
-    @media (max-width: 768px) {
-        display: block;
-        position: absolute;
-        inset: 0;
-        z-index: 25;
-        background: var(--color-black);
-        pointer-events: none;
-        opacity: 0;
-        ${({ visible }) =>
-            visible &&
-            css`
-                opacity: 0.75;
-                pointer-events: all;
-            `}
-        transition: all ease-out 0.2s;
-    }
-`
-
-const SidebarComponent = styled(Flex)<{ open: boolean; mobileOpen: boolean }>`
-    position: relative;
-    max-height: 100vh;
-    width: 300px;
-    border-right: 1px solid var(--color-n300);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    overflow: auto;
-
-    background-color: var(--color-n75);
-    margin-left: ${({ open }) => `${open ? 0 : -300}px`};
-    transition: all ease-out 0.25s;
-    z-index: 25;
-
-    @media (max-width: 768px) {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        margin-left: 0;
-        opacity: ${({ mobileOpen }) => (mobileOpen ? 1 : 0)};
-        transform: ${({ mobileOpen }) =>
-            mobileOpen ? "translateX(0)" : "translateX(-100%)"};
-    }
-`
-
-const Section = styled.div`
-    display: flex;
-    padding: 0.75rem 1rem;
-    flex-direction: column;
-    flex-shrink: 0;
-    gap: 2px;
-`
-
-const SectionHeader = styled.h3`
-    font-size: 0.85rem;
-    font-weight: 400;
-    margin: 0 0 5px 0;
-    color: var(--color-n600);
-    flex-shrink: 0;
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-`
-
-const SectionContent = styled.div<{ expanded?: boolean }>`
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    max-height: ${({ expanded }) => (expanded ? undefined : 0)};
-    overflow: ${({ expanded }) => (expanded ? undefined : "hidden")};
-`
-
-const Count = styled.span`
-    font-size: 0.95em;
-    font-weight: 400;
-    color: var(--color-n500);
-    border-radius: 5px;
-`
 
 const ExpandButton = ({ expanded }) => (
     <Button

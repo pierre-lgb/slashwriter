@@ -50,7 +50,7 @@ export function nodePosAtDOM(node: Element, view: EditorView) {
     return view.posAtCoords({
         left: boundingRect.left + 1,
         top: boundingRect.top + 1
-    }).inside
+    })?.inside
 }
 
 export default function DragHandle(options: DragHandleOptions) {
@@ -67,6 +67,8 @@ export default function DragHandle(options: DragHandleOptions) {
         if (!(node instanceof Element)) return
 
         const nodePos = nodePosAtDOM(node, view)
+        if (!nodePos) return
+
         view.dispatch(
             view.state.tr.setSelection(
                 NodeSelection.create(view.state.doc, nodePos)
@@ -99,6 +101,8 @@ export default function DragHandle(options: DragHandleOptions) {
         if (!(node instanceof Element)) return
 
         const nodePos = nodePosAtDOM(node, view)
+        if (!nodePos) return
+
         view.dispatch(
             view.state.tr.setSelection(
                 NodeSelection.create(view.state.doc, nodePos)
@@ -106,7 +110,7 @@ export default function DragHandle(options: DragHandleOptions) {
         )
     }
 
-    let dragHandleElement: HTMLElement = null
+    let dragHandleElement: HTMLElement | null = null
 
     function hideDragHandle() {
         if (dragHandleElement) {
@@ -135,7 +139,7 @@ export default function DragHandle(options: DragHandleOptions) {
 
             hideDragHandle()
 
-            view.dom.parentElement.appendChild(dragHandleElement)
+            view?.dom?.parentElement?.appendChild(dragHandleElement)
 
             return {
                 destroy: () => {
@@ -176,6 +180,8 @@ export default function DragHandle(options: DragHandleOptions) {
                         rect.left -= options.dragHandleWidth
                     }
                     rect.width = options.dragHandleWidth
+
+                    if (!dragHandleElement) return
 
                     dragHandleElement.style.left = `${rect.left - rect.width}px`
                     dragHandleElement.style.top = `${rect.top}px`

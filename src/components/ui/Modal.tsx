@@ -2,9 +2,10 @@ import { motion } from "framer-motion"
 import { ReactNode, useEffect, useState } from "react"
 import { RiCloseLine as CloseIcon } from "react-icons/ri"
 import Button from "src/components/ui/Button"
-import styled from "styled-components"
 
 import * as Dialog from "@radix-ui/react-dialog"
+
+import styles from "./Modal.module.scss"
 
 interface ModalProps {
     title?: string
@@ -22,8 +23,8 @@ interface ModalProps {
 
 export default function Modal(props: ModalProps) {
     const {
-        title,
-        description,
+        title = "",
+        description = "",
         triggerElement,
         visible,
         children,
@@ -56,17 +57,19 @@ export default function Modal(props: ModalProps) {
             )}
             <Dialog.Portal>
                 <Dialog.Overlay>
-                    <ModalOverlayContainer
+                    <motion.div
+                        className={styles.modalOverlayContainer}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.15 }}
                     >
-                        <ModalOverlay />
-                    </ModalOverlayContainer>
+                        <div className={styles.modalOverlay} />
+                    </motion.div>
                 </Dialog.Overlay>
                 <Dialog.Content>
-                    <ModalContainer
+                    <motion.div
+                        className={styles.modalContainer}
                         onClick={() => {
                             onCancel?.()
                         }}
@@ -91,23 +94,27 @@ export default function Modal(props: ModalProps) {
                             }
                         }}
                     >
-                        <ModalComponent
+                        <div
+                            className={`${styles.modal} ${
+                                styles[`${placement}Placement`]
+                            }`}
                             role="dialog"
                             aria-modal="true"
                             onClick={(e) => {
                                 e.stopPropagation()
                             }}
-                            placement={placement}
-                            padding={padding}
+                            style={{ padding }}
                         >
-                            <ModalTitle>{title}</ModalTitle>
-                            {description && (
-                                <ModalDescription>
-                                    {description}
-                                </ModalDescription>
-                            )}
-                            <ModalContent>{children}</ModalContent>
-                            <ModalFooter>
+                            <h1 className={styles.modalTitle}>{title}</h1>
+                            <div className={styles.modalDescription}>
+                                {description}
+                            </div>
+
+                            <div className={styles.modalContent}>
+                                {children}
+                            </div>
+
+                            <div className={styles.modalFooter}>
                                 {footer !== undefined ? (
                                     footer
                                 ) : (
@@ -131,9 +138,9 @@ export default function Modal(props: ModalProps) {
                                         </Button>
                                     </>
                                 )}
-                            </ModalFooter>
+                            </div>
                             {!!closeButton && (
-                                <CloseButtonContainer>
+                                <div className={styles.closeButtonContainer}>
                                     <Button
                                         onClick={() => {
                                             visible ?? setOpen(false)
@@ -142,93 +149,12 @@ export default function Modal(props: ModalProps) {
                                         appearance="text"
                                         icon={<CloseIcon />}
                                     />
-                                </CloseButtonContainer>
+                                </div>
                             )}
-                        </ModalComponent>
-                    </ModalContainer>
+                        </div>
+                    </motion.div>
                 </Dialog.Content>
             </Dialog.Portal>
         </Dialog.Root>
     )
 }
-
-const ModalOverlayContainer = styled(motion.div)`
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-`
-
-const ModalOverlay = styled.div`
-    position: absolute;
-    inset: 0;
-    background: var(--color-black);
-    opacity: 0.5;
-`
-
-const ModalContainer = styled(motion.div)`
-    position: fixed;
-    z-index: 100;
-    inset: 0;
-    min-height: 100vh;
-    display: flex;
-    pointer-events: none;
-`
-
-const ModalTitle = styled.h1`
-    margin: 0 0 5px 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-
-    &:empty {
-        display: none;
-    }
-`
-
-const ModalDescription = styled.div`
-    font-size: 0.9rem;
-    color: var(--color-n700);
-    margin-bottom: 20px;
-`
-
-const ModalContent = styled.div``
-
-const ModalFooter = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-    gap: 10px;
-
-    &:empty {
-        display: none;
-    }
-`
-
-const CloseButtonContainer = styled.div`
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-`
-
-const ModalComponent = styled.div<{
-    placement: "center" | "top"
-    padding: string
-}>`
-    display: inline-block;
-    background: var(--color-white);
-    text-align: left;
-    overflow: hidden;
-    vertical-align: middle;
-    border: 1px solid var(--color-n300);
-    border-radius: 0.5rem;
-    position: absolute;
-    top: ${({ placement }) => (placement === "center" ? "50%" : "10%")};
-    left: 50%;
-    transform: ${({ placement }) =>
-        placement === "center" ? "translate(-50%, -50%)" : "translateX(-50%)"};
-    width: 36rem;
-    padding: ${({ padding }) => padding};
-    pointer-events: all;
-    max-height: 95vh;
-    max-width: 95vw;
-    overflow: auto;
-`

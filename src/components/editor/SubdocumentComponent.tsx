@@ -1,9 +1,9 @@
 import moment from "moment"
-import { useRouter } from "next/router"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import * as documentsApi from "src/api/documents"
+import { useSupabase } from "src/components/supabase/SupabaseProvider"
 import { useAppDispatch, useAppSelector } from "src/store"
-import { supabaseClient } from "src/utils/supabase"
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
@@ -11,15 +11,22 @@ import DocumentLink from "../DocumentLink"
 
 export default function SubdocumentComponent(props: NodeViewProps) {
     const { docId } = props.node.attrs
-    const router = useRouter()
+
     const [document, setDocument] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+
     const dispatch = useAppDispatch()
+
+    const router = useRouter()
+    const { docId: parentDocId } = useParams()
+    const pathname = usePathname()
+
+    const { supabaseClient } = useSupabase()
 
     useEffect(() => {
         if (docId === "create_new") {
             dispatch(
-                documentsApi.insertDocument({ parent_id: router.query.docId })
+                documentsApi.insertDocument({ parent_id: parentDocId })
             ).then((res: any) => {
                 if (res.payload) {
                     props.updateAttributes({ docId: res.payload.id })
@@ -72,7 +79,7 @@ export default function SubdocumentComponent(props: NodeViewProps) {
             className={props.selected ? "ProseMirror-selectednode" : ""}
         >
             <DocumentLink
-                href={`${router.asPath.split(/\/[^/]*$/)[0]}/${docId}`}
+                href={`${pathname.split(/\/[^/]*$/)[0]}/${docId}`}
                 title={document?.title || "Document introuvable"}
                 status={
                     document

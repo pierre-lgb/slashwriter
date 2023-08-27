@@ -1,0 +1,10 @@
+.bubbleMenu {
+    padding: 0.25rem;
+    display: flex;
+    gap: 0.25rem;
+
+    &:empty {
+        display: none;
+        pointer-events: none;
+    }
+}

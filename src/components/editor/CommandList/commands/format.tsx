@@ -11,8 +11,8 @@ import {
 
 const format = [
     {
-        name: "Gras",
-        description: "Texte en gras",
+        name: "Bold",
+        description: "Bold text",
         aliases: ["bold", "strong", "**"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleBold().run()
@@ -20,8 +20,8 @@ const format = [
         icon: <BoldIcon />
     },
     {
-        name: "Italique",
-        description: "Texte en italique",
+        name: "Italic",
+        description: "Italic text",
         aliases: ["italic", "emphasized", "*"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleItalic().run()
@@ -29,8 +29,8 @@ const format = [
         icon: <ItalicIcon />
     },
     {
-        name: "Souligné",
-        description: "Texte souligné",
+        name: "Underline",
+        description: "Underlined text",
         aliases: ["underline", "__"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleUnderline().run()
@@ -38,8 +38,8 @@ const format = [
         icon: <UnderlineIcon />
     },
     {
-        name: "Barré",
-        description: "Texte barré",
+        name: "Strikethrough",
+        description: "Strikethrough text",
         aliases: ["strikethrough", "~~", "--"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleStrike().run()
@@ -48,16 +48,16 @@ const format = [
     },
     {
         name: "Code",
-        description: "Code en ligne",
-        aliases: ["`"],
+        description: "Inline code",
+        aliases: ["`", "inline"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleCode().run()
         },
         icon: <CodeIcon />
     },
     {
-        name: "Surligné",
-        description: "Texte surligné",
+        name: "Highlight",
+        description: "Highlighted text",
         aliases: ["==", "highlight"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleHighlight().run()
@@ -65,18 +65,18 @@ const format = [
         icon: <HighlightIcon />
     },
     {
-        name: "Indice",
-        description: "Texte en indice",
-        aliases: ["_", "subscript"],
+        name: "Subscript",
+        description: "Subscript text",
+        aliases: ["_", "subscript", "indice"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleSubscript().run()
         },
         icon: <SubscriptIcon />
     },
     {
-        name: "Exposant",
-        description: "Texte en exposant",
-        aliases: ["^", "superscript"],
+        name: "Superscript",
+        description: "Superscript text",
+        aliases: ["^", "superscript", "exposant"],
         command: async ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleSuperscript().run()
         },

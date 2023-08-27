@@ -1,7 +1,9 @@
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { RiFolder2Line as FolderIcon } from "react-icons/ri"
-import styled from "styled-components"
+import Flex from "src/components/ui/Flex"
+import Loader from "src/components/ui/Loader"
+import Typography from "src/components/ui/Typography"
 
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -11,9 +13,7 @@ import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import useMediaQuery from "@mui/material/useMediaQuery"
 
-import Flex from "./Flex"
-import Loader from "./ui/Loader"
-import Typography from "./ui/Typography"
+import styles from "./FoldersDocumentsList.module.scss"
 
 export interface FoldersDocumentsListProps {
     columns: any[]
@@ -33,7 +33,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
         loading,
         error,
         documentsLabel = "Documents",
-        foldersLabel = "Dossiers"
+        foldersLabel = "Folders"
     } = props
 
     const router = useRouter()
@@ -64,10 +64,12 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                 (order === "asc" ? 1 : -1)
             )
         }
+
+        return 1
     }
 
     return (
-        <Wrapper>
+        <div className={styles.container}>
             <Table sx={{ tableLayout: "fixed" }}>
                 <TableHead>
                     <TableRow>
@@ -118,7 +120,8 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                 </TableCell>
                             </TableRow>
                             {folders.sort(sortHandler).map((folder) => (
-                                <ListItem
+                                <TableRow
+                                    className={styles.listItem}
                                     key={folder.id}
                                     onClick={() => {
                                         router.push(`/folder/${folder.id}`)
@@ -150,7 +153,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                             </TableCell>
                                         ) : null
                                     })}
-                                </ListItem>
+                                </TableRow>
                             ))}
                         </>
                     )}
@@ -164,7 +167,8 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                 </TableCell>
                             </TableRow>
                             {documents.sort(sortHandler).map((document) => (
-                                <ListItem
+                                <TableRow
+                                    className={styles.listItem}
                                     key={document.id}
                                     onClick={() => {
                                         router.push(`/doc/${document.id}`)
@@ -187,7 +191,11 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                             >
                                                 {index === 0 ? (
                                                     <Flex gap={10}>
-                                                        <DocumentIcon />
+                                                        <div
+                                                            className={
+                                                                styles.documentIcon
+                                                            }
+                                                        />
                                                         {cellContent}
                                                     </Flex>
                                                 ) : (
@@ -196,7 +204,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
                                             </TableCell>
                                         ) : null
                                     })}
-                                </ListItem>
+                                </TableRow>
                             ))}
                         </>
                     )}
@@ -205,7 +213,7 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
             {!loading && !error && !folders?.length && !documents?.length && (
                 <Flex align="center" justify="center" style={{ marginTop: 20 }}>
                     <Typography.Text type="secondary">
-                        Aucun élement à afficher.
+                        No element found.
                     </Typography.Text>
                 </Flex>
             )}
@@ -223,12 +231,12 @@ export default function FoldersDocumentsList(props: FoldersDocumentsListProps) {
             {error && (
                 <Flex align="center" justify="center" style={{ marginTop: 20 }}>
                     <Typography.Text type="danger" align="center">
-                        Une erreur est survenue. <br />
+                        An error occured. <br />
                         {error}
                     </Typography.Text>
                 </Flex>
             )}
-        </Wrapper>
+        </div>
     )
 }
 
@@ -247,55 +255,3 @@ function WrappedFolderIcon() {
         </Flex>
     )
 }
-
-const ListItem = styled(TableRow)`
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    cursor: pointer;
-
-    &:hover {
-        background-color: var(--color-n75);
-        transition: all 0.2s;
-    }
-
-    * {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        transition: opacity 0.2s;
-    }
-
-    animation: fade-in 0.5s;
-`
-
-const DocumentIcon = styled.div`
-    width: 32px;
-    height: 44px;
-    border: 1px solid var(--color-n300);
-    border-radius: 4px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(200,200,200)' width='21' height='32'%3E%3Cg%3E%3Crect width='25' height='2' y='0'/%3E%3Crect width='25' height='2' y='4'/%3E%3Crect width='15' height='2' y='8'/%3E%3Crect width='30' height='2' y='14'/%3E%3Crect width='20' height='2' y='18'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center center;
-    flex-shrink: 0;
-`
-
-const Wrapper = styled.div`
-    margin-top: 20px;
-    td {
-        border: none;
-    }
-
-    td,
-    th {
-        font-family: inherit;
-        font-size: 0.9rem;
-        padding: 0.5rem;
-    }
-
-    @media screen and (max-width: 450px) {
-        .updatedAtCell,
-        .updatedAtHeaderCell {
-            display: none;
-        }
-    }
-`

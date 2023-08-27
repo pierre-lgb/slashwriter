@@ -1,0 +1,53 @@
+.container {
+    margin-top: 20px;
+    td {
+        border: none;
+    }
+
+    td,
+    th {
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+
+    @media screen and (max-width: 450px) {
+        .updatedAtCell,
+        .updatedAtHeaderCell {
+            display: none;
+        }
+    }
+
+    .documentIcon {
+        width: 32px;
+        height: 44px;
+        border: 1px solid var(--color-n300);
+        border-radius: 4px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='rgb(200,200,200)' width='21' height='32'%3E%3Cg%3E%3Crect width='25' height='2' y='0'/%3E%3Crect width='25' height='2' y='4'/%3E%3Crect width='15' height='2' y='8'/%3E%3Crect width='30' height='2' y='14'/%3E%3Crect width='20' height='2' y='18'/%3E%3C/g%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center center;
+        flex-shrink: 0;
+    }
+
+    .listItem {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        cursor: pointer;
+
+        :global {
+            animation: fade-in 0.5s;
+        }
+
+        &:hover {
+            background-color: var(--color-n75);
+            transition: all 0.2s;
+        }
+
+        * {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: opacity 0.2s;
+        }
+    }
+}

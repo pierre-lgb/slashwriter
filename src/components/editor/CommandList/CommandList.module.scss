@@ -1,0 +1,108 @@
+.commandList {
+    width: 300px;
+    max-width: 100%;
+    max-height: 350px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.5rem 0;
+
+    .category {
+        &:not(:first-child) {
+            margin-top: 0.5rem;
+        }
+    
+        .categoryName {
+            text-transform: uppercase;
+            padding: 0.4rem 1rem;
+            color: var(--color-n600);
+            font-size: 0.8rem;
+    
+            & > div {
+                align-self: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            margin: 0;
+            width: 100%;
+            text-align: left;
+            color: var(--color-n800);
+            outline: none;
+            border-radius: 0 4px 0 4px;
+            border: none;
+            padding: 0.4rem 1rem;
+            background: none;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+
+            &:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                border-radius: 0px 2px 2px 0px;
+                background-color: var(--color-black);
+                transition: 0.25s;
+                transform: scaleX(0);
+                transform-origin: left center;
+            }
+
+            &:hover {
+                background-color: var(--color-n100);
+            }
+
+            &.selected {
+                background-color: var(--color-n100);
+
+                &:before {
+                    transform: scaleX(1);
+                }
+            }
+
+            .itemIconContainer {
+                background-color: #ffffff;
+                padding: 0.6rem;
+                border-radius: 4px;
+                border: 1px solid var(--color-n300);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .itemName {
+                font-size: 1rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: var(--color-n900);
+            }
+
+            .itemDescription {
+                font-size: 0.8rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: var(--color-n600);
+            }
+        }
+    }
+
+    .noResult {
+        color: var(--color-red);
+        font-size: 1rem;
+        padding: 0.4rem 1rem;
+    }
+}
+

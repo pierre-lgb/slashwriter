@@ -4,10 +4,10 @@ import {
     RiErrorWarningLine as ErrorIcon,
     RiFileCopyLine as CopyIcon
 } from "react-icons/ri"
-import Flex from "src/components/Flex"
 import Button from "src/components/ui/Button"
 import FormLayout from "src/components/ui/FormLayout"
-import styled, { css } from "styled-components"
+
+import styles from "./Input.module.scss"
 
 interface InputProps
     extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
@@ -34,7 +34,7 @@ export default function Input(props: InputProps) {
         inputRef,
         label,
         description,
-        layout,
+        layout = "vertical",
         name,
         id,
         reveal = false,
@@ -77,24 +77,27 @@ export default function Input(props: InputProps) {
             size={size}
             className={className}
         >
-            <InputContainer>
-                <InputComponent
+            <div className={styles.inputContainer}>
+                <input
+                    className={`${styles.input} ${error ? styles.error : ""} ${
+                        icon ? styles.withIcon : ""
+                    } ${disabled ? styles.disabled : ""} ${
+                        readOnly ? styles.readOnly : ""
+                    } ${borderless ? styles.borderless : ""} ${styles[size]}`}
                     ref={inputRef}
                     type={type}
                     value={reveal && hidden ? "***** ***** *****" : value}
                     name={name}
                     id={id}
-                    error={!!error}
-                    icon={!!icon}
                     disabled={disabled || readOnly}
                     readOnly={readOnly}
-                    borderless={borderless}
-                    inputSize={size}
                     {...otherProps}
                 />
-                {icon && <InputIconContainer>{icon}</InputIconContainer>}
+                {icon && (
+                    <div className={styles.inputIconContainer}>{icon}</div>
+                )}
                 {(copy || error || actions) && (
-                    <InputActionsContainer>
+                    <div className={styles.inputActionsContainer}>
                         {error && (
                             <ErrorIcon
                                 color="var(--color-red)"
@@ -108,7 +111,7 @@ export default function Input(props: InputProps) {
                                 icon={copied ? <CheckedIcon /> : <CopyIcon />}
                                 onClick={() => onCopy(`${value}`)}
                             >
-                                {copied ? "Copié !" : "Copier"}
+                                {copied ? "Copied !" : "Copy"}
                             </Button>
                         )}
                         {reveal && hidden && (
@@ -117,103 +120,12 @@ export default function Input(props: InputProps) {
                                 appearance="secondary"
                                 onClick={onReveal}
                             >
-                                Dévoiler
+                                Reveal
                             </Button>
                         )}
-                    </InputActionsContainer>
+                    </div>
                 )}
-            </InputContainer>
+            </div>
         </FormLayout>
     )
 }
-
-const InputContainer = styled.div`
-    position: relative;
-`
-const InputComponent = styled.input<{
-    error: boolean
-    icon: boolean
-    disabled: boolean
-    readOnly: boolean
-    borderless: boolean
-    inputSize: "small" | "medium" | "large"
-}>`
-    display: block;
-    padding: ${({ inputSize }) =>
-        ({
-            small: "0.3rem 0.6rem",
-            medium: "0.4rem 0.8rem",
-            large: "0.5rem 1rem"
-        }[inputSize])};
-    font-size: ${({ inputSize }) =>
-        ({
-            small: "0.75rem",
-            medium: "0.85rem",
-            large: "1rem"
-        }[inputSize])};
-
-    width: 100%;
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--color-n400);
-    border-radius: 4px;
-    transition: all ease-out 0.2s;
-    background-color: var(--color-white);
-    color: var(--color-n800);
-    outline: none;
-
-    ${({ error }) =>
-        error &&
-        css`
-            border-color: var(--color-red);
-        `}
-
-    ${({ icon }) =>
-        icon &&
-        css`
-            padding-left: 2.25rem;
-        `}
-
-    ${({ disabled, readOnly }) =>
-        (disabled || readOnly) &&
-        (readOnly
-            ? css`
-                  color: var(--color-n600);
-              `
-            : css`
-                  opacity: 0.5;
-                  cursor: not-allowed;
-              `)}
-
-    ${({ borderless }) =>
-        borderless &&
-        css`
-            border-color: transparent;
-            box-shadow: none;
-        `}
-
-    &:focus {
-        box-shadow: 0 0 0 2px rgba(150, 150, 150, 0.1);
-    }
-`
-
-const InputIconContainer = styled.div`
-    position: absolute;
-    inset: 0 auto 0 0;
-    padding-left: 0.75rem;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-
-    svg {
-        color: var(--color-n600);
-        font-size: 1.1rem;
-    }
-`
-
-const InputActionsContainer = styled(Flex)`
-    position: absolute;
-    inset: 0 0 0 auto;
-    align-items: center;
-    gap: 0.2rem;
-`

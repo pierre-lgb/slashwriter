@@ -52,5 +52,5 @@ export function initCollaboration(server) {
         socket.end(`HTTP/1.1 400 Bad Request\r\n`)
     })
 
-    server.on("shutdown", () => hocuspocus.destroy())
+    // server.on("shutdown", () => hocuspocus.destroy())
 }

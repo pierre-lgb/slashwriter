@@ -2,14 +2,18 @@ import { Node } from "prosemirror-model"
 import { yDocToProsemirrorJSON } from "y-prosemirror"
 import * as Y from "yjs"
 
-import { Extension, onLoadDocumentPayload, onStoreDocumentPayload } from "@hocuspocus/server"
+import {
+    Extension,
+    onLoadDocumentPayload,
+    onStoreDocumentPayload
+} from "@hocuspocus/server"
 import { getSchema, getTextSerializersFromSchema } from "@tiptap/core"
 import Document from "@tiptap/extension-document"
 import Heading from "@tiptap/extension-heading"
 import Text from "@tiptap/extension-text"
 
 import editorSchema from "../../shared/editor/schema"
-import { supabaseClientWithAuth } from "../utils"
+import { getSupabaseClient } from "../utils"
 
 export default class PersistenceExtension implements Extension {
     async onLoadDocument({
@@ -19,15 +23,31 @@ export default class PersistenceExtension implements Extension {
     }: onLoadDocumentPayload) {
         const documentId = documentName.split(".").pop()
         const { user, session } = context
-        console.log(
-            `Loading document ${documentId} for user ${user.email} (${user.id})`
-        )
+
+        if (user) {
+            console.log(
+                `Loading document ${documentId} for user ${user.email} (${user.id}).`
+            )
+        } else {
+            console.log(`Loading document ${documentId} from anonymous user.`)
+        }
 
         if (!ydoc.isEmpty("default")) {
             return
         }
 
-        const { data: document, error } = await supabaseClientWithAuth(session)
+        const supabaseClient = session
+            ? await getSupabaseClient({
+                  access_token: session.access_token,
+                  refresh_token: session.refresh_token
+              })
+            : await getSupabaseClient()
+
+        if (!supabaseClient) {
+            throw new Error("Invalid session.")
+        }
+
+        const { data: document, error } = await supabaseClient
             .from("documents")
             .select("state")
             .eq("id", documentId)
@@ -60,13 +80,18 @@ export default class PersistenceExtension implements Extension {
     }: onStoreDocumentPayload) {
         const documentId = documentName.split(".").pop()
         const { user, permission, session } = context
+
         if (permission !== "edit") {
             return
         }
 
-        console.log(
-            `Persisting document ${documentId} for user ${user.email} (${user.id})`
-        )
+        if (user) {
+            console.log(
+                `Persisting document ${documentId} for user ${user.email} (${user.id}).`
+            )
+        } else {
+            console.log(`Persisting document ${documentId} for anonymous user.`)
+        }
 
         const title = Node.fromJSON(
             getSchema([Document, Text, Heading]),
@@ -84,10 +109,25 @@ export default class PersistenceExtension implements Extension {
 
         const state = Y.encodeStateAsUpdate(ydoc)
 
-        const { error } = await supabaseClientWithAuth(session)
+        const supabaseClient = session
+            ? await getSupabaseClient({
+                  access_token: session.access_token,
+                  refresh_token: session.refresh_token
+              })
+            : await getSupabaseClient()
+
+        if (!supabaseClient) {
+            throw new Error("Invalid session.")
+        }
+
+        const { data, error } = await supabaseClient
             .from("documents")
             .update({ title, state, text_preview })
             .eq("id", documentId)
+        // Uncomment to log state hex string when persisting document
+        //     .select("state")
+        //     .single()
+        // console.log(data?.state)
 
         if (error) {
             console.error(error)

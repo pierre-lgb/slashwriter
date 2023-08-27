@@ -1,0 +1,45 @@
+.blockMenu {
+    padding: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    gap: 0.25rem;
+
+    .action {
+        background: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: none;
+        padding: 0.1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+    
+        &:disabled {
+            cursor: not-allowed;
+        }
+    
+        &:hover {
+            background-color: var(--color-n100);
+        }
+
+        .actionIconContainer {
+            width: 1.75rem;
+            height: 1.75rem;
+            border: 1px solid var(--color-n300);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .actionName {
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+    }
+}
+
+
+

@@ -1,0 +1,28 @@
+.accountSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--color-n300);
+
+    &:hover {
+        cursor: pointer;
+        background-color: var(--color-n100);
+    }
+
+    .avatar {
+        border-radius: 50%;
+    }
+
+    .email {
+        font-size: 0.85em;
+        font-weight: 500;
+        color: var(--color-n600);
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

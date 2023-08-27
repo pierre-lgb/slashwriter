@@ -2,27 +2,27 @@ import "katex/dist/katex.min.css"
 
 import katex from "katex"
 import { useEffect, useRef, useState } from "react"
-import styled from "styled-components"
-import { Instance, Props } from "tippy.js"
 
 import Tippy from "@tippyjs/react"
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
+import styles from "./EquationComponent.module.scss"
+
 export default function EquationComponent(props: NodeViewProps) {
     const { node, updateAttributes, editor, getPos } = props
-    const equationResultContainer = useRef()
-    const equationPreviewContainer = useRef()
-    const [error, setError] = useState(null)
-    const [preview, setPreview] = useState(null)
+    const equationResultContainer = useRef<HTMLDivElement>(null)
+    const equationPreviewContainer = useRef<HTMLDivElement>(null)
+    const [error, setError] = useState<string | null>(null)
+    const [preview, setPreview] = useState<string | null>(null)
 
-    const textAreaRef = useRef<HTMLTextAreaElement>()
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
 
     const [editMode, setEditMode] = useState<boolean>(false)
 
     useEffect(() => {
         setError("")
         try {
-            katex.render(node.attrs.katex, equationResultContainer.current)
+            katex.render(node.attrs.katex, equationResultContainer.current!)
         } catch (error) {
             console.error(error)
             setError(error)
@@ -33,7 +33,7 @@ export default function EquationComponent(props: NodeViewProps) {
         if (editMode) {
             setError("")
             try {
-                katex.render(preview, equationPreviewContainer.current)
+                katex.render(preview || "", equationPreviewContainer.current!)
             } catch (error) {
                 console.error(error)
                 setError(error)
@@ -42,6 +42,7 @@ export default function EquationComponent(props: NodeViewProps) {
             if (!preview.trim().length) {
                 return props.deleteNode()
             }
+
             updateAttributes({
                 katex: preview
             })
@@ -63,14 +64,15 @@ export default function EquationComponent(props: NodeViewProps) {
             interactive
             appendTo={"parent"}
             onShown={() => {
-                textAreaRef.current.focus()
-                textAreaRef.current.select()
+                textAreaRef.current?.focus()
+                textAreaRef.current?.select()
             }}
             visible={editMode && editor.isEditable}
             animation="shift-away"
             duration={[200, 0]}
             content={
-                <EquationTextArea
+                <textarea
+                    className={styles.equationTextarea}
                     ref={textAreaRef}
                     draggable="false"
                     value={preview ?? ""}
@@ -84,6 +86,8 @@ export default function EquationComponent(props: NodeViewProps) {
                                 getPos() + node.nodeSize
                             )
                         }
+
+                        if (!textAreaRef.current) return
 
                         const { selectionStart, selectionEnd } =
                             textAreaRef.current
@@ -107,17 +111,18 @@ export default function EquationComponent(props: NodeViewProps) {
                     onChange={(e) => {
                         setPreview(e.target.value)
                     }}
-                ></EquationTextArea>
+                ></textarea>
             }
         >
-            <Equation
+            <NodeViewWrapper
                 data-katex="true"
                 className={[
-                    props.selected ? "selected" : "",
-                    error ? "error" : "",
-                    (editMode && !preview.trim().length) ||
+                    styles.equation,
+                    props.selected ? styles.selected : "",
+                    error ? styles.error : "",
+                    (editMode && !preview?.trim().length) ||
                     (!editMode && !node.attrs.katex.trim().length)
-                        ? "empty"
+                        ? styles.empty
                         : ""
                 ].join(" ")}
             >
@@ -129,60 +134,12 @@ export default function EquationComponent(props: NodeViewProps) {
                     style={{ display: editMode ? "none" : undefined }}
                     ref={equationResultContainer}
                 ></div>
-                {((editMode && !preview.trim().length) ||
+                {((editMode && !preview?.trim().length) ||
                     (!editMode && !node.attrs.katex.trim().length)) && (
-                    <div>Équation vide</div>
+                    <div>Empty equation</div>
                 )}
-                {error && <div>Équation non valide</div>}
-            </Equation>
+                {error && <div>Invalid equation</div>}
+            </NodeViewWrapper>
         </Tippy>
     )
 }
-
-const Equation = styled(NodeViewWrapper)`
-    display: inline-block;
-    white-space: pre-wrap;
-    word-break: break-word;
-    caret-color: rgb(55, 53, 47);
-    border-radius: 4px;
-    transition: background-color 0.2s;
-    padding: 0 0.25rem;
-    margin: 0 0.1rem;
-
-    &.empty {
-        color: var(--color-n600);
-        background-color: var(--color-n100);
-    }
-
-    &.error {
-        color: var(--color-red);
-        background-color: var(--color-n100);
-    }
-
-    &:not(.error, .empty) * {
-        font-family: KaTeX_Main, Times New Roman, serif;
-    }
-
-    &.selected {
-        background-color: rgba(150, 170, 220, 0.2);
-    }
-`
-
-const EquationTextArea = styled.textarea`
-    font-family: "JetBrains Mono", monospace;
-    outline: none;
-    resize: none;
-    font-size: 0.95rem;
-    border: none;
-    margin: none;
-    height: 100px;
-    width: 300px;
-    margin: 0;
-    border-radius: 4px;
-    padding: 0.5rem;
-    background-color: var(--color-n50);
-
-    * {
-        transition: all 0.1s;
-    }
-`

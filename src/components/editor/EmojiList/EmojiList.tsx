@@ -1,9 +1,10 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react"
-import Emoji from "src/components/Emoji"
-import styled from "styled-components"
+
+import Emoji from "../Emoji"
+import styles from "./EmojiList.module.scss"
 
 function formatItemsAsRows(items, itemsPerRow) {
-    const rows = []
+    const rows: any[] = []
     for (let i = 0; i < items.length; i += itemsPerRow) {
         let colIndex = 0
 
@@ -96,86 +97,41 @@ export default forwardRef(function EmojiList(props: any, ref) {
     )
 
     return (
-        <Container>
+        <div className={styles.emojiList}>
             {props.items.length ? (
                 formatItemsAsRows(props.items, ITEMS_PER_ROW).map(
                     (row, index) => (
-                        <Row key={index}>
+                        <div className={styles.row} key={index}>
                             {row.map((item) => (
-                                <EmojiButton
-                                    className={
+                                <button
+                                    className={`${styles.emojiButton} ${
                                         item.index === selectedIndex
-                                            ? "is-selected"
+                                            ? styles.selected
                                             : ""
-                                    }
+                                    }`}
                                     title={`:${item.shortcode}:`}
                                     key={item.index}
                                     onClick={() => selectItem(item.index)}
                                 >
-                                    <Emoji emoji={item.unicode} />
-                                </EmojiButton>
+                                    <Emoji
+                                        className={styles.emoji}
+                                        emoji={item.unicode}
+                                    />
+                                </button>
                             ))}
-                        </Row>
+                        </div>
                     )
                 )
             ) : (
-                <Row>
+                <div className={styles.row}>
                     <Emoji
+                        className={styles.emoji}
                         emoji="😕"
                         style={{ display: "flex", padding: "0.25rem" }}
                     />{" "}
-                    Aucun résultat
-                </Row>
+                    No emoji found
+                </div>
             )}
-        </Container>
+        </div>
     )
 })
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 0.5rem;
-    position: relative;
-    border-radius: 4px;
-    background: #fff;
-    color: rgba(0, 0, 0, 0.8);
-    overflow: hidden;
-    font-size: 0.9rem;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0px 10px 20px rgba(0, 0, 0, 0.1);
-
-    img.emoji {
-        width: 1.5em;
-        height: 1.5em;
-    }
-`
-
-const Row = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-`
-
-const EmojiButton = styled.button`
-    display: block;
-    margin: 0;
-    text-align: left;
-    background: transparent;
-    border-radius: 0.4rem;
-    border: 1px solid transparent;
-    padding: 0.25rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-
-    &.is-selected {
-        background-color: var(--color-n100);
-    }
-
-    & > span {
-        display: flex;
-    }
-
-    &:hover {
-        background-color: var(--color-n100);
-    }
-`

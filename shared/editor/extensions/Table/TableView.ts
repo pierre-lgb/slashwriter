@@ -4,7 +4,11 @@ import { Decoration, NodeView } from "prosemirror-view"
 import tippy, { Instance, Props, Tippy } from "tippy.js"
 
 import { Editor } from "@tiptap/core"
-import { CellSelection, TableMap, updateColumnsOnResize } from "@tiptap/prosemirror-tables"
+import {
+    CellSelection,
+    TableMap,
+    updateColumnsOnResize
+} from "@tiptap/prosemirror-tables"
 
 import icons from "./icons"
 
@@ -20,6 +24,8 @@ export function updateColumns(
     let fixedWidth = true
     let nextDOM = colgroup.firstChild as HTMLElement
     const row = node.firstChild
+
+    if (!row) return
 
     for (let i = 0, col = 0; i < row.childCount; i += 1) {
         const { colspan, colwidth } = row.child(i).attrs
@@ -52,7 +58,7 @@ export function updateColumns(
     while (nextDOM) {
         const after = nextDOM.nextSibling
 
-        nextDOM.parentNode.removeChild(nextDOM)
+        nextDOM.parentNode?.removeChild(nextDOM)
         nextDOM = after as HTMLElement
     }
 
@@ -439,7 +445,9 @@ export class TableView implements NodeView {
         const cellRect = cellDom.getBoundingClientRect()
 
         this.columnsControl.style.left = `${
-            cellRect.left - tableRect.left - this.table.parentElement.scrollLeft
+            cellRect.left -
+            tableRect.left -
+            this.table.parentElement!.scrollLeft
         }px`
         this.columnsControl.style.width = `${cellRect.width}px`
 

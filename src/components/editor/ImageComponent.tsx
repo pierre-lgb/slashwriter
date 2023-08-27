@@ -1,4 +1,9 @@
-import { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react"
+import {
+    MouseEvent as ReactMouseEvent,
+    useEffect,
+    useRef,
+    useState
+} from "react"
 import { AiOutlineColumnWidth as FullWidthIcon } from "react-icons/ai"
 import {
     TbLayoutAlignCenter as AlignCenterIcon,
@@ -6,22 +11,26 @@ import {
     TbLayoutAlignRight as AlignRightIcon
 } from "react-icons/tb"
 import Button from "src/components/ui/Button"
-import styled from "styled-components"
 
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
+import styles from "./ImageComponent.module.scss"
+
 export default function ImageComponent(props: NodeViewProps) {
     const { node, editor } = props
-    const imageRef = useRef<HTMLImageElement>()
+    const imageRef = useRef<HTMLImageElement | null>(null)
     const [resizing, setResizing] = useState<boolean>(false)
-    const [resizeInitialWidth, setResizeInitialWidth] = useState<number>(null)
-    const [resizeInitialMouseX, setResizeInitialMouseX] = useState<number>(null)
+    const [resizeInitialWidth, setResizeInitialWidth] = useState<number>(0)
+    const [resizeInitialMouseX, setResizeInitialMouseX] = useState<number>(0)
 
     function startResize(event: ReactMouseEvent<HTMLDivElement>) {
         event.preventDefault()
+
         setResizing(true)
         setResizeInitialMouseX(event.clientX)
-        setResizeInitialWidth(imageRef.current.offsetWidth)
+        if (imageRef.current) {
+            setResizeInitialWidth(imageRef.current.offsetWidth)
+        }
     }
 
     function resize(event: MouseEvent) {
@@ -41,8 +50,8 @@ export default function ImageComponent(props: NodeViewProps) {
 
     function endResize() {
         setResizing(false)
-        setResizeInitialMouseX(null)
-        setResizeInitialWidth(null)
+        setResizeInitialMouseX(0)
+        setResizeInitialWidth(0)
     }
 
     useEffect(() => {
@@ -56,14 +65,17 @@ export default function ImageComponent(props: NodeViewProps) {
     }, [resizing, resizeInitialMouseX, resizeInitialWidth]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <ImageNodeViewWrapper
-            className={
-                props.selected ? "ProseMirror-selectednode image" : "image"
-            }
+        <NodeViewWrapper
+            className={`image ${
+                props.selected ? "ProseMirror-selectednode" : ""
+            } ${styles.imageComponent} ${styles[`${node.attrs.align}Align`]}`}
             style={{ width: node.attrs.width }}
-            align={node.attrs.align}
         >
-            <ImageContainer className={resizing ? "resizing" : null}>
+            <div
+                className={`${styles.imageContainer} ${
+                    resizing ? styles.resizing : ""
+                }`}
+            >
                 <img
                     ref={imageRef}
                     src={node.attrs.src}
@@ -73,19 +85,21 @@ export default function ImageComponent(props: NodeViewProps) {
 
                 {editor.isEditable && (
                     <>
-                        <ResizeHandleContainer
+                        <div
+                            className={styles.resizeHandleContainer}
                             style={{ left: 0 }}
                             onMouseDown={startResize}
                         >
-                            <ResizeHandle className="resize-handle" />
-                        </ResizeHandleContainer>
-                        <ResizeHandleContainer
+                            <div className={styles.resizeHandle} />
+                        </div>
+                        <div
+                            className={styles.resizeHandleContainer}
                             style={{ right: 0 }}
                             onMouseDown={startResize}
                         >
-                            <ResizeHandle className="resize-handle" />
-                        </ResizeHandleContainer>
-                        <Controls className="controls">
+                            <div className={styles.resizeHandle} />
+                        </div>
+                        <div className={styles.controls}>
                             <Button
                                 icon={<FullWidthIcon size={16} />}
                                 size="small"
@@ -125,93 +139,11 @@ export default function ImageComponent(props: NodeViewProps) {
                                 }}
                                 active={node.attrs.align === "right"}
                             />
-                        </Controls>
+                        </div>
                     </>
                 )}
-            </ImageContainer>
+            </div>
             {/* TODO : Caption */}
-        </ImageNodeViewWrapper>
+        </NodeViewWrapper>
     )
 }
-
-const ImageNodeViewWrapper = styled(NodeViewWrapper)<{
-    align: "left" | "center" | "right"
-}>`
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    left: ${({ align }) =>
-        ({
-            left: "0",
-            center: "50%",
-            right: "100%"
-        }[align])};
-    transform: translateX(
-        ${({ align }) =>
-            ({
-                left: "0",
-                center: "-50%",
-                right: "-100%"
-            }[align])}
-    );
-`
-
-const ImageContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border-radius: 0.25rem;
-    overflow: hidden;
-    transition: width 0.15s ease-out, height 0.15s ease-out;
-
-    & > img {
-        width: 100%;
-    }
-
-    &:hover:not(.resizing) .controls {
-        opacity: 0.8;
-    }
-
-    &:hover .resize-handle {
-        opacity: 1;
-    }
-`
-
-const ResizeHandleContainer = styled.div`
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    z-index: 25;
-    cursor: col-resize;
-`
-
-const ResizeHandle = styled.div`
-    opacity: 0;
-    transition: opacity 0.3s ease-in;
-    width: 4px;
-    height: 36px;
-    max-height: 50%;
-    box-sizing: content-box;
-    background: rgba(0, 0, 0, 0.65);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 6px;
-`
-
-const Controls = styled.div`
-    background-color: var(--color-black);
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    opacity: 0;
-    z-index: 25;
-    transition: opacity 0.2s;
-    display: flex;
-    padding: 0.25rem;
-    border-radius: 4px;
-    gap: 0.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-`

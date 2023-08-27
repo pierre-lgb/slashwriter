@@ -8,7 +8,7 @@ export const formatEmojis = (emojis) => {
 
     return Object.entries(emojis).reduce(
         (acc, [category, emojis]: [string, any]) => {
-            const splittedEmojis = []
+            const splittedEmojis: any[] = []
             for (let i = 0; i < emojis.length; i += NB_EMOJIS_PER_ROW) {
                 let colIndex = 0
                 const row = emojis

@@ -1,0 +1,91 @@
+.formLayout {
+    font-size: 0.9rem;
+    line-height: 1.25rem;
+    width: 100%;
+
+    &:not(.flex) {
+        display: grid;
+        gap: 0.5rem;
+
+        &.small {
+            gap: 0.25rem;
+        }
+    
+        @media (min-width: 768px) {
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+
+            &.horizontalLayout {
+                gap: 1rem;
+            }
+        }
+    }
+
+    &.flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &.rightAlign {
+        div:last-child, .label {
+            text-align: right;
+        }
+    }
+
+    &.leftAlign {
+        div:first-child {
+            order: 2;
+        }
+        div:last-child {
+            order: 1;
+        }
+    }
+
+    &.small .label {
+        font-size: 0.75rem;
+    }
+
+    &.medium .label {
+        font-size: 0.85rem;
+    }
+
+    &.large .label {
+        font-size: 1rem;
+    }
+
+    .labelContainer {
+        &.horizontalLayout {
+            grid-column: span 4 / span 4;
+
+        }
+
+        &.verticalLayout {
+            grid-column: span 12 / span 12;
+        }
+
+        .label {
+            display: block;
+            color: var(--color-n800);
+            font-weight: 500;
+        }
+    }
+
+    .contentContainer {
+        &.horizontalLayout {
+            grid-column: span 8 / span 8;
+        }
+
+        &.verticalLayout {
+            grid-column: span 12 / span 12;
+        }
+
+        .description {
+            margin: 0.5rem 0;
+            color: var(--color-n600);
+        }
+
+        .errorMessage {
+            margin: 0.5rem 0;
+            color: var(--color-red);
+        }
+    }
+}

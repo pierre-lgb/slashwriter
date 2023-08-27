@@ -4,7 +4,7 @@ import { RiMistLine as ParagraphIcon } from "react-icons/ri"
 const others = [
     {
         name: "Lorem ipsum",
-        description: "Générer un texte lorem ipsum",
+        description: "Generate a random lorem ipsum text",
         aliases: ["lipsum", "random"],
         command: async ({ editor, range }) => {
             const lorem = new LoremIpsum({

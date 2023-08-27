@@ -2,26 +2,27 @@ import "katex/dist/katex.min.css"
 
 import katex from "katex"
 import { useEffect, useRef, useState } from "react"
-import styled from "styled-components"
 
 import Tippy from "@tippyjs/react"
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
-export default function EquationComponent(props: NodeViewProps) {
-    const { node, updateAttributes, editor, getPos } = props
-    const equationResultContainer = useRef()
-    const equationPreviewContainer = useRef()
-    const [error, setError] = useState(null)
-    const [preview, setPreview] = useState(null)
+import styles from "./EquationBlockComponent.module.scss"
 
-    const textAreaRef = useRef<HTMLTextAreaElement>()
+export default function EquationBlockComponent(props: NodeViewProps) {
+    const { node, updateAttributes, editor, getPos } = props
+    const equationResultContainer = useRef<HTMLDivElement>(null)
+    const equationPreviewContainer = useRef<HTMLDivElement>(null)
+    const [error, setError] = useState<string | null>(null)
+    const [preview, setPreview] = useState<string | null>(null)
+
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
 
     const [editMode, setEditMode] = useState<boolean>(false)
 
     useEffect(() => {
         setError("")
         try {
-            katex.render(node.attrs.katex, equationResultContainer.current, {
+            katex.render(node.attrs.katex, equationResultContainer.current!, {
                 displayMode: true,
                 strict: false
             })
@@ -35,7 +36,7 @@ export default function EquationComponent(props: NodeViewProps) {
         if (editMode) {
             setError("")
             try {
-                katex.render(preview, equationPreviewContainer.current, {
+                katex.render(preview || "", equationPreviewContainer.current!, {
                     displayMode: true,
                     strict: false
                 })
@@ -69,14 +70,15 @@ export default function EquationComponent(props: NodeViewProps) {
             appendTo={"parent"}
             visible={editMode && editor.isEditable}
             onShown={() => {
-                textAreaRef.current.focus()
-                textAreaRef.current.select()
+                textAreaRef.current?.focus()
+                textAreaRef.current?.select()
             }}
             animation="shift-away"
             duration={[200, 0]}
             maxWidth="none"
             content={
-                <EquationTextArea
+                <textarea
+                    className={styles.equationTextarea}
                     ref={textAreaRef}
                     draggable="false"
                     value={preview ?? ""}
@@ -94,6 +96,8 @@ export default function EquationComponent(props: NodeViewProps) {
                             )
                         }
 
+                        if (!textAreaRef.current) return
+
                         const { selectionStart, selectionEnd } =
                             textAreaRef.current
 
@@ -108,7 +112,7 @@ export default function EquationComponent(props: NodeViewProps) {
                         if (
                             (e.key === "ArrowRight" || e.key === "ArrowDown") &&
                             selectionStart === selectionEnd &&
-                            selectionStart === textAreaRef.current.value.length
+                            selectionStart === textAreaRef.current?.value.length
                         ) {
                             editor.commands.focus(getPos() + node.nodeSize)
                         }
@@ -116,23 +120,25 @@ export default function EquationComponent(props: NodeViewProps) {
                     onChange={(e) => {
                         setPreview(e.target.value)
                     }}
-                ></EquationTextArea>
+                ></textarea>
             }
         >
-            <Equation
+            <NodeViewWrapper
                 data-katex="true"
                 className={[
-                    props.selected ? "selected" : "",
-                    error ? "error" : "",
-                    (editMode && !preview.trim().length) ||
+                    styles.equationBlock,
+                    props.selected ? styles.selected : "",
+                    error ? styles.error : "",
+                    (editMode && !preview?.trim().length) ||
                     (!editMode && !node.attrs.katex.trim().length)
-                        ? "empty"
+                        ? styles.empty
                         : ""
                 ].join(" ")}
             >
                 <div
                     style={{
-                        display: editMode && preview.length ? undefined : "none"
+                        display:
+                            editMode && preview?.length ? undefined : "none"
                     }}
                     ref={equationPreviewContainer}
                 ></div>
@@ -140,70 +146,12 @@ export default function EquationComponent(props: NodeViewProps) {
                     style={{ display: editMode ? "none" : undefined }}
                     ref={equationResultContainer}
                 ></div>
-                {((editMode && !preview.trim().length) ||
+                {((editMode && !preview?.trim().length) ||
                     (!editMode && !node.attrs.katex.trim().length)) && (
-                    <div>Équation vide</div>
+                    <div>Empty equation</div>
                 )}
-                {error && <div>Équation non valide</div>}
-            </Equation>
+                {error && <div>Invalid equation</div>}
+            </NodeViewWrapper>
         </Tippy>
     )
 }
-
-const Equation = styled(NodeViewWrapper)`
-    display: block;
-    text-align: center;
-    padding: 0.05rem;
-    white-space: pre-wrap;
-    word-break: break-word;
-    caret-color: rgb(55, 53, 47);
-    border-radius: 4px;
-    transition: background-color 0.2s;
-    margin: 0 0.1rem;
-
-    .base {
-        margin: 2px 0;
-    }
-
-    & > div {
-        margin: 1rem 0;
-    }
-
-    &.empty {
-        color: var(--color-n600);
-        background-color: var(--color-n100);
-    }
-
-    &.error {
-        color: var(--color-red);
-        background-color: var(--color-n100);
-    }
-
-    &:not(.error, .empty) * {
-        font-family: KaTeX_Main, Times New Roman, serif;
-    }
-
-    &.selected {
-        background-color: rgba(150, 170, 220, 0.2);
-    }
-`
-
-const EquationTextArea = styled.textarea`
-    font-family: "JetBrains Mono", monospace;
-    outline: none;
-    resize: none;
-    font-size: 0.95rem;
-    border: none;
-    margin: none;
-    height: 200px;
-    width: 400px;
-    max-width: calc(100vw - 20px);
-    margin: 0;
-    border-radius: 4px;
-    padding: 0.5rem;
-    background-color: var(--color-n50);
-
-    * {
-        transition: all 0.1s;
-    }
-`

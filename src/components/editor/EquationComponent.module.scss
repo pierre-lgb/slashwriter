@@ -1,0 +1,47 @@
+.equation {
+    display: inline-block;
+    white-space: pre-wrap;
+    word-break: break-word;
+    caret-color: rgb(55, 53, 47);
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    padding: 0 0.25rem;
+    margin: 0 0.1rem;
+
+    &.empty {
+        color: var(--color-n600);
+        background-color: var(--color-n100);
+    }
+
+    &.error {
+        color: var(--color-red);
+        background-color: var(--color-n100);
+    }
+
+    &:not(.error, .empty) * {
+        font-family: KaTeX_Main, Times New Roman, serif;
+    }
+
+    &.selected {
+        background-color: rgba(150, 170, 220, 0.2);
+    }
+}
+
+.equationTextarea {
+    font-family: "JetBrains Mono", monospace;
+    outline: none;
+    resize: none;
+    font-size: 0.95rem;
+    border: none;
+    margin: none;
+    height: 100px;
+    width: 300px;
+    margin: 0;
+    border-radius: 4px;
+    padding: 0.5rem;
+    background-color: var(--color-n50);
+
+    * {
+        transition: all 0.1s;
+    }
+}

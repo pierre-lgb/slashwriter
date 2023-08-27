@@ -1,0 +1,81 @@
+.imageComponent {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    &.leftAlign {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    &.centerAlign {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    &.rightAlign {
+        left: 100;
+        transform: translateX(-100%);
+    }
+
+    .imageContainer {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border-radius: 0.25rem;
+        overflow: hidden;
+        transition: width 0.15s ease-out, height 0.15s ease-out;
+    
+        & > img {
+            width: 100%;
+        }
+    
+        &:hover:not(.resizing) .controls {
+            opacity: 0.8;
+        }
+    
+        &:hover .resizeHandle {
+            opacity: 1;
+        }
+
+        .resizeHandleContainer {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            z-index: 25;
+            cursor: col-resize;
+
+            .resizeHandle {
+                opacity: 0;
+                transition: opacity 0.3s ease-in;
+                width: 4px;
+                height: 36px;
+                max-height: 50%;
+                box-sizing: content-box;
+                background: rgba(0, 0, 0, 0.65);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                border-radius: 6px;
+            }
+        }
+
+        .controls {
+            background-color: var(--color-black);
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            opacity: 0;
+            z-index: 25;
+            transition: opacity 0.2s;
+            display: flex;
+            padding: 0.25rem;
+            border-radius: 4px;
+            gap: 0.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    }
+}
+

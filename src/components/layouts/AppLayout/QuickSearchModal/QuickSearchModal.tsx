@@ -1,20 +1,26 @@
+"use client"
+
 import moment from "moment"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { RiSearchLine as SearchIcon } from "react-icons/ri"
 import DocumentLink from "src/components/DocumentLink"
-import Flex from "src/components/Flex"
+import { useSupabase } from "src/components/supabase/SupabaseProvider"
+import Flex from "src/components/ui/Flex"
 import Input from "src/components/ui/Input"
 import Loader from "src/components/ui/Loader"
 import Modal from "src/components/ui/Modal"
 import Typography from "src/components/ui/Typography"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { closeQuicksearch, openQuicksearch } from "src/store/ui"
-import styled from "styled-components"
+
+import styles from "./QuickSearchModal.module.scss"
 
 export default function QuickSearchModal() {
+    const { session } = useSupabase()
+
     const [query, setQuery] = useState("")
     const [selectedIndex, setSelectedIndex] = useState(0)
-    const resultListRef = useRef<HTMLDivElement>()
+    const resultListRef = useRef<HTMLDivElement | null>(null)
 
     const { quickSearchOpen } = useAppSelector((store) => store.ui)
     const dispatch = useAppDispatch()
@@ -67,6 +73,7 @@ export default function QuickSearchModal() {
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
+            // Ctrl + P
             if (e.key === "p" && e.ctrlKey) {
                 e.preventDefault()
                 openModal()
@@ -92,11 +99,10 @@ export default function QuickSearchModal() {
             }
 
             if (e.key === "Enter") {
-                ;(
-                    resultListRef.current.querySelector(
-                        'a[data-selected="true"]'
-                    ) as HTMLElement
-                ).click()
+                const selectedItem = resultListRef.current?.querySelector(
+                    'a[data-selected="true"]'
+                ) as HTMLAnchorElement
+                selectedItem.click()
             }
         },
         [quickSearchOpen, filteredDocuments]
@@ -144,19 +150,19 @@ export default function QuickSearchModal() {
         }
     }, [selectedIndex])
 
-    return (
+    return session ? (
         <Modal
             visible={quickSearchOpen}
             footer={null}
             onCancel={closeModal}
             onConfirm={closeModal}
-            placement="top"
+            placement="center"
             padding="1rem"
         >
             <Flex column gap={20}>
                 <Input
                     size="large"
-                    placeholder="Rechercher un document..."
+                    placeholder="Search something..."
                     icon={<SearchIcon />}
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
@@ -175,7 +181,7 @@ export default function QuickSearchModal() {
                     </Flex>
                 )}
 
-                <ResultList ref={resultListRef}>
+                <div className={styles.resultList} ref={resultListRef}>
                     {!filteredDocuments.length && (
                         <Flex align="center" justify="center">
                             <Typography.Text type="secondary">
@@ -209,13 +215,8 @@ export default function QuickSearchModal() {
                             }}
                         />
                     ))}
-                </ResultList>
+                </div>
             </Flex>
         </Modal>
-    )
+    ) : null
 }
-
-const ResultList = styled.div`
-    max-height: 400px;
-    overflow-y: auto;
-`

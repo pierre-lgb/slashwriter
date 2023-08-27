@@ -21,8 +21,8 @@ import { TbMath as EquationInlineIcon } from "react-icons/tb"
 
 const blocks = [
     {
-        name: "Titre principal",
-        description: "Un titre de grande taille",
+        name: "Big Heading",
+        description: "A big section heading",
         aliases: ["one", "heading", "h1", "#", "titre1"],
         command: ({ editor, range }) => {
             editor
@@ -35,8 +35,8 @@ const blocks = [
         icon: <Heading1Icon />
     },
     {
-        name: "Titre secondaire",
-        description: "Un titre de taille moyenne",
+        name: "Medium Heading",
+        description: "A medium section heading",
         aliases: ["two", "second", "heading", "h2", "##", "titre2"],
         command: ({ editor, range }) => {
             editor
@@ -49,8 +49,8 @@ const blocks = [
         icon: <Heading2Icon />
     },
     {
-        name: "Sous-titre",
-        description: "Un titre de petite taille",
+        name: "Small Heading",
+        description: "A small section heading",
         aliases: [
             "three",
             "third",
@@ -73,8 +73,8 @@ const blocks = [
         icon: <Heading3Icon />
     },
     {
-        name: "Citation",
-        description: "Une citation à mettre en valeur",
+        name: "Quote",
+        description: "A quote to emphasize",
         aliases: ["quote", "quotation", "blockquote"],
         command: ({ editor, range }) => {
             editor
@@ -94,8 +94,8 @@ const blocks = [
         icon: <QuoteIcon />
     },
     {
-        name: "Séparateur",
-        description: "Une ligne de séparation",
+        name: "Separator",
+        description: "A line to separate section",
         aliases: ["divider", "separator", "hr", "horizontalline", "rule"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).setHorizontalRule().run()
@@ -103,9 +103,9 @@ const blocks = [
         icon: <DividerIcon />
     },
     {
-        name: "Cadre avec icône",
-        description: "Un texte et une icône encadrés",
-        aliases: ["callout", "important", "warning", "block", "note"],
+        name: "Callout with Icon",
+        description: "A callout block with an icon",
+        aliases: ["callout", "important", "warning", "block", "note", "icon"],
         command: ({ editor, range }) => {
             editor
                 .chain()
@@ -119,36 +119,35 @@ const blocks = [
         icon: <CalloutWithIconIcon />
     },
     {
-        name: "Cadre",
-        description: "Un texte encadré",
+        name: "Callout",
+        description: "A simple callout block",
         aliases: ["callout", "important", "warning", "block", "note"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleCallout().run()
         },
         icon: <CalloutIcon />
     },
-
     {
-        name: "Liste à puces",
-        description: "Une liste à puces",
-        aliases: ["ul", "unordered"],
+        name: "Unordered List",
+        description: "An unordered list of items",
+        aliases: ["ul", "unordered", "list"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleBulletList().run()
         },
         icon: <UnorderedListIcon />
     },
     {
-        name: "Liste numérotée",
-        description: "Une liste numérotée",
-        aliases: ["ol", "ordered"],
+        name: "Ordered List",
+        description: "An ordered list of items",
+        aliases: ["ol", "ordered", "list"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleOrderedList().run()
         },
         icon: <OrderedListIcon />
     },
     {
-        name: "Liste de tâches",
-        description: "Une liste de cases à cocher",
+        name: "Task List",
+        description: "A list of tasks to do",
         aliases: ["task", "checklist"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleTaskList().run()
@@ -157,7 +156,7 @@ const blocks = [
     },
     {
         name: "Image",
-        description: "Une image",
+        description: "A simple image",
         aliases: ["picture", "img"],
         command: ({ editor, range }) => {
             editor
@@ -170,8 +169,8 @@ const blocks = [
         icon: <ImageIcon />
     },
     {
-        name: "Bloc de code",
-        description: "Un extrait de code",
+        name: "Code Block",
+        description: "A code block with syntax highlighting",
         aliases: ["pre", "codeblock", "snippet"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).toggleCodeBlock().run()
@@ -180,9 +179,9 @@ const blocks = [
     },
 
     {
-        name: "Équation en ligne",
-        description: "Une équation LaTeX en ligne",
-        aliases: ["equation", "tex", "math", "katex", "latex"],
+        name: "Inline Equation",
+        description: "An inline LaTeX equation",
+        aliases: ["equation", "tex", "math", "katex", "latex", "inline"],
         command: ({ editor, range }) => {
             editor
                 .chain()
@@ -195,8 +194,8 @@ const blocks = [
         icon: <EquationInlineIcon />
     },
     {
-        name: "Équation en bloc",
-        description: "Une équation LaTeX en bloc",
+        name: "Block Equation",
+        description: "A block LaTeX equation",
         aliases: ["equation", "tex", "math", "katex", "latex", "block"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).setEquationBlock().run()
@@ -204,8 +203,8 @@ const blocks = [
         icon: <EquationIcon />
     },
     {
-        name: "Dépliant",
-        description: "Un menu dépliant",
+        name: "Collapsible",
+        description: "A collapsible block",
         aliases: ["details", "toggle", "collapse", "collapsible"],
         command: ({ editor, range }) => {
             editor.chain().focus().deleteRange(range).setDetails().run()
@@ -213,8 +212,8 @@ const blocks = [
         icon: <DetailsIcon />
     },
     {
-        name: "Tableau",
-        description: "Un tableau",
+        name: "Table",
+        description: "A simple table",
         aliases: [
             "table",
             "cells",
@@ -236,8 +235,8 @@ const blocks = [
     },
     {
         name: "Document",
-        description: "Un document intégré",
-        aliases: ["subpage", "embededpage", "subdocument", "document", "page"],
+        description: "An embedded subdocument",
+        aliases: ["subpage", "embeddedpage", "subdocument", "document", "page"],
         command: ({ editor, range }) => {
             editor
                 .chain()

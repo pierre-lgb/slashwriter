@@ -1,31 +1,33 @@
-import { Children, isValidElement, ReactNode } from "react"
-import styled from "styled-components"
+import { Children, isValidElement } from "react"
 
+import styles from "./Breadcrumbs.module.scss"
 import Typography from "./Typography"
 
 interface BreadcrumbsProps {
-    children?: ReactNode
+    children?: React.ReactNode
     maxItems?: number
-    separator?: ReactNode
+    separator?: React.ReactNode
     className?: string
 }
 
 export default function Breadcrumbs(props: BreadcrumbsProps) {
-    const { children, maxItems = 3, separator = "/", className } = props
+    const { children, maxItems = 3, separator = "/", className = "" } = props
 
     const items = Children.toArray(children)
         .filter((child) => isValidElement(child))
         .map((child, index, { length }) => (
-            <BreadcrumbsItem
-                active={index + 1 === length}
+            <li
+                className={`${styles.breadcrumbsItem} ${
+                    index + 1 === length ? styles.active : ""
+                }`}
                 key={`child-${index}`}
             >
                 {child}
-            </BreadcrumbsItem>
+            </li>
         ))
 
     return (
-        <BreadcrumbsList className={className}>
+        <ol className={`${styles.breadcrumbsList} ${className}`}>
             {insertSeparators(
                 !maxItems || (maxItems && items.length <= maxItems)
                     ? items
@@ -44,66 +46,22 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
                       ],
                 separator
             )}
-        </BreadcrumbsList>
+        </ol>
     )
 }
-
-const BreadcrumbsList = styled.ol`
-    list-style: none;
-    display: flex;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0;
-    margin: 0;
-`
-
-const BreadcrumbsItem = styled.li<{ active: boolean }>`
-    font-size: 0.85rem;
-    color: ${({ active }) =>
-        active ? "var(--color-n900)" : "var(--color-n600)"};
-    font-weight: ${({ active }) => (active ? 500 : 400)};
-    padding: 0;
-    border-radius: 4px;
-    transition: all ease-out 0.2s;
-    cursor: pointer;
-
-    max-width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    * {
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
-
-    &:hover {
-        background-color: var(--color-n100);
-    }
-
-    // icons
-    svg {
-        font-size: 1rem;
-        flex-shrink: 0;
-    }
-`
-
-const BreadcrumbsSeparator = styled.li`
-    display: inline-flex;
-    align-items: center;
-    user-select: none;
-    margin: 0 0.5rem;
-    color: var(--color-n400);
-`
 
 function insertSeparators(items, separator) {
     return items.reduce((acc, current, index) => {
         acc.push(current)
         if (index < items.length - 1) {
             acc.push(
-                <BreadcrumbsSeparator aria-hidden key={`separator-${index}`}>
+                <li
+                    className={styles.breadcrumbsSeparator}
+                    aria-hidden
+                    key={`separator-${index}`}
+                >
                     {separator}
-                </BreadcrumbsSeparator>
+                </li>
             )
         }
 

@@ -1,41 +1,31 @@
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { ReactNode, useMemo } from "react"
+"use client"
+
+import { useParams, useRouter } from "next/navigation"
 import {
-    RiFolder2Line as FolderIcon,
     RiHeartFill as FavoriteFillIcon,
     RiHeartLine as FavoriteIcon,
     RiMoreFill as MoreIcon,
     RiSideBarLine as SidebarIcon,
     RiUserLine as UserIcon
 } from "react-icons/ri"
-import * as documentsApi from "src/api/documents"
-import Flex from "src/components/Flex"
-import ShareDocumentButton from "src/components/ShareDocumentButton"
-import Breadcrumbs from "src/components/ui/Breadcrumbs"
+import { documentsApi } from "src/api"
+import { useSupabase } from "src/components/supabase/SupabaseProvider"
 import Button from "src/components/ui/Button"
+import Flex from "src/components/ui/Flex"
 import { useAppDispatch, useAppSelector } from "src/store"
 import { toggleMobileSidebar, toggleSidebar } from "src/store/ui"
-import { useUser } from "src/utils/supabase"
-import styled from "styled-components"
 
-interface HeaderProps {
-    pageTitle: string
-    pageIcon: ReactNode
-}
+import styles from "./Header.module.scss"
+import HeaderBreadcrumbs from "./HeaderBreadcrumbs"
+import ShareDocumentButton from "./ShareDocumentButton"
 
-export default function Header({ pageTitle, pageIcon }: HeaderProps) {
-    const user = useUser()
-    const dispatch = useAppDispatch()
+export default function Header() {
+    const { docId, folderId } = useParams()
     const router = useRouter()
 
-    const { sidebarOpen, mobileSidebarOpen } = useAppSelector(
-        (state) => state.ui
-    )
+    const { session } = useSupabase()
 
-    const { docId, folderId } = router.query as Record<string, any>
-    const { documents } = useAppSelector((state) => state.documents)
-    const { folders } = useAppSelector((state) => state.folders)
+    const dispatch = useAppDispatch()
 
     const activeDocument = useAppSelector((state) =>
         docId ? state.documents.documents.find((d) => d.id === docId) : null
@@ -49,146 +39,52 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
             : null
     )
 
-    const folderPath = useMemo(() => {
-        if (!folderId) {
-            return null
-        }
-
-        const path = []
-        let current = folders.find((f) => f.id === folderId)
-
-        while (current) {
-            path.unshift(current)
-            current = current.parent_id
-                ? folders.find((f) => f.id === current.parent_id)
-                : null
-        }
-
-        return path
-    }, [folderId, folders])
-
-    const documentPath = useMemo(() => {
-        if (!docId) {
-            return null
-        }
-
-        const data = [
-            ...documents.map((d) => ({ type: "document", ...d })),
-            ...folders.map((f) => ({ type: "folder", ...f }))
-        ] as any
-
-        const path = []
-        let current = data.find((item) => item.id === docId)
-
-        while (current) {
-            path.unshift(current)
-            if (current.parent_id) {
-                current = data.find((item) => item.id === current.parent_id)
-            } else if (current.folder_id) {
-                current = data.find((item) => item.id === current.folder_id)
-            } else {
-                current = null
-            }
-        }
-        return path
-    }, [docId, documents, folders])
-
     return (
-        <Container className="header">
+        <div className={styles.header}>
             <Flex auto align="center" gap={20}>
-                {!!user && (
-                    <ToggleSidebarButtonContainer>
-                        <Button
-                            onClick={() => {
-                                dispatch(toggleSidebar())
-                            }}
-                            appearance="text"
-                            icon={<SidebarIcon size={20} />}
-                        />
-                    </ToggleSidebarButtonContainer>
+                {!!session && (
+                    <>
+                        <div className={styles.toggleSidebarButtonContainer}>
+                            <Button
+                                onClick={() => {
+                                    dispatch(toggleSidebar())
+                                }}
+                                appearance="text"
+                                icon={<SidebarIcon size={20} />}
+                            />
+                        </div>
+                        <div
+                            className={
+                                styles.mobileToggleSidebarButtonContainer
+                            }
+                        >
+                            <Button
+                                onClick={() => {
+                                    dispatch(toggleMobileSidebar())
+                                }}
+                                appearance="secondary"
+                                icon={<SidebarIcon />}
+                            />
+                        </div>
+                    </>
                 )}
-                <MobileToggleSidebarButtonContainer>
-                    <Button
-                        onClick={() => {
-                            dispatch(toggleMobileSidebar())
-                        }}
-                        appearance="secondary"
-                        icon={<SidebarIcon />}
-                    />
-                </MobileToggleSidebarButtonContainer>
-
-                <Breadcrumbs
-                    maxItems={4}
-                    aria-label="breadcrumbs"
-                    className="breadcrumbs"
-                >
-                    {!!activeFolder &&
-                        folderPath?.map((folder, index) => (
-                            <Link
-                                key={index}
-                                href={`/folder/${folder.id}`}
-                                legacyBehavior
-                            >
-                                <Flex
-                                    as="a"
-                                    align="center"
-                                    gap={10}
-                                    style={{ padding: "0.2rem 0.4rem" }}
-                                >
-                                    <FolderIcon />
-                                    <span>
-                                        {folder.name.trim() || "Sans nom"}
-                                    </span>
-                                </Flex>
-                            </Link>
-                        ))}
-
-                    {!!activeDocument &&
-                        documentPath?.map((item, index) => (
-                            <Link
-                                key={index}
-                                href={`/${
-                                    item.type === "document" ? "doc" : "folder"
-                                }/${item.id}`}
-                                legacyBehavior
-                            >
-                                <Flex
-                                    as="a"
-                                    align="center"
-                                    gap={10}
-                                    style={{ padding: "0.2rem 0.4rem" }}
-                                >
-                                    {item.type === "folder" && (
-                                        <FolderIcon style={{ flexShrink: 0 }} />
-                                    )}
-                                    <span>
-                                        {(item.type === "document"
-                                            ? item.title.trim()
-                                            : item.name.trim()) || "Sans titre"}
-                                    </span>
-                                </Flex>
-                            </Link>
-                        ))}
-                    {!activeDocument && !activeFolder && (
-                        <Flex as="a" align="center" gap={10}>
-                            {pageIcon}
-                            {pageTitle}
-                        </Flex>
-                    )}
-                </Breadcrumbs>
+                <HeaderBreadcrumbs
+                    activeDocument={activeDocument}
+                    activeFolder={activeFolder}
+                />
             </Flex>
             <Flex
                 align="center"
                 gap={8}
                 style={{ justifySelf: "flex-end", flexShrink: 0 }}
             >
-                {!user && (
+                {!session && (
                     <Button
                         appearance="secondary"
-                        onClick={() => router.push("/auth")}
+                        onClick={() => router.push("/auth/sign-in")}
                         icon={<UserIcon />}
                     >
-                        Se connecter
+                        Sign In
                     </Button>
                 )}
                 {!!activeDocument && (
@@ -205,64 +101,24 @@ export default function Header({ pageTitle, pageIcon }: HeaderProps) {
                             onClick={() => {
                                 dispatch(
                                     documentsApi.updateDocument({
-                                        id: docId,
+                                        id: docId as string,
                                         favorite: !activeDocument.favorite
                                     })
                                 )
                             }}
                         />
-                        <ShareDocumentButton documentId={docId}>
-                            Partager
+                        <ShareDocumentButton documentId={docId as string}>
+                            Share
                         </ShareDocumentButton>
                     </>
                 )}
                 {(!!activeDocument || !!activeFolder) && (
                     <>
-                        <VerticalSeparator />
+                        <div className={styles.verticalSeparator} />
                         <Button appearance="text" icon={<MoreIcon />} />
                     </>
                 )}
             </Flex>
-        </Container>
+        </div>
     )
 }
-
-const Container = styled.div`
-    height: 60px;
-    padding: 0 20px;
-    display: flex;
-    flex-shrink: 0;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid var(--color-n300);
-
-    @media (max-width: 768px) {
-        .breadcrumbs {
-            display: none;
-        }
-    }
-`
-
-const ToggleSidebarButtonContainer = styled.div`
-    display: block;
-
-    @media (max-width: 768px) {
-        display: none;
-    }
-`
-
-const MobileToggleSidebarButtonContainer = styled.div`
-    display: none;
-
-    @media (max-width: 768px) {
-        display: block;
-    }
-`
-
-const VerticalSeparator = styled.div`
-    width: 1px;
-    height: 30px;
-    margin: 0 5px;
-    background-color: var(--color-n300);
-`

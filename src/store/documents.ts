@@ -55,7 +55,7 @@ export const documentsSlice = createSlice({
             })
             .addCase(documentsApi.fetchDocuments.rejected, (state, action) => {
                 state.isLoading = false
-                state.error = action.error.message
+                state.error = action.error.message ?? null
             })
     }
 })
@@ -64,15 +64,3 @@ export const { setDocuments, insertDocument, updateDocument, deleteDocument } =
     documentsSlice.actions
 
 export default documentsSlice.reducer
-
-// export const fetchDocuments = () => async (dispatch) => {
-//     const { data, error } = await supabaseClient
-//         .from("user_document_previews")
-//         .select("*")
-
-//     if (data) {
-//         dispatch(setDocuments(data))
-//     } else {
-//         console.error(error)
-//     }
-// }

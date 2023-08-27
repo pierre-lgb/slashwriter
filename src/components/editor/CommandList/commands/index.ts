@@ -3,9 +3,9 @@ import format from "./format"
 import others from "./others"
 
 const commands = {
-    Blocs: blocks,
+    Blocks: blocks,
     Format: format,
-    Autres: others
+    Other: others
 }
 
 export default commands

@@ -1,3 +1,1 @@
-import { Subdocument } from "./Subdocument"
-
-export default Subdocument
+export { Subdocument as default } from "./Subdocument"

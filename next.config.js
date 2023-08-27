@@ -1,9 +1,12 @@
 module.exports = {
     reactStrictMode: false,
-    compiler: {
-        styledComponents: true
-    },
     images: {
         domains: ["ui-avatars.com"]
     }
+    // Temporary
+    // webpack: (config) => {
+    //     config.resolve.fallback = { fs: false }
+
+    //     return config
+    // }
 }

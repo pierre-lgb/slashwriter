@@ -1,0 +1,7 @@
+.emoji {
+    animation: fade-in 0.2s;
+
+    & > img {
+        width: 100%;
+    }
+}

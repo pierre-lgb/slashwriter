@@ -1,5 +1,3 @@
-import { ReactElement } from "react"
-
 import { mergeAttributes, Node, nodeInputRule } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 

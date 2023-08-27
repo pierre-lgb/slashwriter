@@ -1,0 +1,50 @@
+.emojiList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    position: relative;
+    border-radius: 4px;
+    background: #fff;
+    color: rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    font-size: 0.9rem;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0px 10px 20px rgba(0, 0, 0, 0.1);
+
+    .row {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+
+        .emojiButton {
+            display: block;
+            margin: 0;
+            text-align: left;
+            background: transparent;
+            border-radius: 0.4rem;
+            border: 1px solid transparent;
+            padding: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+
+            &.selected {
+                background-color: var(--color-n100);
+            }
+
+            & > span {
+                display: flex;
+            }
+
+            &:hover {
+                background-color: var(--color-n100);
+            }
+        }
+
+        .emoji {
+            width: 1.5em;
+            height: 1.5em;
+        }
+    }
+
+
+}

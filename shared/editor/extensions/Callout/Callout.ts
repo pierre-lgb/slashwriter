@@ -176,6 +176,8 @@ export const Callout = Node.create<CalloutOptions>({
                 return editor.commands.toggleWrap(this.name, attributes)
             },
             updateCallout: (attributes, pos) => (editor) => {
+                if (!pos) return true
+
                 const { tr, dispatch } = editor
 
                 if (dispatch) {
@@ -273,9 +275,13 @@ export const Callout = Node.create<CalloutOptions>({
                 }
 
                 const previousNode = previousPos.parent
-                const { node, pos, depth } = findParentNode(() => true)(
-                    selection
-                )
+                const parentNode = findParentNode(() => true)(selection)
+
+                if (!parentNode) {
+                    return false
+                }
+
+                const { node, pos, depth } = parentNode
 
                 // If current node is nested
                 if (depth !== 1) {

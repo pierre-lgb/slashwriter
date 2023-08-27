@@ -11,7 +11,7 @@ const suggestionConfig: Partial<SuggestionOptions> = {
 
         // Transform the object structure in an array one
         const emojisArray = Object.entries(emojis).reduce(
-            (acc, [category, emojis]: [string, any[]]) => {
+            (acc: any[], [category, emojis]: [string, any[]]) => {
                 acc.push(
                     ...emojis.map((emoji) => ({
                         ...emoji,
@@ -49,7 +49,7 @@ const suggestionConfig: Partial<SuggestionOptions> = {
                 })
 
                 popup = tippy("body", {
-                    getReferenceClientRect: props.clientRect,
+                    getReferenceClientRect: props.clientRect as () => DOMRect,
                     appendTo: document.body,
                     content: component.element,
                     showOnCreate: true,

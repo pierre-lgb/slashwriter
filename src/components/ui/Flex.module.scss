@@ -1,0 +1,25 @@
+.flex {
+    display: flex;
+    min-width: 0;
+    min-height: 0;
+
+    &.inline {
+        display: inline-flex;
+    }
+
+    &.auto {
+        flex: 1 1 auto
+    }
+
+    &.column {
+        flex-direction: column;
+
+        &.reverse {
+            flex-direction: column-reverse;
+        }
+    }
+
+    &.shrink {
+        flex-shrink: 1;
+    }
+}

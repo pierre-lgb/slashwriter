@@ -1,0 +1,32 @@
+.placeholderContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: var(--color-n50);
+    border: 1px solid var(--color-n300);
+    height: 170px;
+    padding: 1rem;
+    color: var(--color-n700);
+    cursor: pointer;
+    gap: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: var(--color-n100);
+    }
+
+    .placeholderText {
+        text-align: center;
+        font-size: 0.95rem;
+        user-select: none;
+        line-height: 120%;
+    }
+}
+
+.dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}

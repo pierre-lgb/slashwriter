@@ -1,4 +1,3 @@
-import cookieParser from "cookie-parser"
 import express from "express"
 import { createServer } from "http"
 import next from "next"
@@ -10,7 +9,6 @@ const nextHandler = nextApp.getRequestHandler()
 
 nextApp.prepare().then(() => {
     const app = express()
-    app.use(cookieParser())
 
     app.all("*", function handler(req, res) {
         const parsedUrl = url.parse(req.url, true)

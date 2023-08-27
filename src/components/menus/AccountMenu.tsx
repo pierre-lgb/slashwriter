@@ -1,50 +1,50 @@
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import {
     RiCommandLine as CommandIcon,
     RiEqualizerLine as SettingsIcon,
     RiFileList3Line as ChangelogIcon,
-    RiLogoutBoxRLine as LogoutIcon,
-    RiUser3Line as ProfileIcon
+    RiLogoutBoxRLine as LogoutIcon
 } from "react-icons/ri"
-import Flex from "src/components/Flex"
-import Menu from "src/components/ui/navigation/Menu"
-import { signOut } from "src/utils/supabase"
-import styled from "styled-components"
+import { useSupabase } from "src/components/supabase/SupabaseProvider"
+import Menu from "src/components/ui/Menu"
+
+import styles from "./AccountMenu.module.scss"
 
 function AccountMenu({ children }) {
+    const { supabaseClient } = useSupabase()
     const router = useRouter()
 
     return (
         <Menu
             content={(instance) => (
-                <Container column gap={4}>
+                <div className={styles.accountMenu}>
                     <Menu.Item
                         icon={<SettingsIcon />}
-                        title="Paramètres"
+                        title="Settings"
                         onClick={() => router.push("/settings")}
                         menu={instance}
                     />
                     <Menu.Item
                         icon={<CommandIcon />}
-                        title="Raccourcis clavier"
+                        title="Keyboard shortcuts"
                         onClick={() => {}}
                         menu={instance}
                     />
                     <Menu.Item
                         icon={<ChangelogIcon />}
-                        title="Journal des modifications"
+                        title="Changelog"
                         onClick={() => router.push("/changelog")}
                         menu={instance}
                     />
                     <Menu.Separator />
                     <Menu.Item
                         icon={<LogoutIcon />}
-                        title="Déconnexion"
-                        onClick={() => signOut()}
+                        title="Log out"
+                        onClick={() => supabaseClient.auth.signOut()}
                         menu={instance}
                         style={{ color: "var(--color-red)" }}
                     />
-                </Container>
+                </div>
             )}
             popperOptions={{
                 modifiers: [
@@ -59,13 +59,5 @@ function AccountMenu({ children }) {
         </Menu>
     )
 }
-
-const Container = styled(Flex)`
-    width: 280px;
-    border-radius: 8px;
-    padding: 0.75rem;
-
-    background-color: rgba(250, 250, 250, 0.85);
-`
 
 export default AccountMenu

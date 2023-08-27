@@ -1,6 +1,7 @@
-import { supabaseClient } from "src/utils/supabase"
-
 import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs"
+
+const supabaseClient = createPagesBrowserClient()
 
 export const fetchFolders = createAsyncThunk("folders/fetch_all", async () => {
     const { data, error } = await supabaseClient

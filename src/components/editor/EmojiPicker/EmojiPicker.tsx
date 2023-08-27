@@ -1,13 +1,26 @@
-import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react"
+import {
+    forwardRef,
+    useImperativeHandle,
+    useMemo,
+    useRef,
+    useState
+} from "react"
 import { RiSearchLine as SearchIcon } from "react-icons/ri"
 import { FixedSizeList } from "react-window"
 import emojis from "src/assets/emojis"
-import Emoji from "src/components/Emoji"
-import Flex from "src/components/Flex"
+import Flex from "src/components/ui/Flex"
 import Input from "src/components/ui/Input"
-import styled from "styled-components"
 
-import { filterEmojis, formatEmojis, HEIGHT, NB_EMOJIS_PER_ROW, ROW_HEIGHT, WIDTH } from "./utils"
+import Emoji from "../Emoji"
+import styles from "./EmojiPicker.module.scss"
+import {
+    filterEmojis,
+    formatEmojis,
+    HEIGHT,
+    NB_EMOJIS_PER_ROW,
+    ROW_HEIGHT,
+    WIDTH
+} from "./utils"
 
 export interface EmojiPickerProps {
     /**
@@ -42,26 +55,26 @@ export interface EmojiPickerHandle {
     /**
      * Picker's container dom element
      */
-    containerElement: HTMLDivElement
+    containerElement: HTMLDivElement | null
 
     /**
      * Search input dom element
      */
-    searchInputElement: HTMLInputElement
+    searchInputElement: HTMLInputElement | null
 }
 
 export default forwardRef<EmojiPickerHandle, EmojiPickerProps>(
     function EmojiPicker(props, ref) {
         const { onSelectEmoji = () => {}, searchInput = true } = props
 
-        const containerRef = useRef<HTMLDivElement>()
-        const searchInputRef = useRef<HTMLInputElement>()
-        const listRef = useRef<FixedSizeList>()
+        const containerRef = useRef<HTMLDivElement | null>(null)
+        const searchInputRef = useRef<HTMLInputElement | null>(null)
+        const listRef = useRef<FixedSizeList | null>(null)
 
         const [query, setQuery] = useState("")
 
         const filteredEmojis = useMemo(
-            () => filterEmojis(emojis["fr"], query),
+            () => filterEmojis(emojis["en"], query),
             [query]
         )
         const rows = useMemo(
@@ -75,7 +88,7 @@ export default forwardRef<EmojiPickerHandle, EmojiPickerProps>(
                     setQuery(value ?? "")
                 },
                 scrollTo: (offset?: number) => {
-                    listRef.current.scrollTo(offset ?? 0)
+                    listRef.current?.scrollTo(offset ?? 0)
                 },
                 containerElement: containerRef.current,
                 searchInputElement: searchInputRef.current
@@ -85,17 +98,17 @@ export default forwardRef<EmojiPickerHandle, EmojiPickerProps>(
         return (
             <div ref={containerRef}>
                 {searchInput && (
-                    <SearchInputContainer>
+                    <div className={styles.searchInputContainer}>
                         <Input
                             inputRef={searchInputRef}
                             icon={<SearchIcon />}
-                            placeholder="Rechercher..."
+                            placeholder="Search for emojis..."
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
                         />
-                    </SearchInputContainer>
+                    </div>
                 )}
-                <ListContainer>
+                <div className={styles.listContainer}>
                     <FixedSizeList
                         height={HEIGHT}
                         overscanCount={3}
@@ -110,7 +123,7 @@ export default forwardRef<EmojiPickerHandle, EmojiPickerProps>(
                     >
                         {EmojiRow}
                     </FixedSizeList>
-                </ListContainer>
+                </div>
             </div>
         )
     }
@@ -123,9 +136,9 @@ const EmojiRow = ({ data, index, style }) => {
     // Category
     if (typeof row[0] === "string") {
         return (
-            <CategoryTitle style={style} key={index}>
+            <div className={styles.categoryTitle} style={style} key={index}>
                 {row[0]}
-            </CategoryTitle>
+            </div>
         )
     }
 
@@ -138,7 +151,8 @@ const EmojiRow = ({ data, index, style }) => {
         >
             {row.map((emoji) => {
                 return (
-                    <EmojiButton
+                    <button
+                        className={styles.emojiButton}
                         key={emoji.unicode}
                         title={`:${emoji.shortcode}:`}
                     >
@@ -151,47 +165,9 @@ const EmojiRow = ({ data, index, style }) => {
                                 onSelectEmoji(emoji.unicode)
                             }}
                         />
-                    </EmojiButton>
+                    </button>
                 )
             })}
         </Flex>
     )
 }
-
-const SearchInputContainer = styled.div`
-    padding: 0.25rem;
-`
-
-const ListContainer = styled.div`
-    padding-bottom: 0.5rem;
-    max-height: 400px;
-`
-
-const CategoryTitle = styled.div`
-    text-transform: uppdercase;
-    padding: 0.5rem;
-    text-transform: uppercase;
-    color: var(--color-n600);
-    font-size: 0.8rem;
-    width: 100%;
-`
-
-const EmojiButton = styled.button`
-    width: 2rem;
-    height: 2rem;
-    padding: 0.15rem;
-    background: none;
-    outline: none;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.1s;
-
-    &:hover {
-        background-color: var(--color-n100);
-    }
-
-    & > img {
-        width: 100%;
-    }
-`

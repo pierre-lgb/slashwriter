@@ -27,7 +27,7 @@ const suggestionConfig: Partial<SuggestionOptions> = {
     items: ({ query }) => {
         const filteredItems = filterItems(commands, query)
         const filteredItemsArray = Object.entries(filteredItems).reduce(
-            (acc, curr: [string, any[]]) => {
+            (acc: any[], curr: [string, any[]]) => {
                 const [category, content] = curr
                 content.forEach((item) => {
                     acc.push({
@@ -68,12 +68,8 @@ const suggestionConfig: Partial<SuggestionOptions> = {
                     editor: props.editor
                 })
 
-                if (!props.clientRect) {
-                    return
-                }
-
                 popup = tippy("body", {
-                    getReferenceClientRect: props.clientRect,
+                    getReferenceClientRect: props.clientRect as () => DOMRect,
                     appendTo: () => document.body,
                     content: component.element,
                     showOnCreate: true,
@@ -83,7 +79,7 @@ const suggestionConfig: Partial<SuggestionOptions> = {
                     trigger: "manual",
                     placement: "bottom-start",
                     arrow: false
-                })
+                })[0]
             },
 
             onUpdate: (props) => {
@@ -93,14 +89,14 @@ const suggestionConfig: Partial<SuggestionOptions> = {
                     return
                 }
 
-                popup[0].setProps({
+                popup?.setProps({
                     getReferenceClientRect: props.clientRect
                 })
             },
 
             onKeyDown: (props) => {
                 if (props.event.key === "Escape") {
-                    popup[0].hide()
+                    popup?.hide()
 
                     return true
                 }
@@ -109,10 +105,10 @@ const suggestionConfig: Partial<SuggestionOptions> = {
             },
 
             onExit: () => {
-                if (!popup[0].state.isDestroyed) {
-                    popup[0].destroy()
+                if (popup && !popup.state.isDestroyed) {
+                    popup.destroy()
                 }
-                if (component.ref !== null) {
+                if (component && component.ref !== null) {
                     component.destroy()
                 }
             }

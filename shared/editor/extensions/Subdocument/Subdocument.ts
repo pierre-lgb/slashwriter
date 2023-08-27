@@ -113,7 +113,7 @@ export const Subdocument = Node.create<SubdocumentProps>({
                     }
 
                     try {
-                        const replaceSteps = []
+                        const replaceSteps: any[] = []
                         tr.steps.forEach((step, index) => {
                             if (step.toJSON().stepType === "replace") {
                                 replaceSteps.push(index)

@@ -1,0 +1,113 @@
+.container {
+    min-width: 300px;
+    background: linear-gradient(90deg, #eaeaea 1px, transparent 1px) 1px 0, #fff;
+    background-size: calc(100% / 4) 1px;
+    background-position: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 3rem 5rem;
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    @media screen and (max-width: 550px) {
+        #logo {
+            display: none;
+        }
+
+        justify-content: center;
+    }
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 50px;
+    gap: 20px;
+
+    .cover {
+        width: 90%;
+        @media screen and (max-width: 550px) {
+            width: 120%;
+        }
+    }
+}
+
+.featureList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 100px;
+    margin: 100px 0;
+}
+
+.feature {
+    display: flex;
+    gap: 50px;
+    max-width: 1100px;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
+
+    flex-direction: row;
+    text-align: left;
+
+    &.reverse {
+        flex-direction: row-reverse;
+        text-align: right;
+    }
+
+    @media screen and (max-width: 768px) {
+        max-width: 500px;
+        width: 100%;
+    }
+
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+.featureImage {
+    width: 50%;
+    height: 300px;
+    background-color: #eeeeee;
+    background-size: cover;
+    background-position: left bottom;
+    flex-shrink: 0;
+    border: 15px solid #fff;
+    border-radius: 0.125rem;
+    box-shadow: 0px 0px 0px 1px #eaeaea;
+
+    @media screen and (max-width: 768px) {
+        width: 80%;
+    }
+}
+
+.featureDescription {
+    width: 50%;
+
+    @media screen and (max-width: 768px) {
+        width: 80%;
+    }
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 200px;
+    height: 150px;
+    background-color: #eaeaea;
+}

@@ -1,0 +1,39 @@
+.menuItem {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    color: var(--color-n700);
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: none;
+    transition: background-color ease-out 50ms;
+    cursor: pointer;
+
+    &.active {
+        background: var(--color-b100);
+            color: var(--color-b400);
+    }
+
+    &:hover:not(.active) {
+        background-color: var(--color-n100);
+    }
+
+    .iconContainer {
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & > svg {
+            font-size: 1.25em;
+        }
+    }
+
+    .title {
+        font-size: 0.95em;
+    }
+}

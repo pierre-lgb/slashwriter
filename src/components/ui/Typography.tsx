@@ -1,5 +1,6 @@
-import { CSSProperties, ElementType, ReactNode } from "react"
-import styled, { css } from "styled-components"
+import { CSSProperties, forwardRef, ReactNode } from "react"
+
+import styles from "./Typography.module.scss"
 
 interface TitleProps {
     children?: ReactNode
@@ -20,9 +21,9 @@ interface TextProps {
     underline?: boolean
     strikethrough?: boolean
     small?: boolean
-    align?: "left" | "center" | "right" | "justify"
     weight?: number
-    lineHeight?: number
+    lineHeight?: string
+    align?: "left" | "center" | "right" | "justify"
 }
 
 interface LinkProps {
@@ -38,203 +39,110 @@ interface TypographyProps {
     children?: ReactNode
     className?: string
     style?: CSSProperties
-    tag?: string
 }
 
 function Title(props: TitleProps) {
-    const { children, className, style, level = 2 } = props
+    const { children, className = "", style, level = 2 } = props
+
+    const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements
 
     return (
-        <StyledTitle
-            as={`h${level}`}
+        <HeadingTag
+            className={`${styles.title} ${styles[`h${level}`]} ${className}`}
             style={style}
-            className={className}
-            level={level}
         >
             {children}
-        </StyledTitle>
+        </HeadingTag>
     )
 }
 
 function Text(props: TextProps) {
     const {
         children,
-        className,
+        className = "",
         style,
         type = "default",
         mark,
         code,
         strong,
         disabled = false,
+        small = false,
         underline = false,
         strikethrough = false,
-        small = false,
-        align = "left",
-        weight = 400,
-        lineHeight = "1.6rem"
+        weight,
+        lineHeight
     } = props
 
-    const tag =
+    const Tag =
         (mark && "mark") || (code && "code") || (strong && "strong") || "span"
 
     return (
-        <StyledText
-            as={tag as ElementType}
-            style={style}
-            type={type}
-            className={className}
-            tag={tag}
-            disabled={disabled}
-            underline={underline}
-            strikethrough={strikethrough}
-            small={small}
-            align={align}
-            weight={weight}
-            lineHeight={lineHeight}
+        <Tag
+            style={{
+                ...(underline
+                    ? {
+                          borderBottom: "1px solid var(--color-n700)"
+                      }
+                    : {}),
+                ...(strikethrough
+                    ? {
+                          textDecoration: "line-through"
+                      }
+                    : {}),
+                ...(weight
+                    ? {
+                          fontWeight: weight
+                      }
+                    : {}),
+                ...(lineHeight
+                    ? {
+                          lineHeight: lineHeight
+                      }
+                    : {}),
+                ...style
+            }}
+            className={`${styles.text} ${styles[type]} ${
+                styles[Tag]
+            } ${className} ${small ? styles.small : ""} ${
+                disabled ? styles.disabled : ""
+            }`}
         >
             {children}
-        </StyledText>
+        </Tag>
     )
 }
 
-function Link(props: LinkProps) {
+const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
+    props,
+    ref
+) {
     const { children, className, style, target, href, onClick } = props
 
     return (
-        <StyledLink
+        <a
             onClick={onClick}
-            className={className}
+            className={`${styles.link} ${className}`}
             href={href}
             target={target}
             rel="noopener noreferrer"
             style={style}
+            ref={ref}
         >
             {children}
-        </StyledLink>
+        </a>
     )
-}
+})
 
 export default function Typography(props: TypographyProps) {
-    const { children, className, style, tag = "div" } = props
+    const { children, className, style } = props
 
     return (
-        <StyledTypography
-            as={tag as ElementType}
-            style={style}
-            className={className}
-        >
+        <div style={style} className={`${styles.typography} ${className}`}>
             {children}
-        </StyledTypography>
+        </div>
     )
 }
 
 Typography.Title = Title
 Typography.Text = Text
 Typography.Link = Link
-
-const StyledTitle = styled.div<{ level: 1 | 2 | 3 | 4 | 5 }>`
-    color: var(--color-n900);
-    margin: 1rem 0;
-    font-weight: 700;
-    font-size: ${({ level }) =>
-        ({
-            1: "3rem",
-            2: "2.25rem",
-            3: "1.75rem",
-            4: "1.125rem",
-            5: "1rem"
-        }[level])};
-`
-
-const StyledText = styled.div<{
-    type: "default" | "secondary" | "success" | "warning" | "danger"
-    tag: "mark" | "code" | "underline" | "strong" | "span"
-    disabled: boolean
-    underline: boolean
-    strikethrough: boolean
-    small: boolean
-    align: "left" | "center" | "right" | "justify"
-    weight: number
-    lineHeight: number
-}>`
-    font-size: ${({ small }) => (small ? "0.8rem" : "0.95rem")};
-    line-height: ${({ lineHeight }) => lineHeight};
-    text-align: ${({ align }) => align};
-
-    ${({ tag, weight }) =>
-        !(tag === "strong") &&
-        css`
-            font-weight: ${weight};
-        `}
-
-    color: ${({ type }) =>
-        ({
-            default: "var(--color-n800)",
-            secondary: "var(--color-n600)",
-            success: "var(--color-green)",
-            warning: "var(--color-yellow)",
-            danger: "var(--color-red)"
-        }[type])};
-
-    ${({ disabled }) =>
-        disabled &&
-        css`
-            opacity: 0.5;
-            cursor: not-allowed;
-        `};
-
-    ${({ underline }) =>
-        underline &&
-        css`
-            border-bottom: 1px solid var(--color-n700);
-        `};
-
-    ${({ strikethrough }) =>
-        strikethrough &&
-        css`
-            text-decoration: line-through;
-        `};
-
-    ${({ tag }) => {
-        if (tag === "mark") {
-            return css`
-                padding: 0;
-                background-color: rgb(251, 243, 219);
-            `
-        }
-        if (tag === "code") {
-            return css`
-                padding: 0.2em 0.4em 0.1em;
-                background: hsla(0, 0%, 58.8%, 0.1);
-                border: 1px solid hsla(0, 0%, 39.2%, 0.2);
-                border-radius: 3px;
-                font-weight: 500;
-                font-family: "JetBrains Mono", monospace;
-            `
-        }
-        if (tag === "strong") {
-            return css`
-                font-weight: 600;
-            `
-        }
-
-        return null
-    }};
-`
-
-const StyledLink = styled.a`
-    font-size: 1rem;
-    line-height: 1.6rem;
-    color: var(--color-b400);
-    border-bottom: 1px solid var(--color-b200);
-
-    &:hover {
-        color: var(--color-b500);
-    }
-`
-
-const StyledTypography = styled.div`
-    font-size: 1rem;
-    line-height: 1.6rem;
-    color: var(--color-n800);
-`
