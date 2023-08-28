@@ -9,8 +9,7 @@ import Typography from "src/components/ui/Typography"
 import styles from "./Index.module.scss"
 
 export const metadata: Metadata = {
-    title: "Slashwriter",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    title: "Slashwriter"
 }
 
 export default function IndexPage() {
@@ -26,7 +25,7 @@ export default function IndexPage() {
                         id="logo"
                     />
                     <nav>
-                        <Link href="https://slashwriter.fly.dev/doc/6f624515-3533-4312-9ba0-cf310a0e6a42">
+                        <Link href="/doc/6f624515-3533-4312-9ba0-cf310a0e6a42">
                             Demo
                         </Link>
                         <Link href="/auth/sign-in">Sign In</Link>
@@ -37,7 +36,9 @@ export default function IndexPage() {
                         level={1}
                         style={{ textAlign: "center", maxWidth: 500 }}
                     >
-                        Easy and Classy Note-Taking
+                        Easy and Classy
+                        <br />
+                        Note-Taking
                     </Typography.Title>
                     <Typography.Text
                         style={{
@@ -54,7 +55,7 @@ export default function IndexPage() {
                     >
                         <Link
                             target="_blank"
-                            href="https://slashwriter.fly.dev/doc/1ce53e87-bbf3-4676-b657-2212a8f4ba74"
+                            href="/doc/6f624515-3533-4312-9ba0-cf310a0e6a42"
                         >
                             <Button size="large">Try the demo</Button>
                         </Link>
