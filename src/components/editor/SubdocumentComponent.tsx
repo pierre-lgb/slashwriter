@@ -34,7 +34,7 @@ export default function SubdocumentComponent(props: NodeViewProps) {
                     return
                 }
 
-                alert("Impossible de créer le document intégré")
+                alert("Failed to create a subdocument")
                 props.deleteNode()
             })
         }
@@ -49,7 +49,7 @@ export default function SubdocumentComponent(props: NodeViewProps) {
         if (cacheDocument) {
             // If document is already in cache
             setDocument({
-                title: cacheDocument.title || "Sans titre",
+                title: cacheDocument.title || "Untitled",
                 updated_at: cacheDocument.updated_at
             })
             setLoading(false)
@@ -65,7 +65,7 @@ export default function SubdocumentComponent(props: NodeViewProps) {
                         setDocument(null)
                     } else {
                         setDocument({
-                            title: data.title || "Sans titre",
+                            title: data.title || "Untitled",
                             updated_at: data.updated_at
                         })
                     }
