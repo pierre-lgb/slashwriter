@@ -60,6 +60,7 @@ import Underline from "@tiptap/extension-underline"
 import Youtube from "@tiptap/extension-youtube"
 import { EditorContent, useEditor } from "@tiptap/react"
 
+import { useSupabase } from "../supabase/SupabaseProvider"
 import Flex from "../ui/Flex"
 import Loader from "../ui/Loader"
 import BlockMenu from "./BlockMenu"
@@ -91,6 +92,9 @@ export default function SlashwriterEditor(props: {
     editable?: boolean
 }) {
     const { documentId, user, token = "anonymous", editable = true } = props
+
+    const { supabaseClient } = useSupabase()
+
     const dispatch = useAppDispatch()
 
     const ydoc = useMemo(() => new Y.Doc(), [documentId]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -226,12 +230,12 @@ export default function SlashwriterEditor(props: {
                     Component: SubdocumentComponent,
                     onDeleteSubdocument: (id) => {
                         console.log("Delete subdocument", id)
-                        dispatch(
-                            documentsApi.updateDocument({
-                                id,
+                        supabaseClient
+                            .from("documents")
+                            .update({
                                 deleted: true
                             })
-                        )
+                            .match({ id })
                     }
                 }),
                 Details,
