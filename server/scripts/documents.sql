@@ -13,7 +13,6 @@ ORDER BY updated_at desc;
 
 DROP VIEW IF EXISTS documents_shared_with_user;
 CREATE VIEW documents_shared_with_user
-WITH (security_invoker)
 as SELECT * from (
     SELECT 
         d.id,
